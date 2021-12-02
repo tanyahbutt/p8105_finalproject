@@ -23,13 +23,22 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-## Cleaning Covid-19 Death Data
+## Cleaning Covid-19 Death Rate by ZCTA Data
 ```{r}
-covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv", rows()) %>% 
+covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv") %>% 
   janitor::clean_names() %>% 
+  subset(date == "3/2020" | date == "4/2020" | date == "5/2020" | date == "6/2020" |
+         date == "7/2020" | date == "8/2020" | date == "9/2020" | date == "10/2020" |
+         date == "11/2020" | date == "12/2020") %>% 
   rename_with(~ gsub('deathrate_', '', .x)) %>% 
+  select(-bronx & -brooklyn & -queens & -staten_island & -manhattan & 
+           -citywide) %>% 
   pivot_longer(
-    
-  )
+    "10001":"11697",
+    names_to = "zcta",
+    values_to = "deathrate"
+  ) 
+
+
 ```
 
