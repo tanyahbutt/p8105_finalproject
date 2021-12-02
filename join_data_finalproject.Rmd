@@ -6,7 +6,6 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 setwd("/Users/irene/Desktop/DATA SCIENCE/p8105_finalproject")
@@ -19,6 +18,7 @@ library(lubridate)
 library(ggridges)
 library(ggpubr)
 library(purrr)
+
 
 getwd()
 knitr::opts_chunk$set(
@@ -35,24 +35,26 @@ options(
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
+
+
+
+```{r}
+
+zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
+  rename(zip = ZCTA)
+school <- read_csv("shsat_data.csv") 
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+
+school_data <- full_join(zip_mod, school, by = "zip") %>% 
+  select(-`...1`) %>% 
+  janitor::clean_names()
+
+school_covidtest <- full_join(school_data, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+
+
+
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
