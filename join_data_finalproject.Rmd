@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/irene/Desktop/DATA SCIENCE/p8105_finalproject")
 
 library(tidyverse)
-library(readxl)
 library(readr)
 library(ggplot2)
 library(lubridate)
@@ -36,14 +35,16 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-
-
 ```{r}
 
 zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
   rename(zip = ZCTA)
+
 school <- read_csv("shsat_data.csv") 
+
 covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+
+covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
 
 school_data <- full_join(zip_mod, school, by = "zip") %>% 
   select(-`...1`) %>% 
@@ -52,9 +53,9 @@ school_data <- full_join(zip_mod, school, by = "zip") %>%
 school_covidtest <- full_join(school_data, covid_test, by = "modzcta") %>% 
   janitor::clean_names()
 
-
-
-
+school_covidtest_death <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('x', '', .x)) 
 
 ```
 
