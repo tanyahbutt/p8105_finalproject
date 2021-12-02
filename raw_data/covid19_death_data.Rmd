@@ -27,6 +27,9 @@ scale_fill_discrete = scale_fill_viridis_d
 ```{r}
 covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv") %>% 
   janitor::clean_names() %>% 
-  rename_with(~ gsub('deathrate_', '', .x))
+  rename_with(~ gsub('deathrate_', '', .x)) %>% 
+  pivot_longer(
+    
+  )
 ```
 
