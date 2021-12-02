@@ -38,7 +38,14 @@ covid_death_df = read_csv("deathrate-by-modzcta.csv") %>%
 =======
 covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv") %>% 
   janitor::clean_names() %>% 
+<<<<<<< HEAD
   rename_with(~ gsub('deathrate_', '', .x))
 >>>>>>> 5498fe24ff8876107617773380e9cac6b1482323
+=======
+  rename_with(~ gsub('deathrate_', '', .x)) %>% 
+  pivot_longer(
+    
+  )
+>>>>>>> 5f538fd5e8147768dec1fc930ac1634938ad46c4
 ```
 
