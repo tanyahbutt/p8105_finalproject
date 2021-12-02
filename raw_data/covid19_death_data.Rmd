@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD
 title: "Covid-18 Death by Zipcode Data C "
+=======
+title: "Covid-18 Death by ZCTA Data C "
+>>>>>>> 5498fe24ff8876107617773380e9cac6b1482323
 output: github_document
 ---
 
@@ -25,10 +29,16 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ## Cleaning Covid-19 Death Data
 ```{r}
+<<<<<<< HEAD
 covid_death_df = read_csv("deathrate-by-modzcta.csv") %>% 
   janitor::clean_names()
 
 
 
+=======
+covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('deathrate_', '', .x))
+>>>>>>> 5498fe24ff8876107617773380e9cac6b1482323
 ```
 
