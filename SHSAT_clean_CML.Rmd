@@ -1,0 +1,376 @@
+---
+title: "SHSAT_clean_CML"
+author: "Catherine Lucey"
+date: "11/23/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Description
+
+This RMD includes code to import, clean, and join the datasets of SH offers by middle school and middle school locations + descriptors.
+
+### Variable dictionary
+
+dbn = dbn (district borough number) of the sending middle school (original = feeder_school_dbn)
+
+feeder_school = name of the middle school sending students (original = feeder_school_name)
+
+n_offers = number of specialized high school offers per middle school (original = count_of_offers (2015-2017) or number_of_offers (2018 onward))
+
+n_testers = number of students taking the SHSAT per middle school (original = count_of_testers)
+
+n_hs_applicants = number of students per middle school applying out to high school (not just specialized high schools) (original = count_of_students_in_hs_admissions)
+
+ms_info_df: ms = "middle school"
+
+#### Notes
+
+SHSAT data were downloaded on 11/23/21 at 3:30PM. API links are:
+https://data.cityofnewyork.us/resource/xqx4-kdvp.csv,
+https://data.cityofnewyork.us/resource/8ws3-956v.csv,
+https://data.cityofnewyork.us/resource/vsgi-eeb5.csv,
+https://data.cityofnewyork.us/resource/uf53-ree9.csv,
+https://data.cityofnewyork.us/resource/xuij-x4t4.csv,
+https://data.cityofnewyork.us/resource/k8ah-28f4.csv
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(rvest)
+library(httr)
+library(readxl)
+
+```
+
+```{r, load shsat data}
+
+shsat_2_df =
+  tibble(
+    file_name = list.files("raw_data/shsat_2")
+  ) %>% 
+  mutate(
+    path = str_c("raw_data/shsat_2/", file_name),
+    data = map(path, read_csv),
+    data = map(data, janitor::clean_names),
+    data = map(data, as_tibble),
+    year = str_remove(file_name, "_SHSAT_Admissions_Test_Offers_By_Sending_School.csv"),
+  ) %>% 
+  select(year, data) %>% 
+  bind_rows() %>% 
+  unnest(cols = c(data))
+
+%>% 
+  unnest(data)
+
+shsat_1_df[[2]][[3]]
+
+tidy_shsat = function(column_name) {
+  if ("count" %in% column_name) return(as.double(column_name))
+}
+
+  mutate
+  return(column_name)
+
+if (str_detect(column_name, "count") == TRUE) return(as.double(column_name))
+
+tidied = tidy_shsat(column_name = shsat_1_df$data)
+
+str_detect(shsat_1_df$data)
+
+
+#shsat_df_combined$data[[1]]
+
+shsat_df =
+  GET("https://data.cityofnewyork.us/resource/k8ah-28f4.csv") %>% 
+  content("parsed") 
+
+```
+
+### Importing and Cleaning SHSAT Data from 2015-2016 to 2017-2018
+
+```{r}
+
+file_names_df =
+  tibble(
+    file_name = list.files("raw_data/shsat_1")
+  )
+
+load_shsat = function(file_name) {
+  
+  path = str_c("raw_data/shsat_1/", file_name)
+  
+  data = read_csv(path)
+  
+  year = str_remove(file_name, "_SHSAT_Admissions_Test_Offers_By_Sending_School.csv")
+  
+  clean_df = 
+    data %>% 
+    janitor::clean_names() %>% 
+    cbind(year) %>% 
+    rename(
+      dbn = feeder_school_dbn,
+      feeder_school = feeder_school_name,
+      n_offers = count_of_offers,
+      n_testers = count_of_testers,
+      n_hs_applicants = count_of_students_in_hs_admissions,
+      ) %>% 
+    mutate(
+      n_hs_applicants = 
+        replace(n_hs_applicants, n_hs_applicants == "0-5", "5"),
+      n_hs_applicants = as.double(n_hs_applicants)
+    ) %>% 
+    mutate(
+      n_offers = 
+        replace(n_offers, n_offers == "0-5", "5"),
+      n_offers = as.double(n_offers)
+    ) %>% 
+    mutate(
+      n_testers =
+        replace(n_testers, n_testers == "0-5", "5"),
+      n_testers = as.double(n_testers)
+    )
+  
+  return(clean_df)
+}
+
+first_three_df = map_dfc(file_names_df, load_shsat)
+
+tester_df %>% 
+  rbind(name_new_df = )
+
+name_new = rbind(tester_df, new, new2)
+
+```
+
+#### Importing and Cleaning SHSAT Data from 2018-2019 to 2019-2021
+
+```{r}
+
+clean_shsatv1 = function(df){
+  clean_df = 
+    df %>% 
+    janitor::clean_names() %>% 
+    rename(
+      dbn = feeder_school_dbn,
+      feeder_school = feeder_school_name,
+      n_offers = count_of_offers,
+      n_testers = count_of_testers,
+      n_hs_applicants = count_of_students_in_hs_admissions,
+      ) %>% 
+    mutate(
+      n_hs_applicants = 
+        replace(n_hs_applicants, n_hs_applicants == "0-5", "5"),
+      n_hs_applicants = as.double(n_hs_applicants)
+    ) %>% 
+    mutate(
+      n_offers = 
+        replace(n_offers, n_offers == "0-5", "5"),
+      n_offers = as.double(n_offers)
+    ) %>% 
+    mutate(
+      n_testers =
+        replace(n_testers, n_testers == "0-5", "5"),
+      n_testers = as.double(n_testers)
+    )
+  
+  return(clean_df)
+}
+
+clean_shsatv2 = function(df){
+  clean_df =
+    df %>% 
+    janitor::clean_names() %>% 
+    rename(
+      dbn = feeder_school_dbn,
+      feeder_school = feeder_school_name,
+      n_offers = number_of_offers,
+      n_testers = count_of_testers,
+      n_hs_applicants = count_of_students_in_hs_admissions,
+      ) %>% 
+    mutate(
+      n_hs_applicants = 
+        replace(n_hs_applicants, n_hs_applicants == "0-5", "5"),
+      n_hs_applicants = as.double(n_hs_applicants)
+    ) %>% 
+    mutate(
+      n_offers = 
+        replace(n_offers, n_offers == "0-5", "5"),
+      n_offers = as.double(n_offers)
+    ) %>% 
+    mutate(
+      n_testers =
+        replace(n_testers, n_testers == "0-5", "5"),
+      n_testers = as.double(n_testers)
+    )
+  
+  return(clean_df)
+}
+
+```
+
+
+```{r}
+
+fifteen_df = 
+  read_csv("raw_data/shsat_1/2015-2016_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2015") %>% 
+  clean_shsatv1()
+
+sixteen_df =
+  read_csv("raw_data/shsat_1/2016-2017_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2016") %>% 
+  clean_shsatv1()
+
+seventeen_df =
+  read_csv("raw_data/shsat_1/2017-2018_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2017") %>% 
+  clean_shsatv1()
+
+eighteen_df =
+  read_csv("raw_data/shsat_1/2018-2019_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2018") %>% 
+  clean_shsatv2()
+
+nineteen_df =
+  eighteen_df =
+  read_csv("raw_data/shsat_1/2019-2020_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2019") %>% 
+  clean_shsatv2()
+
+twenty_df =
+  read_csv("raw_data/shsat_1/2020-2021_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2020") %>% 
+  clean_shsatv2()
+
+```
+
+#### Joining and Cleaning SHSAT Datasets: Removing Missing/Inconsistent Values
+
+```{r}
+
+shsat_df = 
+  rbind(
+    fifteen_df, 
+    sixteen_df, 
+    seventeen_df, 
+    eighteen_df, 
+    nineteen_df, 
+    twenty_df) %>%
+  unique()
+
+```
+
+
+#### Importing and Cleaning the MS Directory Datafile
+
+in order to join to the theoretical shsat dataset
+
+```{r}
+
+ms_dir_import =
+  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>% 
+  select(district, schooldbn, printedschoolname, neighborhood, address, sharedbuilding, subway, bus)
+
+ms_dir_df =
+  ms_dir_import %>%
+  rename(
+    dbn = schooldbn,
+    feeder_school = printedschoolname
+  ) %>% 
+  separate(address, into = c("address", "zip"), sep = "NY")
+  
+ms_zip_dbn =
+  ms_dir_df %>% 
+  select(dbn, zip)
+
+```
+
+substr(start = -5
+
+https://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r?rq=1
+https://stringr.tidyverse.org/reference/str_sub.html
+
+< 100 schools is too low
+
+unique fxn --> specify w/in that x = dbn to just get the unique middle schools 
+
+jk 
+
+pivot wider --> drop nas, then pivot wider again to make the year variable
+
+https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unique
+
+convert the years to one year
+
+
+
+#### Joining Zipcode data to SHSAT
+
+3620 observations before dropping na values, 2789 obs after dropping na values --> should be ~465 schools
+
+```{r}
+
+shsat_zip_df =
+  full_join(shsat_df, ms_zip_dbn, by = "dbn") %>% 
+  drop_na() %>% 
+  mutate(
+    year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
+  )
+
+```
+
+#### Export SHSAT Data
+
+```{r}
+
+write.csv(shsat_zip_df, "shsat_data.csv")
+
+```
+
+
+#### figuring out shared building nonsense
+
+```{r}
+
+shared_df =
+  ms_dir_df %>% 
+  filter(sharedbuilding != "No")
+
+```
+
+
+#### DATA!!!! (eda)
+
+will have to separate into quartiles and look at variation within quartiles
+
+```{r}
+
+shsat_zip_df %>%
+  filter(n_offers > 5) %>%
+  group_by(year) %>% 
+  summarise(mean_offers = mean(n_offers),
+            std_dev_offers = sd(n_offers))
+
+shsat_zip_df %>% 
+  filter(n_offers > 5) %>% 
+  summary()
+
+
+shsat_zip_df %>% 
+  filter(n_offers > 5) %>% 
+   mutate(
+    avg_n_offers = mean(n_offers),
+    std_n_offers = n_offers / avg_n_offers
+  ) %>% 
+  filter(std_n_offers < 5) %>% 
+  ggplot(aes(x = year, y = std_n_offers)) +
+  geom_boxplot()
+
+  select(year, n_offers) %>% 
+  ggplot(aes(x = year, y = n_offers)) +
+  geom_point()
+
+```
+
