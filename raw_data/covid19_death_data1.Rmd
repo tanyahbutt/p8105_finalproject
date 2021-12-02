@@ -39,6 +39,7 @@ covid_death_df = read_csv("raw_data/deathrate-by-modzcta.csv") %>%
     values_to = "deathrate"
   ) 
 
+write_csv(covid_death_df, "deathrate_byzcta_clean.csv")
 
 ```
 
