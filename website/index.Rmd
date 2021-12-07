@@ -15,16 +15,33 @@ output:
 ## Related Work
 
 ## Data Sources
-* **SHSAT Admissions Test Offers by Sending School (2015-2021)** We obtained 
-data on specialized high school admission test offers by district borough number 
+* **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
+high school admission test offers by district borough number was obtained
 from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
 
-* **NYC COVID-19 Positive Tests by ZCTA** 
+* **NYC COVID-19 Positive Tests by Zip-Code** Weekly zip-code level SARS-CoV2 
+testing data was compiled for New York State beginning March 1, 2020 by the
+[New York State Department of Health](https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing-by-Zip-C/e7te-hhb2).
+
+* **NYC COVID-19 Death Rates by Zip-Code** Monthly zip-code tabulation area 
+(ZCTA)-level SARS-CoV2 death ratedata was obtained from 
+the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data).
+
+* **Crosswalk File for Zip-code to ZCTA**  We used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to ZCTAs to obtain consistent area units across the datasets.
 
 
-## Exploratory Analysis
 
-## Additional Analysis
+## Methods
+
+### Data Cleaning
+
+### Visualizations
+
+### Exploratory Analysis
+
+### Additional Analysis
+
+## Results
 
 ## Discussion
 
