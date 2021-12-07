@@ -3,6 +3,8 @@ title: "join_data_finalproject"
 author: 'IRENE MARTINEZ MORATA (UNI: im2557)'
 date: "11/29/2021"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -59,5 +61,89 @@ school_covidtest_death <- full_join(school_covidtest, covid_deathrate, by = "mod
 
 write_csv(school_covidtest_death, "project_df.csv")
 
+```
+
+#### generating df with average testing values per
+
+```{r}
+
+#filters/selects only data for which there is n_offer and n_tester for all 6 years
+#this dataset includes schools with ≤ 5 offers
+
+wt_avgs_df =
+  read_csv("project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+write.csv(wt_avgs_df, "weighted_avgs.csv")
+
+```
+
+the code below generates another weighted averages data file, but this time filters out any school for which n_offers ≤ 5, in addition to selecting only those schools that have n_offer and n_tester data for all six years
+
+```{r}
+
+
+filtered_wt_avgs_df =
+  read_csv("project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  filter(n_offers > 5) %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
 ```
 
