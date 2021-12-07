@@ -3,7 +3,7 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Analysis"
+    - text: "Exploratory Analysis"
       href: analysis.html
     - text: "NYC Maps"
       href: nyc_maps.html
