@@ -57,5 +57,7 @@ school_covidtest_death <- full_join(school_covidtest, covid_deathrate, by = "mod
   janitor::clean_names() %>% 
   rename_with(~ gsub('x', '', .x)) 
 
+write_csv(school_covidtest_death, "project_df.csv")
+
 ```
 
