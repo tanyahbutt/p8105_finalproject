@@ -23,11 +23,13 @@ from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevan
 testing data was compiled for New York State beginning March 1, 2020 by the
 [New York State Department of Health](https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing-by-Zip-C/e7te-hhb2).
 
-* **NYC COVID-19 Death Rates by Zip-Code** Monthly zip-code tabulation area 
-(ZCTA)-level SARS-CoV2 death ratedata was obtained from 
-the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data).
+* **NYC COVID-19 Death Rates by Zip-Code** Monthly modified zip-code tabulation 
+area (MODZCTA)-level SARS-CoV2 death rate data was obtained from 
+the [NYC Department of Health and Mental Hygiene (NYC DOHMH)](https://github.com/nychealth/coronavirus-data).
 
-* **Crosswalk File for Zip-code to ZCTA**  We used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to ZCTAs to obtain consistent area units across the datasets.
+* **Crosswalk File for Zip-Code to MODZCTA** To obtain consistent area units 
+across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, are
+currently used by the NYC DOHMH for the mapping of COVID-19.
 
 
 
