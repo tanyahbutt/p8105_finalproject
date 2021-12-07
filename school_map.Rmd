@@ -41,12 +41,11 @@ scale_fill_discrete = scale_fill_viridis_d
 ```{r }
 library(raster)
 # read data    
-map <- shapefile("shapefiles/school_map.shp") %>% 
-  unique(modzcta_1)
+map <- shapefile("shapefiles/school_map.shp")  
 
-project_df <- read_csv("project_df.csv") %>% 
-  mutate(modzcta_1 = as.numeric(modzcta)) %>% 
-  unique(modzcta_1)
+project_df <- read_csv("final_mod_zcta.csv") %>% 
+  mutate(modzcta_1 = as.numeric(modzcta))  
+  
 
 map_df <- merge(map, project_df, by = 'modzcta_1', duplicateGeoms = TRUE)
 
