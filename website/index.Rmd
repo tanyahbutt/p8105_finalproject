@@ -1,0 +1,36 @@
+---
+title: "P8105 Final Project Report"
+subtitle: "Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC"
+author: Tanya Butt, Catherine Lucey, Irene Martinez Morata
+date: '`r format(Sys.time(), "%m-%d-%y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+
+## Project Motivation
+
+## Related Work
+
+## Data Sources
+* **SHSAT Admissions Test Offers by Sending School (2015-2021)** We obtained 
+data on specialized high school admission test offers by district borough number 
+from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
+
+
+## Exploratory Analysis
+
+## Additional Analysis
+
+## Discussion
+
+## Contributors: Tanya Butt | Catherine Lucey | Irene Martinez Morata  
+
+### thb2114, cml2270, im2557
+
+
+
+
+
