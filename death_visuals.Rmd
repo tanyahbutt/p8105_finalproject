@@ -1,0 +1,26 @@
+---
+title: "death_visuals"
+output: html_document
+---
+
+```{r, collapse = TRUE}
+library(tidyverse)
+library(plotly)
+library(rgdal)
+library(raster)
+library(sf)
+library(spatialEco)
+```
+
+```{r}
+covid_death_sdf = st_read("map_df.shp")
+
+fig <- ggplotly(
+  ggplot(covid_death_sdf) +
+    geom_sf(aes(fill = all_yrs_vg))
+)
+  
+fig
+
+```
+
