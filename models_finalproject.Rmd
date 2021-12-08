@@ -32,20 +32,32 @@ data <- read_csv("final_mod_zcta.csv") %>%
 
 ```{r }
 
-
-model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = quasipoisson, data = data)
-summary(model1)
-
-broom::tidy(model1)
-
 #this is the main model
-model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos, family = quasipoisson, data = data)
+model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos , family = quasipoisson, data = data)
 summary(model2)
 
 broom::tidy(model2)
+confint(model2)
 
 #how to calculate either a 1% or a 10%
 (-.005702126 * 10)
+
+#this model is for all previous years
+
+model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = quasipoisson, data = data)
+summary(model1)
+confint(model1)
+
+broom::tidy(model1)
+
+#model with death as predictor
+
+model3 <- glm(wt_avg_2020 ~ cum_ave_death_rate, family = quasipoisson, data = data)
+summary(model3)
+confint(model3)
+
+broom::tidy(model3)
+
 
 
 ```
