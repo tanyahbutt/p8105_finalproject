@@ -44,20 +44,11 @@ zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>%
 
 school <- read_csv("shsat_data.csv") 
 
-covid_test <- read_csv("raw_data/tests-by-zcta.csv")
 
-covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
-
-school_data <- full_join(zip_mod, school, by = "zip") %>% 
+project_df <- full_join(zip_mod, school, by = "zip") %>% 
   select(-`...1`) %>% 
   janitor::clean_names()
 
-school_covidtest <- full_join(school_data, covid_test, by = "modzcta") %>% 
-  janitor::clean_names()
-
-school_covidtest_death <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
-  janitor::clean_names() %>% 
-  rename_with(~ gsub('x', '', .x)) 
 
 write_csv(school_covidtest_death, "project_df.csv")
 
@@ -147,3 +138,23 @@ filtered_wt_avgs_df =
 write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
 ```
 
+## Join the datasets 
+
+```{r}
+
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
+school_data_clean <- read_csv("filtered_weighted_avgs.csv")
+
+
+school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('x', '', .x)) 
+
+
+write_csv(final_mod_zcta, "final_mod_zcta.csv")
+
+```
