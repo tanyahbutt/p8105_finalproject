@@ -8,10 +8,20 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+##load datasets
+
+```{r}
+data <- read_csv("final_mod_zcta.csv") %>% 
+  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
+         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
+         wt_avg_2020 = round(wt_avg_2020, digits = 0))
+```
+
 ##Chi squares
 
 ```{r}
 #chi sq between the proportion of offers in 2010 vs 2020
+
 
 
 ```
@@ -21,25 +31,33 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Poisson regression
 
 ```{r }
-data <- read_csv("final_mod_zcta.csv") %>% 
-  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
-         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
-         wt_avg_2020 = round(wt_avg_2020, digits = 0))
-
-
-model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = poisson, data = data)
-summary(model1)
-
-broom::tidy(model1)
 
 #this is the main model
-model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos, family = poisson, data = data)
+model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos , family = quasipoisson, data = data)
 summary(model2)
 
 broom::tidy(model2)
+confint(model2)
 
 #how to calculate either a 1% or a 10%
 (-.005702126 * 10)
+
+#this model is for all previous years
+
+model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = quasipoisson, data = data)
+summary(model1)
+confint(model1)
+
+broom::tidy(model1)
+
+#model with death as predictor
+
+model3 <- glm(wt_avg_2020 ~ cum_ave_death_rate, family = quasipoisson, data = data)
+summary(model3)
+confint(model3)
+
+broom::tidy(model3)
+
 
 
 ```
