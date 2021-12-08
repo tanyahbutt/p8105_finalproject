@@ -8,15 +8,40 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+##Chi squares
 
-## R Markdown
+```{r}
+#chi sq between the proportion of offers in 2010 vs 2020
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```
 
-```{r cars}
-summary(cars)
+
+
+## Poisson regression
+
+```{r }
+data <- read_csv("final_mod_zcta.csv") %>% 
+  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
+         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
+         wt_avg_2020 = round(wt_avg_2020, digits = 0))
+
+
+model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = poisson, data = data)
+summary(model1)
+
+broom::tidy(model1)
+
+#this is the main model
+model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos, family = poisson, data = data)
+summary(model2)
+
+broom::tidy(model2)
+
+#how to calculate either a 1% or a 10%
+(-.005702126 * 10)
+
+
 ```
 
 ## Including Plots
