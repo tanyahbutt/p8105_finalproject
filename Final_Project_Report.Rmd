@@ -181,6 +181,7 @@ ms_dir_import =
 
 shsat_zip_df =
   full_join(shsat_df, ms_dir_import, by = "dbn") %>% 
+  select(dbn, n_hs_applicants, n_testers, n_offers, year, borough, zip) %>% 
   drop_na()
 
 # write.csv(shsat_zip_df, "shsat_data.csv")

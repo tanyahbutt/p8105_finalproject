@@ -3,6 +3,8 @@ title: "CML_EDA_clean"
 author: "Catherine Lucey"
 date: "12/9/2021"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
