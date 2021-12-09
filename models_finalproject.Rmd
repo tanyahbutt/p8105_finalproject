@@ -7,16 +7,96 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(broom)
+library(modelr)
+```
+##load datasets
+
+```{r}
+data <- read_csv("final_mod_zcta.csv") %>% 
+  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
+         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
+         wt_avg_2020 = round(wt_avg_2020, digits = 0)) %>% 
+  mutate(cum_perc = 10*(modzcta_cum_perc_pos),
+         cum_death = 10*(cum_ave_death_rate))
 ```
 
-## R Markdown
+##Chi squares
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+#chi sq between the numbr of offers in 2015-2019 vs 2020 and the number of testers 2015-2019 vs 2020
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+chisq_df =
+  read_csv("project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
 
-```{r cars}
-summary(cars)
+chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test()
+
+chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test()
+
+```
+
+
+
+## Quasi poisson regression
+
+```{r }
+
+#this is the main model (10% change in cumulative incidence as predictor)
+model1 <- glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+model1 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model adjusted by number of testers
+model3 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+model3 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+
+#model adjusted by number of testers and death rate
+model4 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+model4 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+
+
+#model with a 10% change in death rate as the main predictor
+
+model2 <- glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+model2 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
+  knitr::kable(digits = 5)
+
 ```
 
 ## Including Plots
