@@ -53,9 +53,6 @@ across the datasets, we used a [crosswalk file](https://github.com/nychealth/cor
 currently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people's MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.
 
 ## Methods
-We used descriptove satistics to summarize the distrbution of our dependent variable, the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
-
-Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
 ### Data Cleaning
 
@@ -73,7 +70,10 @@ We created MOZCTA level interactive maps with the distribution of:
 * **Proportion of Specialized High School offers received by the number of students who took the SHSAT test in 2020** 
 
 ### Analysis
-We reported 
+We used descriptive statistics to summarize the distribution of our dependent variable, the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
+
+For our secondary analysis, we excluded all schools with less than 5 students taking the SHSAT test in 2020 to avoid positivity violations. 
+Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
 ## Results
 #Descriptive statistics
@@ -81,9 +81,11 @@ The mean and the median cumulative Covid-19 positive rate were XXXX and XXX resp
 The mean and the median cumulative death rate was......
 The correlation between cumulative Covid-19 rate and cumulative death rate was 
 
+#Secondary analysis
 Every 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value <0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude <0.0001, thus it is not shown in the table.
 
 ## Discussion
+
 
 ## Contributors: Tanya Butt | Catherine Lucey | Irene Martinez Morata  
 
