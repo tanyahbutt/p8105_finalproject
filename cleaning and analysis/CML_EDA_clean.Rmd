@@ -70,7 +70,7 @@ Does the association change when the denominator is all hs applicants and not js
 ```{r}
 
 offer_per_applicants_gg =
-  shsat_df %>%
+  shsat_covid_df %>%
   filter(n_offers > 5) %>% 
   mutate(
     offers_per_applicants = n_offers / n_hs_applicants
@@ -90,16 +90,63 @@ Did the proportion of hs applicants applying to specialized high schools change 
 ```{r}
 
 testers_per_applicants_gg =
-  shsat_df %>%
+  shsat_covid_df %>%
   filter(n_offers > 5) %>% 
   mutate(
-    testers_per_applicants = n_testers / n_hs_applicants
+    spec_per_applicants = n_testers / n_hs_applicants
   ) %>% 
   group_by(year) %>% 
-  ggplot(aes(x = year, y = testers_per_applicants)) +
+  ggplot(aes(x = year, y = spec_per_applicants)) +
   geom_boxplot() +
   facet_grid(. ~borough) +
   theme(axis.text.x = element_text(angle = 90))
+
+
+```
+
+relationship between proportion of specialized hs testers and offers?
+
+
+what this graph means:
+
+the x axis represents the proportion of students in the high school application process who are additionally applying to specialized high schools. The y axis represents the proportion of students, out of those applying to specialized high schools, receive an offer to one. In the Bronx and on Staten Island, there are few schools where a majority of the students applying out to high school are applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
+
+In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. There are some interesting exceptions in Manhattan, where there are few students who apply to specialized high schools, but of those, most get in. This suggests that schools hand-pick students to apply to specialized high schools, and perhaps offer additional coaching and test prep. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in.
+
+```{r}
+
+individ_schools =
+  shsat_covid_df %>%
+  filter(n_offers > 5,
+         year != 2015) %>% 
+  mutate(
+    spec_per_applicants = n_testers / n_hs_applicants,
+    offers_per_tester = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(y = offers_per_tester, x = spec_per_applicants)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  facet_grid(. ~borough)
+  theme(axis.text.x = element_text(angle = 90))
+  
+  ggplotly(individ_schools)  
+  
+  
+# plotly version:
+  
+shsat_covid_df %>%
+  filter(n_offers > 5,
+         year != 2015) %>% 
+  mutate(
+    spec_per_applicants = n_testers / n_hs_applicants,
+    offers_per_tester = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  plot_ly(
+    x = ~spec_per_applicants, y = ~ offers_per_tester, type = "scatter", mode = "markers"
+  )
+  
 
 
 ```
@@ -114,18 +161,39 @@ Generate the apropriate data frame:
 ```{r}
 
 zcta_wt_avgs_df =
-  read_csv("project_df.csv") %>%
-  select(modzcta, dbn, n_hs_applicants, n_testers, n_offers, year, modzcta_cum_perc_pos, cum_ave_death_rate) %>%
+  read_csv("raw_data/project_df.csv") %>%
+  select(modzcta, dbn, borough, n_hs_applicants, n_testers, n_offers, year, modzcta_cum_perc_pos, cum_ave_death_rate) %>%
   filter(n_offers > 5) %>% 
   drop_na() %>% 
-  group_by(modzcta, year) %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers,
+    spec_per_applicants = n_testers / n_hs_applicants
+  ) %>% 
+  group_by(modzcta, year, borough) %>% 
   summarize(
     avg_testers = mean(n_testers),
     avg_offers = mean(n_offers),
     avg_applicants = mean(n_hs_applicants),
-    wt_avg_offers = weighted.mean(n_offers, n_testers)
+    wt_avg_offers = weighted.mean(n_offers, n_testers),
+    avg_offer_per_tester = mean(offers_per_testers),
+    avg_spec_per_applicants = mean(spec_per_applicants)
   )
+
+zcta_wt_avgs_df %>% 
+  ggplot(aes(x = year, y = wt_avg_offers, color = borough)) +
+  geom_point()
+
+avg_by_zop =
+  zcta_wt_avgs_df %>% 
+  filter(year != 2015) %>% 
+  ggplot(aes(x = avg_spec_per_applicants, y = avg_offer_per_tester)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  facet_grid(. ~borough)
   
+avg_by_zop / individ_schools
+  
+
 
 ```
 

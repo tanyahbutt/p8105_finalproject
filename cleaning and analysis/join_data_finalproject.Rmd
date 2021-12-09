@@ -42,17 +42,51 @@ scale_fill_discrete = scale_fill_viridis_d
 zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
   rename(zip = ZCTA)
 
-school <- read_csv("shsat_data.csv") 
+school <- read_csv("raw_data/shsat_data.csv") 
 
+covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv")
 
-project_df <- full_join(zip_mod, school, by = "zip") %>% 
-  select(-`...1`) %>% 
+zcta_skool <- full_join(zip_mod, school, by = "zip") %>% 
+  rename(
+     modzcta = MODZCTA
+  ) %>% 
+  select(-`...1`)
+
+zcta_skool_covidtest = full_join(zcta_skool, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+project_df_deathrate = 
+  full_join(zcta_skool_covidtest, covid_deathrate, by = "modzcta") %>% 
   janitor::clean_names()
 
 
-write_csv(school_covidtest_death, "project_df.csv")
+write_csv(zcta_skool_covidtest, "project_df.csv")
+write_csv(project_df_deathrate, "project_df.csv")
+
 
 ```
+
+## Join the datasets 
+
+```{r}
+
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
+school_data_clean <- read_csv("filtered_weighted_avgs.csv")
+
+
+school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('x', '', .x)) 
+
+
+write_csv(final_mod_zcta, "final_mod_zcta.csv")
+
+```
+
 
 #### generating df with average testing values per
 
@@ -62,7 +96,7 @@ write_csv(school_covidtest_death, "project_df.csv")
 #this dataset includes schools with ≤ 5 offers
 
 wt_avgs_df =
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   select(modzcta, dbn, n_testers, n_offers, year, modzcta_cum_perc_pos) %>%
   drop_na() %>% 
   group_by(modzcta, year) %>% 
@@ -104,7 +138,7 @@ the code below generates another weighted averages data file, but this time filt
 
 
 filtered_wt_avgs_df =
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   select(modzcta, dbn, n_testers, n_offers, year) %>%
   drop_na() %>% 
   filter(n_offers > 5) %>% 
@@ -139,26 +173,6 @@ filtered_wt_avgs_df =
 write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
 ```
 
-## Join the datasets 
-
-```{r}
-
-covid_test <- read_csv("raw_data/tests-by-zcta.csv")
-covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
-school_data_clean <- read_csv("filtered_weighted_avgs.csv")
-
-
-school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
-  janitor::clean_names()
-
-final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
-  janitor::clean_names() %>% 
-  rename_with(~ gsub('x', '', .x)) 
-
-
-write_csv(final_mod_zcta, "final_mod_zcta.csv")
-
-```
 
 ## Chi Square Analysis
 
