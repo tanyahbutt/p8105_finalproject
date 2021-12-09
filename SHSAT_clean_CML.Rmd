@@ -242,6 +242,8 @@ twenty_df =
 
 #### Joining and Cleaning SHSAT Datasets: Removing Missing/Inconsistent Values
 
+3630 --> 3035
+
 ```{r}
 
 shsat_df = 
@@ -306,15 +308,53 @@ convert the years to one year
 ```{r}
 
 shsat_zip_df =
-  full_join(shsat_df, ms_dir_import, by = "dbn") %>% 
-  drop_na() %>% 
+  full_join(shsat_df, ms_dir_import, by = "dbn") 
+
+n_kept =
+  shsat_zip_df %>%
+  select(zip, year) %>% 
+  filter(!is.na(zip)) %>% 
+  group_by(year) %>%
+  count()
+
+n_na =
+  shsat_zip_df %>%
+  select(zip, year) %>% 
+  filter(is.na(zip)) %>% 
+  group_by(year) %>%
+  count()
+
+n_removed_table =
+  full_join(n_na, n_kept, by = "year") %>% 
   mutate(
-    year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
+    n_na_removed = n.x,
+    n_kept = n.y,
+  ) %>% 
+  select(year, n_kept, n_na_removed) %>% 
+  view()
+  
+  count(is.na(.))
+
+na_count_df =
+  shsat_zip_df %>% 
+  group_by(year) %>% 
+  select(zip) %>% 
+  count(is.na(.))
+
+shsat_zip_df %>% 
+  drop_na() %>% 
+  group_by(year) %>% 
+  select(zip) %>% 
+  summarize(
+    n = n()
   )
 
 shsat_zip_df %>% 
   group_by(year) %>% 
   select(zip) %>% 
+  count(is.na(.))
+
+
   count(is.na(.))
 
   filter(borough == "N/A") %>% 

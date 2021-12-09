@@ -220,7 +220,7 @@ n_removed_table =
 
 ```
 
-
+AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
 
 ##### Variable Dictionary
 

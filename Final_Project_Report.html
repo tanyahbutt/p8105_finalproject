@@ -268,11 +268,12 @@ div.tocify {
 </div>
 <div id="project-aims" class="section level2">
 <h2>Project Aims</h2>
+<p>(this is the initial questions section)</p>
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
-<div id="shsat-testing-and-admissions-offers-dataset" class="section level3">
-<h3>SHSAT Testing and Admissions Offers Dataset</h3>
+<div id="shsat-testing-and-offers-dataset" class="section level3">
+<h3>SHSAT Testing and Offers Dataset</h3>
 <div id="loading-and-cleaning-yearly-shsat-data" class="section level5">
 <h5>Loading and Cleaning Yearly SHSAT Data</h5>
 <p>Due to small differences in variable naming between 2015-2017 and 2018-2020, data importing and cleaning was done in two parts using the functions <code>clean_shsatv1</code> and <code>clean_shsatv2</code>. In the original data sets, the number of offers for schools where five or fewer students received an offer to a specialized high school was recorded as “0-5,” thus we could not distinguish between schools that had no students receiving a specialized high school offer and schools that had up to five students receiving an offer. 0-5 values for <code>n_offers</code> were converted to “5,” and all values in the column were converted to numerics for easy manipulation. School years, of the format 2015-2016, were re-coded as the year of the fall semester: <code>year = 2015</code> represents school year that began in Fall 2015 and ended in Spring 2016, in which eighth graders took the SHSAT in the fall of 2015 and received high school offers in the spring of 2016. Lastly, duplicates were removed from the combined SHSAT dataset with the <code>unique()</code> function, removing 565 values. We suspect that all duplicates are from the 2019 dataset, which seems to mysteriously duplicate in the <code>rbind()</code> process.</p>
@@ -434,9 +435,11 @@ n_removed_table =
 ## |2018 |                         120|                    465|
 ## |2019 |                         130|                    465|
 ## |2020 |                         191|                    467|</code></pre>
+<p>AT THIS POINT I’LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC</p>
 </div>
-<div id="variable-dictionary" class="section level5">
-<h5>Variable Dictionary</h5>
+</div>
+<div id="variable-dictionary" class="section level3">
+<h3>Variable Dictionary</h3>
 <p><code>n_offers</code> = total number of eighth grade students who received an offer to a specialized high school at a given middle school</p>
 <p><code>n_testers</code> = total number of eighth grade students taking the SHSAT exam, equivalent to the number of students applying to specialized high schools at a given middle school</p>
 <p><code>n_hs_applicants</code> = total number of eighth grade students participating in the high school applications process (applicants to specialized + non-specialized high schools) at a given middle school</p>
@@ -444,6 +447,14 @@ n_removed_table =
 <p><code>feeder_school</code> = full name of the “sending” middle school (middle school at which applicants are currently enrolled)</p>
 </div>
 </div>
+<div id="exploratory-data-analysis-eda" class="section level2">
+<h2>Exploratory Data Analysis (EDA)</h2>
+</div>
+<div id="additional-analysis-modeling" class="section level2">
+<h2>Additional Analysis: Modeling</h2>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
 </div>
 </div>
 
