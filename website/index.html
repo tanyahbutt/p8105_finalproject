@@ -324,10 +324,13 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="project_report.html">Project Report</a>
+</li>
+<li>
   <a href="analysis.html">Exploratory Analysis</a>
 </li>
 <li>
-  <a href="nyc_maps.html">NYC Maps</a>
+  <a href="nyc_maps.html">Flex Dashboard</a>
 </li>
 <li>
   <a href="mailto:&lt;thb2114@cumc.columbia.edu&gt;">
@@ -369,9 +372,10 @@ div.tocify {
 </div>
 <div id="related-work" class="section level2">
 <h2>Related Work</h2>
+<p>##Initial research question</p>
 </div>
-<div id="data-sources-and-preoaration" class="section level2">
-<h2>Data Sources and preoaration</h2>
+<div id="data-sources-and-preparation" class="section level2">
+<h2>Data Sources and preparation</h2>
 <ul>
 <li><p><strong>SHSAT Admissions Test Offers by Sending School (2015-2021)</strong> Specialized high school admission offers by middle school (denoted by district borough number) was obtained from <a href="https://data.cityofnewyork.us/browse?q=SHSAT&amp;sortBy=relevance">NYC Open Data</a>.</p></li>
 <li><p><strong>2020 DOE Middle School Directory</strong> Addresses and key characteristics of each sending middle school were obtained from <a href="https://data.cityofnewyork.us/Education/2020-DOE-Middle-School-Directory/fdpt-nzk4">NYC Open Data</a></p></li>
@@ -384,10 +388,12 @@ div.tocify {
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
-<p>We used descriptove satistics to summarize the distrbution of our dependent variable, the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
-<p>Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
 <div id="data-cleaning" class="section level3">
 <h3>Data Cleaning</h3>
+<div id="shsat-data" class="section level4">
+<h4>SHSAT Data</h4>
+<p>Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not inlcuded in the DOE middle school directory</p>
+</div>
 </div>
 <div id="visualizations" class="section level3">
 <h3>Visualizations</h3>
@@ -399,13 +405,14 @@ div.tocify {
 </div>
 <div id="analysis" class="section level3">
 <h3>Analysis</h3>
-<p>We reported</p>
+<p>We used descriptive statistics to summarize the distribution of our dependent variable, the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
+<p>For our secondary analysis, we excluded all schools with less than 5 students taking the SHSAT test in 2020 to avoid positivity violations. Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
 </div>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p>#Descriptive statistics The mean and the median cumulative Covid-19 positive rate were XXXX and XXX respectively. The maximum was XXX, this area was located in the borough of XXX. The minimum was XXX, this area was located in the borough of XXX. The mean and the median cumulative death rate was…… The correlation between cumulative Covid-19 rate and cumulative death rate was</p>
-<p>Every 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
+<p>#Secondary analysis Every 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
