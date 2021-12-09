@@ -43,9 +43,11 @@ Exploring the Potential Associations between Specialized High School Admissions 
 
 ## Project Aims
 
+(this is the initial questions section)
+
 ## Data Cleaning
 
-### SHSAT Testing and Admissions Offers Dataset
+### SHSAT Testing and Offers Dataset
 
 ##### Loading and Cleaning Yearly SHSAT Data
 
@@ -222,7 +224,7 @@ n_removed_table =
 
 AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
 
-##### Variable Dictionary
+### Variable Dictionary
 
 `n_offers` = total number of eighth grade students who received an offer to a specialized high school at a given middle school
 
@@ -234,5 +236,10 @@ AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
 
 `feeder_school` = full name of the "sending" middle school (middle school at which applicants are currently enrolled)
 
+## Exploratory Data Analysis (EDA)
+
+## Additional Analysis: Modeling
+
+## Discussion
 
  
