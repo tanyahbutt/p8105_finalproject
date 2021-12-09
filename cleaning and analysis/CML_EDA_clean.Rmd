@@ -70,7 +70,7 @@ Does the association change when the denominator is all hs applicants and not js
 ```{r}
 
 offer_per_applicants_gg =
-  shsat_df %>%
+  shsat_covid_df %>%
   filter(n_offers > 5) %>% 
   mutate(
     offers_per_applicants = n_offers / n_hs_applicants
