@@ -1,0 +1,39 @@
+---
+title: "Covid Graphs/Tables"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+
+getwd()
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+## Death Rate Table
+
+```{r}
+covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv") %>% 
+  pivot_longer(
+    '3/2020':'12/2020',
+    names_to = "date",
+    values_to = "death_rate" 
+  )
+
+ggplot(covid_deathrate, aes(x =))
+```
+

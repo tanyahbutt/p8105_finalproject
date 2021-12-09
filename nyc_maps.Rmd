@@ -1,10 +1,11 @@
 ---
-title: "Flex Dashboard"
+title: "Map Visualizations"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
     source_code: embed
+    theme: united
 ---
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -23,7 +24,7 @@ options(
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 
-covid_death_sdf1 = st_read("deathrate_map1.shp")
+covid_death_sdf1 = st_read("shapefiles/deathrate_map1.shp")
 ```
 
 Column {data-width=600}
@@ -32,48 +33,50 @@ Column {data-width=600}
 ### Chart A
     
 ```{r, echo = FALSE}
-cum_incidence_plot = ggplot(covid_death_sdf1) +
-    geom_sf(aes(fill = incidence)) +
-    theme(legend.text = element_text(size = 4), 
+ggplotly(
+  ggplot(covid_death_sdf1) +
+  geom_sf(aes(fill = incidence)) +
+  theme(legend.text = element_text(size = 4), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
-    labs(
+  labs(
     title = "Covid-19 Cumulative Incidence\nfrom March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Covid-19 Incidence\n (Cases/100,000)")
-
-ggplotly(cum_incidence_plot)
-
+    y = "Longitude", fill = "Covid-19 Incidence\n (Cases/100,000)")) %>% 
+  layout(xaxis = list(autorange = TRUE),
+         yaxis = list(autorange = TRUE))
 ```
-   
-Column {data-width=400}
------------------------------------------------------------------------
 
-### Chart B
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+### Chart B 
 
 ```{r, echo = FALSE}
 ggplotly(
   ggplot(covid_death_sdf1) +
     geom_sf(aes(fill = cum_death)) +
     theme(legend.text = element_text(size = 4), 
-        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+          legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Cumulative Moraltiy Rate\nfrom March - September 2020 by ZCTA",
-    x = "Latitude",
-    y = "Longitude", fill = "Mortality Rate\n (Deaths/100,000)")) 
-```   
- 
+      title = "Cumulative Moraltiy Rate\nfrom March - September 2020 by ZCTA",
+      x = "Latitude",
+      y = "Longitude", fill = "Mortality Rate\n (Deaths/100,000)"))  %>%
+  layout(xaxis = list(autorange = TRUE),
+         yaxis = list(autorange = TRUE))
+```
+
 ### Chart C
-    
+
 ```{r, echo = FALSE}
 ggplotly(
   ggplot(covid_death_sdf1) +
     geom_sf(aes(fill = pro_offers)) +
     theme(legend.text = element_text(size = 4), 
-        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+          legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Proportion of SHSAT Offers in 2020 by ZCTA",
-    x = "Latitude",
-    y = "Longitude", fill = "Proportion of SHSAT Offers")) 
+      title = "Proportion of SHSAT Offers in 2020 by ZCTA",
+      x = "Latitude",
+      y = "Longitude", fill = "Proportion of SHSAT Offers"))  %>%
+  layout(xaxis = list(autorange = TRUE),
+         yaxis = list(autorange = TRUE))
 ```
-
-Head back to the home page [here](index.html). 
