@@ -1,10 +1,96 @@
 ---
-title: "NYC Maps"
+title: "Flex Dashboard"
 output: 
-  html_document:
-    toc: true
-    toc_float: true
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
 ---
 
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(rgdal)
+library(raster)
+library(sf)
+library(viridis)
+library(rgdal)
+library(spgwr)
+library(raster)
 
-Lets head back to the [index](index.html) page.
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+{data-width=600}
+-----------------------------------------------------------------------
+
+### COVID-19 Cumulative Incidence Rate 
+
+```{r, collapse=TRUE}
+covid_death_sdf1 = st_read("deathrate_map1.shp") 
+fig <- ggplotly(
+  ggplot(covid_death_sdf1) +
+    geom_sf(aes(fill = incidence)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Covid-19 Cumulative Incidence \n March - September 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Covid-19 Cumulative Incidence\n (Cases/100,000)")) 
+  
+fig
+```
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+
+# COVID-19 Cumulative Mortality Rate 
+```{r, collapse = TRUE}
+covid_death_sdf = st_read("deathrate_map1.shp") 
+
+
+fig <- ggplotly(
+  ggplot(covid_death_sdf) +
+    geom_sf(aes(fill = cum_death)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Cumulative Moraltiy Rate \n March - September 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Cumulative Mortality Rate\n (Deaths/100,000)")) 
+  
+fig
+
+```
+
+### Chart C
+
+```{r, collapse=TRUE}
+fig <- ggplotly(
+  ggplot(covid_death_sdf1) +
+    geom_sf(aes(fill = pro_offers)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Proportion of SHSAT Offers\n in 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Proportion of SHSAT Offers")) 
+  
+fig
+```
+
+Head back to the home page [here](index.html). 

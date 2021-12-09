@@ -3,9 +3,9 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Exploratory Analysis"
-      href: analysis.html
-    - text: "NYC Maps"
+    - text: "Project Report"
+      href: project_report.html
+    - text: "Flex Dashboard"
       href: nyc_maps.html
     - icon: fa-envelope fa-lg
       href: mailto:<thb2114@cumc.columbia.edu>
