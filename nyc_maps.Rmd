@@ -5,7 +5,7 @@ output:
     orientation: columns
     vertical_layout: fill
     source_code: embed
-    theme: united
+ 
 ---
 ```{r setup, include=FALSE}
 library(flexdashboard)
