@@ -57,7 +57,7 @@ test20ny %>%
   
 #according to this, there are 1,104 unique zip codes with information for 2020 in NY state
 
-#second data
+#second data (we decided to use this one)
 
 test2 <- read.csv("tests-by-zcta.csv")
 
