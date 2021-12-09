@@ -19,11 +19,6 @@ library(rgdal)
 library(spgwr)
 library(raster)
 
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 options(
   ggplot2.continuous.colour = "viridis",
@@ -33,7 +28,7 @@ options(
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 
-covid_death_sdf1 = st_read("deathrate_map1.shp") 
+covid_death_sdf1 = st_read("deathrate_map1.shp")
 ```
 
   
@@ -42,15 +37,15 @@ Column {data-width=600}
     
 ### COVID-19 Cumulative Incidence Rate 
     
-```{r}
-ggplot(covid_death_sdf1) +
+```{r, collapse = TRUE}
+ggplotly(ggplot(covid_death_sdf1) +
     geom_sf(aes(fill = incidence)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 4), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
     title = "Covid-19 Cumulative Incidence \n March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Covid-19 Cumulative Incidence\n (Cases/100,000)") 
+    y = "Longitude", fill = "Covid-19 Cumulative Incidence\n (Cases/100,000)"))
 ```
    
 Column {data-width=400}
@@ -60,9 +55,9 @@ Column {data-width=400}
 
 ```{r}
 ggplotly(
-  ggplot(covid_death_sdf) +
+  ggplot(covid_death_sdf1) +
     geom_sf(aes(fill = cum_death)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 4), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
     title = "Cumulative Moraltiy Rate \n March - September 2020 by ZCTA",
@@ -76,7 +71,7 @@ ggplotly(
 ggplotly(
   ggplot(covid_death_sdf1) +
     geom_sf(aes(fill = pro_offers)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 4), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
     title = "Proportion of SHSAT Offers\n in 2020 by ZCTA",
