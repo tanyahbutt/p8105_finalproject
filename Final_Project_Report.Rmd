@@ -2,7 +2,11 @@
 title: "P8105 Final Project Report"
 author: "By: Tanya Butt, Catherine Lucey, and Irene Martinez Morata"
 date: "12/11/2021"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -31,7 +35,9 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-# Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC
+# Covid-19 And Specialized High School Admissons in New York City
+
+Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC
 
 ## Motivation and Related Work
 
@@ -39,16 +45,194 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ## Data Cleaning
 
-#### SHSAT Testing and Admissions Offers Dataset
+### SHSAT Testing and Admissions Offers Dataset
 
-These data were then joined with the DOE 2020 Middle School Directory dataset to obtain an address for each sending middle school. Because the DOE middle school directory only includes data for public middle schools, addresses were not available for charter schools and thus charter schools were excluded from this analysis (n = 189 in 2020), leaving 461 schools in 2015, 461 schools in 2016, 461 schools in 2017, 466 schools in 2018, and 469 schools in 2019.
+##### Loading and Cleaning Yearly SHSAT Data
 
-```{r n_excluded}
+Due to small differences in variable naming between 2015-2017 and 2018-2020, data importing and cleaning was done in two parts using the functions `clean_shsatv1` and `clean_shsatv2`. In the original data sets, the number of offers for schools where five or fewer students received an offer to a specialized high school was recorded as "0-5," thus we could not distinguish between schools that had no students receiving a specialized high school offer and schools that had up to five students receiving an offer. 0-5 values for `n_offers` were converted to "5," and all values in the column were converted to numerics for easy manipulation. School years, of the format 2015-2016, were re-coded as the year of the fall semester: `year = 2015` represents school year that began in Fall 2015 and ended in Spring 2016, in which eighth graders took the SHSAT in the fall of 2015 and received high school offers in the spring of 2016. Lastly, duplicates were removed from the combined SHSAT dataset with the `unique()` function, removing 565 values. We suspect that all duplicates are from the 2019 dataset, which seems to mysteriously duplicate in the `rbind()` process.
 
-shsat_zip_df %>% 
-  group_by(year) %>% 
-  select(zip) %>% 
-  count(is.na(.))
+```{r}
+
+# define functions to load and clean each .csv
+
+clean_shsatv1 = function(df){
+  clean_df = 
+    df %>% 
+    janitor::clean_names() %>% 
+    rename(
+      dbn = feeder_school_dbn,
+      feeder_school = feeder_school_name,
+      n_offers = count_of_offers,
+      n_testers = count_of_testers,
+      n_hs_applicants = count_of_students_in_hs_admissions,
+      ) %>% 
+    mutate(
+      n_hs_applicants = 
+        replace(n_hs_applicants, n_hs_applicants == "0-5", "5"),
+      n_hs_applicants = as.double(n_hs_applicants)
+    ) %>% 
+    mutate(
+      n_offers = 
+        replace(n_offers, n_offers == "0-5", "5"),
+      n_offers = as.double(n_offers)
+    ) %>% 
+    mutate(
+      n_testers =
+        replace(n_testers, n_testers == "0-5", "5"),
+      n_testers = as.double(n_testers)
+    )
+  
+  return(clean_df)
+}
+
+clean_shsatv2 = function(df){
+  clean_df =
+    df %>% 
+    janitor::clean_names() %>% 
+    rename(
+      dbn = feeder_school_dbn,
+      feeder_school = feeder_school_name,
+      n_offers = number_of_offers,
+      n_testers = count_of_testers,
+      n_hs_applicants = count_of_students_in_hs_admissions,
+      ) %>% 
+    mutate(
+      n_hs_applicants = 
+        replace(n_hs_applicants, n_hs_applicants == "0-5", "5"),
+      n_hs_applicants = as.double(n_hs_applicants)
+    ) %>% 
+    mutate(
+      n_offers = 
+        replace(n_offers, n_offers == "0-5", "5"),
+      n_offers = as.double(n_offers)
+    ) %>% 
+    mutate(
+      n_testers =
+        replace(n_testers, n_testers == "0-5", "5"),
+      n_testers = as.double(n_testers)
+    )
+  
+  return(clean_df)
+}
 
 ```
 
+```{r load_clean_shsat_data, message=FALSE, warning=FALSE}
+
+# import and clean each of the six years of SHSAT data individually
+
+fifteen_df = 
+  read_csv("raw_data/shsat_1/2015-2016_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2015") %>% 
+  clean_shsatv1()
+
+sixteen_df =
+  read_csv("raw_data/shsat_1/2016-2017_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2016") %>% 
+  clean_shsatv1()
+
+seventeen_df =
+  read_csv("raw_data/shsat_1/2017-2018_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2017") %>% 
+  clean_shsatv1()
+
+eighteen_df =
+  read_csv("raw_data/shsat_1/2018-2019_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2018") %>% 
+  clean_shsatv2()
+
+nineteen_df =
+  read_csv("raw_data/shsat_1/2019-2020_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2019") %>% 
+  clean_shsatv2()
+
+twenty_df =
+  read_csv("raw_data/shsat_1/2020-2021_SHSAT_Admissions_Test_Offers_By_Sending_School.csv") %>% 
+  mutate(year = "2020") %>% 
+  clean_shsatv2()
+
+# bind all years into a cohesive dataframe, filter for unique values
+
+shsat_df = 
+  rbind(
+    fifteen_df, 
+    sixteen_df, 
+    seventeen_df, 
+    eighteen_df, 
+    nineteen_df, 
+    twenty_df) %>% 
+  unique()
+
+```
+
+These data were then joined with the DOE 2020 Middle School Directory dataset to obtain a zip code for each sending middle school, and exported for use in subsequent analyses.
+
+```{r import_ms_data, message=FALSE}
+ms_dir_import =
+  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>% 
+  janitor::clean_names() %>% 
+  select(schooldbn, borough, postcode, address) %>% 
+  rename(
+    dbn = schooldbn,
+    zip = postcode
+  )
+
+shsat_zip_df =
+  full_join(shsat_df, ms_dir_import, by = "dbn") %>% 
+  drop_na()
+
+# write.csv(shsat_zip_df, "shsat_data.csv")
+
+```
+
+Because the DOE middle school directory only includes data for public middle schools, addresses were not available for charter schools and thus charter schools were excluded from this analysis (max of n = 191 in 2020), leaving data for 464 schools for 2015-2017, 465 schools for 2018 and 2019, and 467 schools in 2020 (See TABLE WHAT NUMBER???).
+
+```{r n_excluded}
+
+# keep a version of the shsat_zip_df that retains NA values just to count NAs
+
+full_shsat_zip_df =
+  full_join(shsat_df, ms_dir_import, by = "dbn")
+
+n_kept =
+  full_shsat_zip_df %>%
+  select(zip, year) %>% 
+  filter(!is.na(zip)) %>% 
+  group_by(year) %>%
+  count()
+
+n_na =
+  full_shsat_zip_df %>%
+  select(zip, year) %>% 
+  filter(is.na(zip)) %>% 
+  group_by(year) %>%
+  count()
+
+n_removed_table =
+  full_join(n_na, n_kept, by = "year") %>% 
+  mutate(
+    `Number of NA Values Removed` = n.x,
+    `Number of Schools Kept` = n.y
+  ) %>% 
+  select(year,`Number of NA Values Removed`, `Number of Schools Kept` ) %>% 
+  knitr::kable() %>% 
+  print()
+
+```
+
+
+
+##### Variable Dictionary
+
+`n_offers` = total number of eighth grade students who received an offer to a specialized high school at a given middle school
+
+`n_testers` = total number of eighth grade students taking the SHSAT exam, equivalent to the number of students applying to specialized high schools at a given middle school
+
+`n_hs_applicants` = total number of eighth grade students participating in the high school applications process (applicants to specialized + non-specialized high schools) at a given middle school
+
+`dbn` = district borough number, a unique school identification number assigned by the NYC DOE
+
+`feeder_school` = full name of the "sending" middle school (middle school at which applicants are currently enrolled)
+
+
+ 
