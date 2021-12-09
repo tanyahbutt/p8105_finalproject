@@ -262,7 +262,7 @@ shsat_df =
 ```{r}
 
 ms_dir_import =
-  read_csv("raw_data/2020_DOE_Middle_School_Directory.csv") %>% 
+  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>% 
   janitor::clean_names() %>% 
   select(schooldbn, borough, postcode, address) %>% 
   rename(
