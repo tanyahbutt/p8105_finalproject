@@ -129,6 +129,8 @@ individ_schools =
   geom_smooth(method = lm) +
   facet_grid(. ~borough)
   theme(axis.text.x = element_text(angle = 90))
+  
+  
 
 
 ```
