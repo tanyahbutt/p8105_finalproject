@@ -58,7 +58,7 @@ project_df_deathrate =
 
 
 write_csv(zcta_skool_covidtest, "project_df.csv")
-write_csv(project_df_plus_deathrate)
+write_csv(project_df_deathrate, "project_df_plus_deathrate.csv")
 
 
 ```
