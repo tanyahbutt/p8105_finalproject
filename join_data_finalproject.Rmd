@@ -72,13 +72,14 @@ write_csv(school_covidtest_death, "project_df.csv")
 
 wt_avgs_df =
   read_csv("project_df.csv") %>%
-  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  select(modzcta, dbn, n_testers, n_offers, year, modzcta_cum_perc_pos) %>%
   drop_na() %>% 
   group_by(modzcta, year) %>% 
   summarize(
     avg_testers = mean(n_testers),
     avg_offers = mean(n_offers),
-    wt_avg = weighted.mean(n_offers, n_testers)
+    wt_avg = weighted.mean(n_offers, n_testers),
+    covid_rate = mean(modzcta_cum_perc_pos)
   ) %>% 
   pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
   drop_na() %>% 
