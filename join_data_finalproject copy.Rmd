@@ -1,0 +1,150 @@
+---
+title: "join_data_finalproject"
+author: 'IRENE MARTINEZ MORATA (UNI: im2557)'
+date: "11/29/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("/Users/irene/Desktop/DATA SCIENCE/p8105_finalproject")
+
+library(tidyverse)
+library(readr)
+library(ggplot2)
+library(lubridate)
+library(ggridges)
+library(ggpubr)
+library(purrr)
+
+
+getwd()
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r}
+
+zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
+  rename(zip = ZCTA)
+
+school <- read_csv("shsat_data.csv") 
+
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+
+covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
+
+school_data <- full_join(zip_mod, school, by = "zip") %>% 
+  select(-`...1`) %>% 
+  janitor::clean_names()
+
+school_covidtest <- full_join(school_data, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+school_covidtest_death <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('x', '', .x)) 
+
+write_csv(school_covidtest_death, "project_df.csv")
+
+```
+
+#### generating df with average testing values per
+
+```{r}
+
+#filters/selects only data for which there is n_offer and n_tester for all 6 years
+#this dataset includes schools with ≤ 5 offers
+
+wt_avgs_df =
+  read_csv("project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year, modzcta_cum_perc_pos) %>%
+  drop_na() %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers),
+    covid_rate = mean(modzcta_cum_perc_pos)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+write.csv(wt_avgs_df, "weighted_avgs.csv")
+
+```
+
+the code below generates another weighted averages data file, but this time filters out any school for which n_offers ≤ 5, in addition to selecting only those schools that have n_offer and n_tester data for all six years
+
+```{r}
+
+
+filtered_wt_avgs_df =
+  read_csv("project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  filter(n_offers > 5) %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
+```
+

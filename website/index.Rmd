@@ -9,27 +9,43 @@ output:
     toc_float: true
 ---
 
-
 ## Project Motivation
+
+New York City has the largest public school system in the United States, with approximately 1 million students enrolled in public schools every year, and a notoriously complex enrollment system. At all stages of education - elementary, middle, and high school - students can apply outside of their district school, often into specialized or highly selective schools. New York is unique in that a comprehensive application for admission to a competitive, well known school can be prepared on behalf of a pre-kindergartner.
+
+TRANISTION SENTENCE
+
+The specialized high schools are a set of nine schools across New York City known for their academic rigor that accept students through a separate admissions process. The specialized high schools are Stuyvesant High School, often ranked as the best public high school in the country, Bronx High School of Science, Brooklyn Latin School, Fiorello H. LaGuardia High School, 
+
+Though admission rates for each of the schools individually are not reported, roughly only 18% of students in the specialized high school application process receive an offer to one of the nine schools SOURCE THIS.
+
+  Admission to eight of the nine schools is determined by one's score on a standardized entrance exam called the Specialized High School Admissions Test (SHSAT). LaGuardia, a performing arts high school, selects students primarily on auditions for each of the arts specialties ("majors") offered there and does not require SHSAT scores. For test-requiring schools, SHSAT scores are main selection criterion, though how highly a student ranked a particular school in their application can also influence admission. Though there is no entrance fee for the SHSAT, many private companies offer SHSAT test prep courses with price tags as high as [$1599](https://www.kaptest.com/shsat/courses/shsat-prep) for one on one tutoring. Indeed, though the city's specialized high school system has been touted as a mechanism for economic mobility and a means of offering an outstanding education to any student in the city, in reality the specialized high school system reflects the segregation and inequality rooted in the New York City public school system as a whole. The injustices of the New York City public school system have recently come to the fore of public discussion, and changes to the specialized high school admission process and the desegregation of New York City's school system writ large are highly divisive and critical issues in many local elections.
+
+Like school systems across the country, the New York City public school system has had its share of disruption due to the Covid-19 pandemic. The New York Times [recently reported](https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html) that total public school enrollment decreased significantly during the pandemic, and both students and teachers were faced with the significant hardships that came with the sudden, unprecedented shift to fully virtual learning.
+
+something about access to quiet learning spaces, technology etc?
+
+In this way, this project assesses whether the Covid-19 pandemic affected specialized high school applications, especially whether the disproportionately distributed impacts of the pandemic exacerbated existing inequalities in the specialized high school system. 
+
 
 ## Related Work
 
 ## Data Sources
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
-high school admission test offers by district borough number was obtained
+high school admission offers by middle school (denoted by district borough number) was obtained
 from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
+
+* **2020 DOE Middle School Directory** Addresses and key characteristics of each sending middle school were obtained from [NYC Open Data](https://data.cityofnewyork.us/Education/2020-DOE-Middle-School-Directory/fdpt-nzk4)
 
 * **NYC COVID-19 Positive Tests by Zip-Code** Weekly zip-code level SARS-CoV2 
 testing data was compiled for New York State beginning March 1, 2020 by the
 [New York State Department of Health](https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing-by-Zip-C/e7te-hhb2).
 
 * **NYC COVID-19 Death Rates by Zip-Code** Monthly zip-code tabulation area 
-(ZCTA)-level SARS-CoV2 death ratedata was obtained from 
+(ZCTA)-level SARS-CoV2 death rate data was obtained from 
 the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data).
 
 * **Crosswalk File for Zip-code to ZCTA**  We used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to ZCTAs to obtain consistent area units across the datasets.
-
-
 
 ## Methods
 
