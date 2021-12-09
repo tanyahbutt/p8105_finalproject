@@ -26,6 +26,9 @@ In this way, this project assesses whether the Covid-19 pandemic affected specia
 
 ## Related Work
 
+##Initial research question 
+
+
 ## Data Sources and preparation
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
 high school admission offers by middle school (denoted by district borough number) was obtained
