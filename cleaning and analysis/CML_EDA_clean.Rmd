@@ -130,6 +130,22 @@ individ_schools =
   facet_grid(. ~borough)
   theme(axis.text.x = element_text(angle = 90))
   
+  ggplotly(individ_schools)  
+  
+  
+# plotly version:
+  
+shsat_covid_df %>%
+  filter(n_offers > 5,
+         year != 2015) %>% 
+  mutate(
+    spec_per_applicants = n_testers / n_hs_applicants,
+    offers_per_tester = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  plot_ly(
+    x = ~spec_per_applicants, y = ~ offers_per_tester, type = "scatter", mode = "markers"
+  )
   
 
 
@@ -176,8 +192,7 @@ avg_by_zop =
   facet_grid(. ~borough)
   
 avg_by_zop / individ_schools
-
-
+  
 
 
 ```

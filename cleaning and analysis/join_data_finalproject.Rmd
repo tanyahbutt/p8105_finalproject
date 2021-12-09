@@ -44,13 +44,22 @@ zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>%
 
 school <- read_csv("raw_data/shsat_data.csv") 
 
+covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv")
 
-project_df <- full_join(zip_mod, school, by = "zip") %>% 
-  select(-`...1`) %>% 
+zcta_skool_covidtest <- full_join(zip_mod, school, by = "zip") %>% 
+  rename(
+     modzcta = MODZCTA
+  ) %>% 
+  select(-`...1`)
+
+project_df_deathrate = 
+  full_join(zcta_skool, covid_deathrate, by = "modzcta") %>% 
   janitor::clean_names()
 
 
-write_csv(school_covidtest_death, "project_df.csv")
+write_csv(zcta_skool_covidtest, "project_df.csv")
+write_csv(project_df_plus_deathrate)
+
 
 ```
 
