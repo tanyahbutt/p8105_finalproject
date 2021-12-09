@@ -26,7 +26,7 @@ In this way, this project assesses whether the Covid-19 pandemic affected specia
 
 ## Related Work
 
-## Data Sources and preoaration
+## Data Sources and preparation
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
 high school admission offers by middle school (denoted by district borough number) was obtained
 from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
@@ -58,6 +58,10 @@ We used descriptove satistics to summarize the distrbution of our dependent vari
 Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
 ### Data Cleaning
+
+#### SHSAT Data
+
+Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not inlcuded in the DOE middle school directory 
 
 ### Visualizations
 

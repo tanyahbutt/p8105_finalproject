@@ -88,7 +88,7 @@ shsat_df =
 
 ```
 
-### Importing and Cleaning SHSAT Data from 2015-2016 to 2017-2018
+### Idea 1: Importing and Cleaning SHSAT Data from 2015-2016 to 2017-2018
 
 ```{r}
 
@@ -135,16 +135,9 @@ load_shsat = function(file_name) {
   return(clean_df)
 }
 
-first_three_df = map_dfc(file_names_df, load_shsat)
-
-tester_df %>% 
-  rbind(name_new_df = )
-
-name_new = rbind(tester_df, new, new2)
-
 ```
 
-#### Importing and Cleaning SHSAT Data from 2018-2019 to 2019-2021
+#### Generating Two Functions for Importing and Cleaning SHSAT Data from 2015-2016 to 2019-2021
 
 ```{r}
 
@@ -210,6 +203,7 @@ clean_shsatv2 = function(df){
 
 ```
 
+#### Loading Data Across Years
 
 ```{r}
 
@@ -265,25 +259,24 @@ shsat_df =
 
 #### Importing and Cleaning the MS Directory Datafile
 
-in order to join to the theoretical shsat dataset
-
 ```{r}
 
 ms_dir_import =
-  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>% 
-  select(district, schooldbn, printedschoolname, neighborhood, address, sharedbuilding, subway, bus)
-
-ms_dir_df =
-  ms_dir_import %>%
+  read_csv("raw_data/2020_DOE_Middle_School_Directory.csv") %>% 
+  janitor::clean_names() %>% 
+  select(schooldbn, borough, postcode, address) %>% 
   rename(
     dbn = schooldbn,
-    feeder_school = printedschoolname
-  ) %>% 
+    zip = postcode
+  )
+
+
+ms_dir_df =
   separate(address, into = c("address", "zip"), sep = "NY")
   
 ms_zip_dbn =
   ms_dir_df %>% 
-  select(dbn, zip)
+  select(dbn, zip, borough)
 
 ```
 
@@ -313,11 +306,21 @@ convert the years to one year
 ```{r}
 
 shsat_zip_df =
-  full_join(shsat_df, ms_zip_dbn, by = "dbn") %>% 
+  full_join(shsat_df, ms_dir_import, by = "dbn") %>% 
   drop_na() %>% 
   mutate(
     year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
   )
+
+shsat_zip_df %>% 
+  group_by(year) %>% 
+  select(zip) %>% 
+  count(is.na(.))
+
+  filter(borough == "N/A") %>% 
+  view()
+  count()
+  
 
 ```
 

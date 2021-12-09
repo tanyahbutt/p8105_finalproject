@@ -41,4 +41,14 @@ scale_fill_discrete = scale_fill_viridis_d
 
 #### SHSAT Testing and Admissions Offers Dataset
 
-These data were then joined with the DOE 2020 Middle School Directory dataset to obtain an address for each sending middle school. 
+These data were then joined with the DOE 2020 Middle School Directory dataset to obtain an address for each sending middle school. Because the DOE middle school directory only includes data for public middle schools, addresses were not available for charter schools and thus charter schools were excluded from this analysis (n = 189 in 2020), leaving 461 schools in 2015, 461 schools in 2016, 461 schools in 2017, 466 schools in 2018, and 469 schools in 2019.
+
+```{r n_excluded}
+
+shsat_zip_df %>% 
+  group_by(year) %>% 
+  select(zip) %>% 
+  count(is.na(.))
+
+```
+

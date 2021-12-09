@@ -1,0 +1,45 @@
+---
+title: "CML_EDA_clean"
+author: "Catherine Lucey"
+date: "12/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This document is a cleaner, easier to understand and use version of the CML_EDA_viz.rmd file, which is moreso a collection of notes and ideas. This is the code I will use to generate the actual figures for the report/website.
+
+### setup code
+
+```{r}
+library(tidyverse)
+library(plotly)
+library(patchwork)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+### Loading in Data
+
+```{r}
+
+shsat_df = 
+  read_csv("shsat_data.csv") %>% 
+  select(-`...1`) %>% 
+  mutate(
+    year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
+  )
+
+```
+
+### Plotting average offers weighted by n_testers and proportion of offers to testers across 6 years by borough
