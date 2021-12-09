@@ -11,6 +11,10 @@ library(raster)
 library(sf)
 library(spatialEco)
 library(viridis)
+library(rgdal)
+library(spatialreg)
+library(spgwr)
+library(raster)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -27,6 +31,7 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
+#Map cumulative mortality
 ```{r, collapse = TRUE}
 covid_death_sdf = st_read("deathrate_map.shp") 
 
@@ -44,6 +49,40 @@ fig <- ggplotly(
 fig
 
 ```
+
+#Map cumulative incidence
+
+```{r}
+covid_death_sdf1 = st_read("deathrate_map1.shp") 
+fig <- ggplotly(
+  ggplot(covid_death_sdf1) +
+    geom_sf(aes(fill = incidence)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Covid-19 cumulative Incidence \n March - September 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Covid-19 cumulative Incidence \n (cases/100,000)")) 
+  
+fig
+```
+
+```{r}
+
+fig <- ggplotly(
+  ggplot(covid_death_sdf1) +
+    geom_sf(aes(fill = pro_offers)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Proportion of SHSAT offers \n in 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "proportion of SHSAT offers")) 
+  
+fig
+
+```
+
 
 
 
