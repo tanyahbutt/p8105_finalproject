@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(broom)
+library(modelr)
 ```
 ##load datasets
 
@@ -14,60 +16,85 @@ knitr::opts_chunk$set(echo = TRUE)
 data <- read_csv("final_mod_zcta.csv") %>% 
   mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
          all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
-         wt_avg_2020 = round(wt_avg_2020, digits = 0))
+         wt_avg_2020 = round(wt_avg_2020, digits = 0)) %>% 
+  mutate(cum_perc = 10*(modzcta_cum_perc_pos),
+         cum_death = 10*(cum_ave_death_rate))
 ```
 
 ##Chi squares
 
 ```{r}
-#chi sq between the proportion of offers in 2010 vs 2020
+#chi sq between the numbr of offers in 2015-2019 vs 2020 and the number of testers 2015-2019 vs 2020
 
+chisq_df =
+  read_csv("project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
 
+chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test()
+
+chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test()
 
 ```
 
 
 
-## Poisson regression
+## Quasi poisson regression
 
 ```{r }
 
-#this is the main model
-model2 <- glm(wt_avg_2020 ~ modzcta_cum_perc_pos , family = quasipoisson, data = data)
-summary(model2)
+#this is the main model (10% change in cumulative incidence as predictor)
+model1 <- glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+model1 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
 
-broom::tidy(model2)
-confint(model2)
-
-#how to calculate either a 1% or a 10%
-(-.005702126 * 10)
-
-#this model is for all previous years
-
-model1 <- glm(all_years_wt_avg_offers ~ modzcta_cum_perc_pos, family = quasipoisson, data = data)
-summary(model1)
-confint(model1)
-
-broom::tidy(model1)
-
-#model with death as predictor
-
-model3 <- glm(wt_avg_2020 ~ cum_ave_death_rate, family = quasipoisson, data = data)
-summary(model3)
-confint(model3)
-
-broom::tidy(model3)
+#model adjusted by number of testers
+model3 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+model3 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
 
 
+#model adjusted by number of testers and death rate
+model4 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+model4 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+
+
+#model with a 10% change in death rate as the main predictor
+
+model2 <- glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+model2 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
+  knitr::kable(digits = 5)
 
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

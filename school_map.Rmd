@@ -19,8 +19,6 @@ library(maptools)
 library(rgdal)
 library(spatialreg)
 library(spgwr)
-library(raster)
-
 
 
 getwd()
@@ -41,13 +39,15 @@ scale_fill_discrete = scale_fill_viridis_d
 
 
 ```{r }
-
+library(raster)
 # read data    
-map <- shapefile("shapefiles/geo_export_86448df9-5583-4b77-95f8-e16a45855071.shp")  
+map <- shapefile("shapefiles/school_map.shp")  
 
-project_df <- read_csv("final_mod_zcta.csv")
+project_df <- read_csv("final_mod_zcta.csv") %>% 
+  mutate(modzcta_1 = as.numeric(modzcta))  
+  
 
-map_df <- merge(map, project_df, by = 'modzcta', duplicateGeoms = TRUE)
+map_df <- merge(map, project_df, by = 'modzcta_1', duplicateGeoms = TRUE)
 
 #save it into a shapefile
 working <- getwd()
@@ -56,39 +56,33 @@ writeOGR(map_df,
          layer= "map_df",
          driver="ESRI Shapefile")
 
-plot(map_df)
-
-TRI_nbq <- poly2nb(map_df)
-
-coords <- coordinates(map_df)
-plot(map_df)
-
-
-
-spplot()
-
 ```
 
 #Do GWR analysis by MODZCTA
 
 ```{r}
-
 ####----- 8 GWR ####
 working <- getwd()
 #Read in the data and create subsets for every R/E group and metal with no NAs
 #we fist remove the NAs from the selected variable
-map <- readOGR(dsn = working, layer ="map_df")
-map_avg20 <- map_df[!is.na(map_df$wt_avg_2020) ,]
-map_avg20 <- na.omit(map_avg20)
+HIS <- readOGR(dsn = working, layer ="map_df")
+HISas1 <- HIS[!is.na(HIS$logAs) ,]
+HISas1 <- na.omit(HISas1)
+#we print the clean shapefile and save it
+writeOGR(HISas1, 
+         dsn = working, 
+         layer= "HISas",
+         driver="ESRI Shapefile",overwrite_layer = TRUE)
 
 #create the adaptative bandwidth
-bwG1 <- gwr.sel(wt_avg_2020 ~ positive , 
-                data= map_df, 
-               gweight=gwr.Gauss, verbose=TRUE, 
-                adapt = F)
+bwG1 <- gwr.sel(logAs ~ jHspn + jMdn_ + jHgh_ + jdnst + GWP10 , 
+                data= HISas1, 
+                gweight=gwr.Gauss, 
+                verbose=TRUE, 
+                adapt = TRUE)
 #run GWR with adaptative bandwith and with se and residuals, and global R2
-gwr.1 = gwr(wt_avg_2020 ~ modzcta_cum_perc_pos , 
-                data= map_df, 
+gwr.HISas = gwr(logAs ~ jHspn + jMdn_ + jHgh_ + jdnst + GWP10 , 
+                data= HISas1, 
                 adapt=bwG1,
                 hatmatrix=TRUE,
                 se.fit=TRUE)

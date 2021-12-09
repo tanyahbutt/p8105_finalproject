@@ -1,0 +1,501 @@
+---
+title: "CL_EDA_viz"
+author: "Catherine Lucey"
+date: "12/2/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+library(patchwork)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+read in shsat data
+
+```{r}
+
+shsat_df = 
+  read_csv("shsat_data.csv") %>% 
+  select(-`...1`) %>% 
+  mutate(
+    year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
+  )
+
+```
+
+load in extra ms directory data
+
+```{r}
+
+ms_dir_import =
+  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>%
+  janitor::clean_names() %>% 
+  select(schooldbn, borough, elaprof, mathprof) %>% 
+  rename(dbn = schooldbn) %>% 
+  mutate(
+    elaprof = as.numeric(elaprof),
+    mathprof = as.numeric(mathprof)
+  )
+
+```
+
+
+```{r}
+
+boro_df =
+  full_join(ms_dir_import, shsat_df, by = "dbn") %>% 
+  drop_na() %>% 
+  filter(n_offers > 5) %>% 
+  mutate(
+    test_offer_ratio = n_offers / n_testers
+  )
+
+n_offers_ggplot =
+  boro_df %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = n_offers)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+n_testers_ggplot = 
+  boro_df %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = n_testers)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+prop_offers_testers_ggplot =
+  boro_df %>%
+  mutate(
+    offers_per_testers = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = offers_per_testers)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+# n_offers_ggplot / n_testers_ggplot / 
+  
+prop_offers_testers_ggplot / wt_boro_ggplot
+
+```
+
+NOTE: SHOULD PROBABLY SOMEHOW WEIGHT THE PROP TEST OFFERS VALUE BY THE NUMBER OF PEOPLE TAKING THE SHSAT
+
+### below is the 6 year average (including 2020)
+
+```{r}
+
+avg_boro_df =
+  boro_df %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            prop_test_offers = avg_n_offers / avg_n_testers)
+
+bavg_n_offers_ggplot =
+  avg_boro_df %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = avg_n_offers)) +
+  geom_boxplot()
+
+bavg_n_testers_ggplot = 
+  avg_boro_df %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = avg_n_testers)) +
+  geom_boxplot()
+
+bavg_prop_offers_testers_ggplot =
+  avg_boro_df %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = prop_test_offers)) +
+  geom_boxplot()
+
+bavg_n_offers_ggplot / bavg_n_testers_ggplot / bavg_prop_offers_testers_ggplot + plot_layout(heights = c(2, 2, 2), widths = c(1, 1, 1))
+
+
+```
+
+
+## comparing 5 year pre-covid avg to the 2020 avg
+
+
+```{r}
+
+pre_covid_prop_offers_testers_ggplot =
+  boro_df %>%
+  filter(year != 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            prop_test_offers = avg_n_offers / avg_n_testers) %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = prop_test_offers)) +
+  geom_violin()
+
+covid_prop_offers_testers_ggplot =
+  boro_df %>%
+  filter(year == 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            prop_test_offers = avg_n_offers / avg_n_testers) %>%
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = prop_test_offers)) +
+  geom_violin()
+
+pre_covid_prop_offers_testers_ggplot + covid_prop_offers_testers_ggplot
+
+```
+
+what about the difference in proportions of offers/testers between precovid and covid?
+
+```{r}
+  
+covid_prop_offers_testers =
+  boro_df %>%
+  filter(year == 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            covid_prop_test_offers = avg_n_offers / avg_n_testers) %>% 
+  select(dbn, borough, covid_prop_test_offers)
+
+pre_covid_prop_offers_testers = 
+  boro_df %>%
+  filter(year != 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            pre_prop_test_offers = avg_n_offers / avg_n_testers) %>% 
+  select(dbn, borough, pre_prop_test_offers)
+
+prop_diff_coivd_df = 
+  full_join(covid_prop_offers_testers, pre_covid_prop_offers_testers, by = "dbn") %>%
+  mutate(
+    prop_diff = covid_prop_offers_testers - pre_covid_prop_offers_testers
+  ) %>% 
+  select(dbn, borough, prop_diff)
+
+```
+
+#### Looking at covid tests
+
+```{r}
+
+zip_mod = read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
+  rename(zip = ZCTA)
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+
+school_data = full_join(zip_mod, shsat_df, by = "zip") %>% 
+  janitor::clean_names()
+
+school_covidtest = full_join(school_data, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+
+```
+
+plotting
+
+```{r}
+
+covid_shsat_boro =
+  school_covidtest %>%
+  full_join(ms_dir_import, shsat_df, by = "dbn") %>%
+  filter(n_offers > 5) %>% 
+  filter(year == 2020) %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers
+  ) %>% 
+  select(dbn, borough, offers_per_testers, modzcta_cum_perc_pos)
+
+covid_shsat_boro2 = 
+  school_covidtest %>%
+  full_join(ms_dir_import, shsat_df, by = "dbn") %>%
+  filter(n_offers > 5) %>% 
+  filter(year == 2020) %>%
+  mutate(
+    avg_n_testers = mean(n_testers),
+    tester_wt = n_testers/avg_n_testers,
+    test_offer_ratio = n_offers / n_testers,
+    wt_offer_test_rt = test_offer_ratio*tester_wt
+  )
+
+two =
+  covid_shsat_boro %>% 
+  ggplot(aes(y = offers_per_testers, x = modzcta_cum_perc_pos, color = borough)) +
+  geom_point()
+one =
+  covid_shsat_boro2 %>% 
+    ggplot(aes(y = wt_offer_test_rt, x = modzcta_cum_perc_pos, color = borough)) +
+    geom_point()
+
+one / two
+
+
+```
+
+
+
+#### idk summary stats?
+
+```{r}
+shsat_zip_df %>%
+  filter(n_offers > 5) %>%
+  group_by(year) %>% 
+  summarise(mean_offers = mean(n_offers),
+            std_dev_offers = sd(n_offers))
+
+
+shsat_zip_df %>% 
+  filter(n_offers > 5) %>% 
+   mutate(
+    avg_n_offers = mean(n_offers),
+    std_n_offers = n_offers / avg_n_offers
+  ) %>% 
+  filter(std_n_offers < 5) %>% 
+  ggplot(aes(x = year, y = std_n_offers)) +
+  geom_boxplot()
+
+  select(year, n_offers) %>% 
+  ggplot(aes(x = year, y = n_offers)) +
+  geom_point()
+  
+
+    
+```
+
+separating by quartiles
+
+```{r}
+
+shsat_df %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers
+  ) %>% 
+  filter(n_offers > 5) %>% 
+  summary()
+
+shsat_df %>%
+  filter(n_offers > 5) %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers
+  ) %>%
+  fabricatr::split_quantile(x = offers_per_tester, type = 4)
+  
+
+```
+
+#### n testers vs n offers, accounting for ela and math proficiency
+
+```{r}
+
+boro_df %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = n_testers, y = n_offers, color = borough)) +
+  geom_point() +
+  facet_grid(. ~year) +
+  theme(axis.text.x = element_text(angle = 90), legend.position = "bottom") 
+
+boro_df %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = mathprof, y = test_offer_ratio)) +
+  geom_point() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+boro_df %>%
+  filter(mathprof > 75) %>% 
+  ggplot(aes(x = mathprof, y = n_offers, color = year)) +
+  geom_point() +
+  facet_grid(. ~borough)
+
+# ela prof and math prof are correlated
+boro_df %>%
+  ggplot(aes(x = mathprof, y = elaprof, color = borough)) +
+  geom_point() +
+  facet_grid(. ~year)
+
+```
+
+### LOADING IN FULL DS and adding the ela data
+
+```{r}
+
+std_testing_df =
+  read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>%
+  janitor::clean_names() %>% 
+  select(elaprof, mathprof, schooldbn) %>% 
+  rename(dbn = schooldbn) %>% 
+  mutate(
+    elaprof = as.numeric(elaprof),
+    mathprof = as.numeric(mathprof)
+  )
+
+full_df = 
+  read_csv("project_df.csv")
+  
+full_df =
+  full_join(full_df, std_testing_df, by = "dbn") %>% 
+  filter(n_offers > 5)
+  
+
+```
+
+#### calculating weighted test prop ratio
+
+```{r}
+
+wt_boro =
+  boro_df %>% 
+  mutate(
+    avg_n_testers = mean(n_testers),
+    tester_wt = n_testers/avg_n_testers,
+    wt_offer_test_rt = test_offer_ratio*tester_wt
+  )
+
+wt_boro_ggplot =
+  wt_boro %>%
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = wt_offer_test_rt)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+    
+  
+
+```
+
+
+```{r}
+
+full_df %>% 
+  weighted.mean(., n_offers, n_testers, na.rm = TRUE)
+
+```
+
+
+zip code averages
+
+```{r}
+
+wt_avgs_df =
+  read_csv("filtered_weighted_avgs.csv") %>% 
+  select(!`...1`) %>% 
+  mutate(
+    covid_diff_testers = `2015-19_avg_testers` - avg_testers_2020,
+    covid_diff_offers = `2015-19_avg_offers` - avg_offers_2020 ,
+    covid_diff_wt_avg = `2015-19_wt_avg` - wt_avg_2020
+  )
+
+pre_gg =
+  wt_avgs_df %>% 
+  ggplot(aes(x = `2015-19_wt_avg`)) +
+  geom_histogram()
+
+`2020_gg` = 
+  wt_avgs_df %>% 
+  ggplot(aes(x = `wt_avg_2020`)) +
+  geom_histogram()
+
+wt_avg_diff_gg =
+  wt_avgs_df %>% 
+  ggplot(aes(y = covid_diff_wt_avg, x = modzcta)) +
+  geom_point()
+
+tester_avg_diff_gg =
+  wt_avgs_df %>% 
+  ggplot(aes(y = covid_diff_testers, x = modzcta)) +
+  geom_point()
+
+offer_avg_diff_gg = 
+  wt_avgs_df %>% 
+  ggplot(aes(y = covid_diff_offers, x = modzcta)) +
+  geom_point()
+
+pre_gg / `2020_gg`
+
+wt_avg_diff_gg + offer_avg_diff_gg + tester_avg_diff_gg
+
+```
+
+chi sq to see if the delta per school is significantly different between 2015-2019 and 2020
+
+```{r}
+
+chisq_df =
+  read_csv("project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
+
+chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test()
+
+chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test()
+
+chisq_df %>% 
+  select(`2015-19_prop`, `2020_prop`) %>%
+  chisq.test()
+
+%>%
+  prop.test(`2015-19_prop`, `2020_prop`, p = NULL, alternative = "two.sided")
+
+ mutate(
+    `2015-19_prop` = `2015-19_prop` * 100,
+    `2020_prop` = `2020_prop` * 100
+  ) %>% 
+
+```
+
+plotting stuff from that chisq dataset
+

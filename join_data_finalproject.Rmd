@@ -63,13 +63,14 @@ write_csv(school_covidtest_death, "project_df.csv")
 
 wt_avgs_df =
   read_csv("project_df.csv") %>%
-  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  select(modzcta, dbn, n_testers, n_offers, year, modzcta_cum_perc_pos) %>%
   drop_na() %>% 
   group_by(modzcta, year) %>% 
   summarize(
     avg_testers = mean(n_testers),
     avg_offers = mean(n_offers),
-    wt_avg = weighted.mean(n_offers, n_testers)
+    wt_avg = weighted.mean(n_offers, n_testers),
+    covid_rate = mean(modzcta_cum_perc_pos)
   ) %>% 
   pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
   drop_na() %>% 
@@ -158,3 +159,37 @@ final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %
 write_csv(final_mod_zcta, "final_mod_zcta.csv")
 
 ```
+
+## Chi Square Analysis
+
+```{r}
+
+chisq_df =
+  read_csv("project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
+
+chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test()
+
+chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test()
+
+```
+
