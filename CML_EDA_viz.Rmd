@@ -43,12 +43,8 @@ load in extra ms directory data
 ms_dir_import =
   read_csv("raw_data/2019_DOE_Middle_School_Directory.csv") %>%
   janitor::clean_names() %>% 
-  select(schooldbn, borough, elaprof, mathprof) %>% 
-  rename(dbn = schooldbn) %>% 
-  mutate(
-    elaprof = as.numeric(elaprof),
-    mathprof = as.numeric(mathprof)
-  )
+  select(schooldbn, elaprof, mathprof) %>% 
+  rename(dbn = schooldbn)
 
 ```
 

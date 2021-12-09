@@ -35,13 +35,105 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```{r}
 
-shsat_df = 
-  read_csv("shsat_data.csv") %>% 
-  select(-`...1`) %>% 
+shsat_covid_df = 
+  read_csv("project_df.csv") %>%
   mutate(
     year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
-  )
+  ) %>% 
+  select(zip, modzcta, borough, 
+         dbn, year, n_hs_applicants, n_testers, n_offers, 
+         modzcta_cum_perc_pos, cum_ave_death_rate
+         )
 
 ```
 
-### Plotting average offers weighted by n_testers and proportion of offers to testers across 6 years by borough
+### fig 1
+
+```{r}
+
+offer_per_tester_gg =
+  shsat_covid_df %>%
+  filter(n_offers > 5) %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = offers_per_testers)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+Does the association change when the denominator is all hs applicants and not jsut the specialized high school applicants?
+
+```{r}
+
+offer_per_applicants_gg =
+  shsat_df %>%
+  filter(n_offers > 5) %>% 
+  mutate(
+    offers_per_applicants = n_offers / n_hs_applicants
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = offers_per_applicants)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+offer_per_tester_gg / offer_per_applicants_gg
+
+```
+
+Did the proportion of hs applicants applying to specialized high schools change over time?
+
+```{r}
+
+testers_per_applicants_gg =
+  shsat_df %>%
+  filter(n_offers > 5) %>% 
+  mutate(
+    testers_per_applicants = n_testers / n_hs_applicants
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = testers_per_applicants)) +
+  geom_boxplot() +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90))
+
+
+```
+
+
+### Plotting modzcta average offers weighted by n_testers and proportion of offers to testers across 6 years by borough
+
+Generate the apropriate data frame:
+
+
+
+```{r}
+
+zcta_wt_avgs_df =
+  read_csv("project_df.csv") %>%
+  select(modzcta, dbn, n_hs_applicants, n_testers, n_offers, year, modzcta_cum_perc_pos, cum_ave_death_rate) %>%
+  filter(n_offers > 5) %>% 
+  drop_na() %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    avg_applicants = mean(n_hs_applicants),
+    wt_avg_offers = weighted.mean(n_offers, n_testers)
+  )
+  
+
+```
+
+
+```{r}
+
+zip_avg_shsat_df =
+  read_csv("filtered_weighted_avgs")
+
+```
+
