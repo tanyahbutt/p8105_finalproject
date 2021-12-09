@@ -4,7 +4,7 @@ navbar:
   title: "Home"
   right:
     - text: "Project Report"
-      href: project_report.html
+      href: Final_Project_Report.html
     - text: "Exploratory Analysis"
       href: analysis.html
     - text: "Flex Dashboard"
