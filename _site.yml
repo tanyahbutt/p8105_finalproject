@@ -7,7 +7,7 @@ navbar:
       href: Final_Project_Report.html
     - text: "Exploratory Analysis"
       href: analysis.html
-    - text: "Flex Dashboard"
+    - text: "Map Visualizations"
       href: nyc_maps.html
     - icon: fa-envelope fa-lg
       href: mailto:<thb2114@cumc.columbia.edu>
