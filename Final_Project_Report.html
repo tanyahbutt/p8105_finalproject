@@ -587,18 +587,9 @@ n_removed_table =
     avg_testers_2020, 
     avg_offers_2020, 
     wt_avg_2020
-    )</code></pre>
-<pre><code>## Rows: 2848 Columns: 22</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (2): dbn, borough
-## dbl (20): zip, modzcta, n_hs_applicants, n_testers, n_offers, year, positive...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;modzcta&#39;. You can override using the `.groups` argument.</code></pre>
-<pre><code>## Adding missing grouping variables: `modzcta`</code></pre>
-<pre class="r"><code># write.csv(wt_avgs_df, &quot;filtered_weighted_avgs.csv&quot;)</code></pre>
+    )
+
+# write.csv(wt_avgs_df, &quot;filtered_weighted_avgs.csv&quot;)</code></pre>
 </div>
 </div>
 <div id="variable-dictionary" class="section level3">
@@ -617,13 +608,6 @@ n_removed_table =
 <h3>Variable Dictionary</h3>
 <p><code>modzcta_cum_perc_pos</code> = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.</p>
 <pre class="r"><code>test2 &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)</code></pre>
-<pre><code>## Rows: 178 Columns: 4</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (4): modzcta, Positive, Total, modzcta_cum_perc_pos</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
 <div id="modzcta-level-shapefile" class="section level2">
@@ -633,61 +617,18 @@ n_removed_table =
 <div id="data-join" class="section level2">
 <h2>Data Join</h2>
 <p>In order to join all the separate data sets, some of which were at the zip code level, we used an additional zip code-modzcta conversion file to convert them to such levels. Once all datasets had a modzcta variable, we joined them together.</p>
-<pre class="r"><code>covid_test &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)</code></pre>
-<pre><code>## Rows: 178 Columns: 4</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (4): modzcta, Positive, Total, modzcta_cum_perc_pos</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)</code></pre>
-<pre><code>## Rows: 177 Columns: 12</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (12): modzcta, 3/2020, 4/2020, 5/2020, 6/2020, 7/2020, 8/2020, 9/2020, 1...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>school_data_clean &lt;- read_csv(&quot;raw_data/filtered_weighted_avgs.csv&quot;)</code></pre>
-<pre><code>## New names:
-## * `` -&gt; ...1</code></pre>
-<pre><code>## Rows: 147 Columns: 11</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (11): ...1, modzcta, all_years_avg_testers, all_years_avg_offers, all_ye...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>zip_mod &lt;- read_csv(&quot;raw_data/ZCTA-to-MODZCTA.csv&quot;) %&gt;% 
-  rename(zip = ZCTA)</code></pre>
-<pre><code>## Rows: 215 Columns: 2</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (2): ZCTA, MODZCTA</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>school &lt;- read_csv(&quot;raw_data/shsat_data.csv&quot;) </code></pre>
-<pre><code>## New names:
-## * `` -&gt; ...1</code></pre>
-<pre><code>## Rows: 2782 Columns: 8</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (2): dbn, borough
-## dbl (6): ...1, n_hs_applicants, n_testers, n_offers, year, zip</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)</code></pre>
-<pre><code>## Rows: 177 Columns: 12</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (12): modzcta, 3/2020, 4/2020, 5/2020, 6/2020, 7/2020, 8/2020, 9/2020, 1...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>zcta_skool &lt;- full_join(zip_mod, school, by = &quot;zip&quot;) %&gt;% 
+<pre class="r"><code>covid_test &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)
+covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
+school_data_clean &lt;- read_csv(&quot;raw_data/filtered_weighted_avgs.csv&quot;)
+
+zip_mod &lt;- read_csv(&quot;raw_data/ZCTA-to-MODZCTA.csv&quot;) %&gt;% 
+  rename(zip = ZCTA)
+
+school &lt;- read_csv(&quot;raw_data/shsat_data.csv&quot;) 
+
+covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
+
+zcta_skool &lt;- full_join(zip_mod, school, by = &quot;zip&quot;) %&gt;% 
   rename(
      modzcta = MODZCTA
   ) %&gt;% 
@@ -714,8 +655,200 @@ final_mod_zcta &lt;- full_join(school_covidtest, covid_deathrate, by = &quot;mod
 </div>
 <div id="exploratory-data-analysis-eda" class="section level2">
 <h2>Exploratory Data Analysis (EDA)</h2>
+<div id="the-distribution-of-specialized-high-school-offers-in-new-york-city" class="section level4">
+<h4>The Distribution of Specialized High School Offers in New York City</h4>
+<p><em>Figure 1: Proportion of Offers by Number of Testers Across NYC Boroughs, 2015-2020</em></p>
+<pre class="r"><code>shsat_covid_df = 
+  read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
+  mutate(
+    year = factor(year, levels = c(&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;))
+  ) %&gt;% 
+  select(zip, modzcta, borough, 
+         dbn, year, n_hs_applicants, n_testers, n_offers, 
+         modzcta_cum_perc_pos, cum_ave_death_rate
+         )
+
+shsat_covid_df %&gt;%
+  filter(n_offers &gt; 5) %&gt;% 
+  filter(year != 2015) %&gt;% 
+  mutate(
+    offers_per_applicants = n_offers / n_hs_applicants
+  ) %&gt;% 
+  group_by(year) %&gt;% 
+  ggplot(aes(x = year, y = offers_per_applicants)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.1, color = &quot;red&quot;) +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position = &quot;bottom&quot;) +
+  labs(
+    title = &quot;Borough and Year Differences in Number of Specialized High School Admissions Offers&quot;,
+    subtitle = &quot;Offers per applicants is the fraction of students among those applying to specialized schools who receive offers&quot;,
+    x = &quot;Year&quot;,
+    y = &quot;Offers Per Applicants&quot;
+  )</code></pre>
+<p><img src="Final_Project_Report_files/figure-html/hs_admits_overview-1.png" width="90%" /></p>
+<p><em>Figure 2: Number of Offers by Proportion of Students Additionally Applying to Specialized Schools</em></p>
+<pre class="r"><code>shsat_covid_df %&gt;%
+  filter(n_offers &gt; 5,
+         year != 2015) %&gt;% 
+  mutate(
+    spec_per_applicants = n_testers / n_hs_applicants,
+    offers_per_tester = n_offers / n_testers
+  ) %&gt;% 
+  group_by(year) %&gt;% 
+  ggplot(aes(y = offers_per_tester, x = spec_per_applicants)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  facet_grid(. ~borough) +
+  labs(
+    title = &quot;Do schools with more students applying to specialized schools get more offers?&quot;,
+    x = &quot;Proportion of HS Applicants Applying to Specialized High Schools&quot;,
+    y = &quot;Proportion of Offers to # Specailized HS Applicants&quot;
+  ) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="Final_Project_Report_files/figure-html/teters_vs_allapps-1.png" width="90%" /></p>
+<p>Note that data from 2015 are excluded from this figure as the number of students applying specifically to specialized high school applicants was the same as the number of students in general high school admissions, suggesting that the number of students in general admissions was not recorded for 2015.</p>
+<p>Since applying to most high schools and to specialized high schools are two separate processes, we were interested in whether there is a relationship between how common it is to apply to specialized high schools at a given middle school, and how many specialized high school admissions offers that school receives. The X axis of Figure 2 describes: out of the students applying to high school, how many are also applying to specialized high schools? The Y axis then adds: how many students receive offers to specialized high schools for different prevalence of specialized high school applications?</p>
+<p>In the Bronx and on Staten Island, there are few schools where a majority of the students applying to high school are additionally applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer.</p>
+<p>In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in. Overall, these data suggest that the middle school a student attends is strongly correlated with how likely that student is to be offered admission to a specialized high school.</p>
+</div>
+<div id="specialized-high-school-offers-and-covid-19" class="section level4">
+<h4>Specialized High School Offers and Covid-19</h4>
+<p><em>Figure 3: Number of Offers Before and During the Covid-19 Pandemic</em></p>
+<pre class="r"><code># Re-define a df with weighed averages to include borough (which is excluded in the final_mod_zcta file)
+
+zcta_wt_avgs_df =
+  read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
+  select(modzcta, dbn, borough, n_hs_applicants, n_testers, n_offers, year, modzcta_cum_perc_pos, cum_ave_death_rate) %&gt;%
+  filter(n_offers &gt; 5) %&gt;% 
+  drop_na() %&gt;% 
+  mutate(
+    offers_per_testers = n_offers / n_testers,
+    spec_per_applicants = n_testers / n_hs_applicants
+  ) %&gt;% 
+  group_by(modzcta, year, borough) %&gt;% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    avg_applicants = mean(n_hs_applicants),
+    wt_avg_offers = weighted.mean(n_offers, n_testers),
+    avg_offer_per_tester = mean(offers_per_testers),
+    avg_spec_per_applicants = mean(spec_per_applicants)
+  )
+
+# Plot the zipcode level weighted average number of offers by borough before and during the Covid-19 pandemic
+
+precovid_boro_wt_avg =
+  zcta_wt_avgs_df %&gt;% 
+  select(modzcta, year, wt_avg_offers, borough) %&gt;%
+  drop_na() %&gt;% 
+  group_by(modzcta, year, borough) %&gt;%
+  summarize(
+    avg_wt_avg = mean(wt_avg_offers)
+  ) %&gt;% 
+  pivot_wider(names_from = year, values_from = avg_wt_avg) %&gt;%
+  drop_na() %&gt;% 
+  mutate(
+    precovid_wt_avg = mean(`2015`:`2019`)
+    ) %&gt;%
+  ggplot(aes(x = borough, y = precovid_wt_avg)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = &quot;red&quot;) +
+  ylim(-10, 225) +
+  labs(
+    y = &quot;Weighted Avg. # Offers&quot;, 
+    x = &quot;Borough&quot;,
+    title = &quot;Pre-Covid (2015-2019)&quot;
+    ) +
+   theme(plot.title = element_text(hjust = 0.5))
+
+
+covid_boro_wt_avg =
+  zcta_wt_avgs_df %&gt;% 
+  filter(year == 2020) %&gt;% 
+  group_by(borough) %&gt;% 
+  ggplot(aes(x = borough, y = wt_avg_offers)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = &quot;red&quot;) +
+  ylim(-10, 225) +
+  labs(
+    y = &quot;Weighted Avg. # Offers&quot;, 
+    x = &quot;Borough&quot;, 
+    title = &quot;Covid (2020)&quot;
+    ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
+
+patchwork + plot_annotation(
+  title = &quot;Difference in Admissions Offers Before and During the Covid-19 Pandemic&quot;,
+  subtitle = &quot;Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across ZCTA&quot;,
+  theme(text = element_text(hjust = 0.5))
+)</code></pre>
+<p><img src="Final_Project_Report_files/figure-html/wt_avg_covid_precovid-1.png" width="90%" /></p>
+<p><em>Figure 4</em></p>
+<pre class="r"><code># join in borough data that was excluded from the final analysis df
+modzcta_to_borough = 
+  shsat_covid_df %&gt;% 
+  select(modzcta, borough) %&gt;% 
+  unique()
+
+final_shsat_modzcta =
+  read_csv(&quot;raw_data/final_mod_zcta.csv&quot;) %&gt;% 
+  select(modzcta,
+         all_years_avg_testers, 
+         all_years_avg_offers, 
+         all_years_wt_avg, 
+         `2015_19_avg_testers`, 
+         `2015_19_avg_offers`, 
+         `2015_19_wt_avg`, 
+         avg_testers_2020, 
+         avg_offers_2020, 
+         wt_avg_2020,   
+         modzcta_cum_perc_pos,
+         cum_ave_death_rate) %&gt;% 
+  drop_na() %&gt;% 
+  full_join(modzcta_to_borough, .x, by = &quot;modzcta&quot;)
+  
+# plot weighted average n offers before and during Covid
+
+wt_avg_vs_covidtest =
+  final_shsat_modzcta %&gt;% 
+  ggplot(aes(x = modzcta_cum_perc_pos, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+   x = &quot;Cumulative Covid-19 % Positivity 
+   Rate 3/20 - 12/20&quot;,
+   y = &quot;Weighted Average # Offers Per ZCTA&quot;,
+   title = &quot;Positivity Rate&quot;
+  )
+
+wt_avg_vs_death =
+  final_shsat_modzcta %&gt;%
+  ggplot(aes(x = cum_ave_death_rate, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = &quot;Cumulative Avg Covid-19 Death Rate 
+    Per 100,000 3/20 - 12/20&quot;,
+    y = &quot;Weighted Average # Offers Per ZCTA&quot;,
+    title = &quot;Death Rate&quot;
+  )
+
+patchwork = wt_avg_vs_covidtest + wt_avg_vs_death
+
+patchwork + plot_annotation(
+  title = &quot;Relationship Bewteen Covid Positvity Rate, Death Rate and Number of Offers per ZCTA&quot;
+)</code></pre>
+<p><img src="Final_Project_Report_files/figure-html/covid_admit_rate_gg-1.png" width="90%" /></p>
+</div>
+</div>
+<div id="primary-analysis" class="section level2">
+<h2>Primary Analysis</h2>
 <p>We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
-<p>We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
+<p>We rann chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
 <pre class="r"><code>chisq_df =
   read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
   filter(n_offers &gt; 5) %&gt;% 
@@ -733,16 +866,9 @@ final_mod_zcta &lt;- full_join(school_covidtest, covid_deathrate, by = &quot;mod
   mutate(
     `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
     `2020_prop` = `2020_offers` / `2020_testers`
-  )</code></pre>
-<pre><code>## Rows: 2848 Columns: 22</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (2): dbn, borough
-## dbl (20): zip, modzcta, n_hs_applicants, n_testers, n_offers, year, positive...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>chi1 &lt;- chisq_df %&gt;% 
+  )
+
+chi1 &lt;- chisq_df %&gt;% 
   select(`2015-19_avg_testers`, `2020_testers`) %&gt;% 
   chisq.test() 
 
