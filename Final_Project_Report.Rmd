@@ -43,7 +43,7 @@ Exploring the Potential Associations between Specialized High School Admissions 
 
 ## Project Aims
 1) Identify and evaluate the Covid-19 positive rate incidence, death rate, high school applications and SH SAT testers and offers in New York City during 2020 and the previous 4 years.
-2) Compare the time-trends of SH SAT test takers and from 2016 to 2020
+2) Compare the time-trends of SH SAT test takers and from 2015 to 2020
 3) Visualize the geographical distribution of Covid-19 incidence, death rate and proportion of SG SAT offers during 2020 across MOZCTA
 4) Assess the association between Covid-19 positive rate cumulative incidence and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
 5) Assess the association between Covid-19 death rate by 100,000 inhabitants and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
@@ -264,11 +264,87 @@ To obtain consistent area units  across the datasets, we used a [crosswalk file]
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
 
 
+We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
+```{r}
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+chisq_df =
+  read_csv("raw_data/project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
+
+chi1 <- chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test() 
+
+chi1 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
+
+chi2 <- chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test() 
+
+chi2 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
+
+```
+
 ## Additional Analysis: Modeling
-
-
 For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. 
 Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
+
+```{r }
+#this is the main model (10% change in cumulative incidence as predictor)
+model1 <- glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+model1 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model adjusted by number of testers
+model3 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+model3 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model adjusted by number of testers and death rate
+model4 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+model4 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model with a 10% change in death rate as the main predictor
+
+model2 <- glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+model2 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
+  knitr::kable(digits = 5)
+
+```
 
 ## Discussion
 
