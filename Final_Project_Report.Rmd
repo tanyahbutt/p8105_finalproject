@@ -270,6 +270,21 @@ filtered_wt_avgs_df =
 
 ```
 
+### Covid-19 cumulative incidence rate in 2020
+
+The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data)
+This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the "noise" from external individuals testing positive for Covid-19 in a neighborhood but not residing there.
+
+
+```{r covid positive data, message=FALSE}
+test2 <- read_csv("raw_data/tests-by-zcta.csv")
+```
+
+### MODZCTA level shapefile
+
+To obtain consistent area units  across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people's MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.
+
+
 
 ### Variable Dictionary
 
@@ -283,22 +298,7 @@ filtered_wt_avgs_df =
 
 `feeder_school` = full name of the "sending" middle school (middle school at which applicants are currently enrolled)
 
-
-### Covid-19 cumulative incidence rate in 2020
-
-The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data)
-This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the "noise" from external individuals testing positive for Covid-19 in a neighborhood but not residing there.
-
-### Variable Dictionary
 `modzcta_cum_perc_pos` = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.
-
-```{r covid positive data, message=FALSE}
-test2 <- read_csv("raw_data/tests-by-zcta.csv")
-```
-
-## MODZCTA level shapefile
-
-To obtain consistent area units  across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people's MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.
 
 
 
@@ -350,7 +350,7 @@ final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %
 
 ```
 
-
+#Results
 ## Exploratory Data Analysis (EDA)
 
 #### The Distribution of Specialized High School Offers in New York City
@@ -568,13 +568,22 @@ patchwork + plot_annotation(
 
 ## Primary Analysis
 
-
-
-
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
 
+```{r}
 
-We rann chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
+data <- read_csv("raw_data/final_mod_zcta.csv")
+data <- data %>% 
+  filter(!is.na(modzcta_cum_perc_pos))
+summary(data$modzcta_cum_perc_pos)
+summary(data$cum_ave_death_rate)
+
+
+```
+
+
+
+We ran chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
 
 ```{r chisq, message=FALSE}
 
@@ -603,7 +612,8 @@ chi1 <- chisq_df %>%
 
 chi1 %>% 
   broom::tidy() %>% 
-  dplyr::select(p.value) %>% 
+  dplyr::select(statistic, p.value) %>% 
+  mutate(statistic = "Number of Testers") %>% 
   knitr::kable(digits = 5)
 
 chi2 <- chisq_df %>% 
@@ -613,6 +623,7 @@ chi2 <- chisq_df %>%
 chi2 %>% 
   broom::tidy() %>% 
   dplyr::select(p.value) %>% 
+  mutate(statistic = "Number of Offers")
   knitr::kable(digits = 5)
 
 ```
@@ -621,10 +632,16 @@ chi2 %>%
 For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. 
 Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
-```{r error = TRUE}
+```{r error = FALSE}
 #this is the main model (10% change in cumulative incidence as predictor)
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+data <- read_csv("raw_data/final_mod_zcta.csv") %>% 
+  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
+         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
+         wt_avg_2020 = round(wt_avg_2020, digits = 0)) %>% 
+  mutate(cum_perc = 10*(modzcta_cum_perc_pos),
+         cum_death = 10*(cum_ave_death_rate))
 
-final_mod_zcta
 
 model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
 
