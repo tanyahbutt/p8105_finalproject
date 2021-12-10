@@ -42,8 +42,11 @@ Exploring the Potential Associations between Specialized High School Admissions 
 ## Motivation and Related Work
 
 ## Project Aims
-
-(this is the initial questions section)
+1) Identify and evaluate the Covid-19 positive rate incidence, death rate, high school applications and SH SAT testers and offers in New York City during 2020 and the previous 4 years.
+2) Compare the time-trends of SH SAT test takers and from 2016 to 2020
+3) Visualize the geographical distribution of Covid-19 incidence, death rate and proportion of SG SAT offers during 2020 across MOZCTA
+4) Assess the association between Covid-19 positive rate cumulative incidence and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
+5) Assess the association between Covid-19 death rate by 100,000 inhabitants and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
 
 ## Data Cleaning
 
