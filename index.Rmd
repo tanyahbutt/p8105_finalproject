@@ -9,7 +9,6 @@ output:
     toc: true
     toc_float: true
 ---
-
 ## Project Motivation
 New York City has the largest public school system in the United States, with
 approximately 1 million students enrolled in public schools every year, and a 
