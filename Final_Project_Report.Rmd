@@ -290,7 +290,7 @@ This data set contains the cumulative Covid-19 positive incidence rate from Marc
 `modzcta_cum_perc_pos` = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.
 
 ```{r covid positive data}
-test2 <- read.csv("tests-by-zcta.csv")
+test2 <- read_csv("raw_data/tests-by-zcta.csv")
 ```
 
 ## MODZCTA level shapefile
@@ -304,6 +304,9 @@ In order to join all the separate data sets, some of which were at the zip code 
 Once all datasets had a modzcta variable, we joined them together.
 
 ```{r}
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv")
+school_data_clean <- read_csv("raw_data/filtered_weighted_avgs.csv")
 
 zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
   rename(zip = ZCTA)
@@ -326,16 +329,11 @@ project_df_deathrate =
   janitor::clean_names()
 
 
-write_csv(zcta_skool_covidtest, "project_df.csv")
+# write_csv(zcta_skool_covidtest, "project_df.csv")
 
 ```
 
 ```{r}
-
-covid_test <- read_csv("raw_data/tests-by-zcta.csv")
-covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
-school_data_clean <- read_csv("filtered_weighted_avgs.csv")
-
 
 school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
   janitor::clean_names()
@@ -356,7 +354,7 @@ We used descriptive statistics to summarize the distribution of our dependent va
 
 We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
 ```{r}
-setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+
 chisq_df =
   read_csv("raw_data/project_df.csv") %>%
   filter(n_offers > 5) %>% 
@@ -400,37 +398,43 @@ chi2 %>%
 For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. 
 Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
-```{r }
+```{r error = TRUE}
 #this is the main model (10% change in cumulative incidence as predictor)
-model1 <- glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+
+final_mod_zcta
+
+model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+
 model1 %>% 
-broom::tidy() %>% 
-dplyr::select(term, estimate, p.value) %>% 
+  broom::tidy() %>% 
+  dplyr::select(term, estimate, p.value) %>% 
   mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
   knitr::kable(digits = 3)
 
 #model adjusted by number of testers
-model3 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+model3 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+
 model3 %>% 
-broom::tidy() %>% 
-dplyr::select(term, estimate, p.value) %>% 
+  broom::tidy() %>% 
+  dplyr::select(term, estimate, p.value) %>% 
   mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
   knitr::kable(digits = 3)
 
 #model adjusted by number of testers and death rate
-model4 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+model4 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+
 model4 %>% 
-broom::tidy() %>% 
-dplyr::select(term, estimate, p.value) %>% 
+  broom::tidy() %>% 
+  dplyr::select(term, estimate, p.value) %>% 
   mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
   knitr::kable(digits = 3)
 
 #model with a 10% change in death rate as the main predictor
+model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
 
-model2 <- glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
 model2 %>% 
-broom::tidy() %>% 
-dplyr::select(term, estimate, p.value) %>% 
+  broom::tidy() %>% 
+  dplyr::select(term, estimate, p.value) %>% 
   mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
   knitr::kable(digits = 5)
 
