@@ -21,6 +21,17 @@ data <- read_csv("raw_data/final_mod_zcta.csv") %>%
   mutate(cum_perc = 10*(modzcta_cum_perc_pos),
          cum_death = 10*(cum_ave_death_rate))
 ```
+##Additional description
+```{r}
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+
+data <- data %>% 
+  filter(!is.na(modzcta_cum_perc_pos))
+summary(data$modzcta_cum_perc_pos)
+summary(data$cum_ave_death_rate)
+
+
+```
 
 ##Chi squares
 
