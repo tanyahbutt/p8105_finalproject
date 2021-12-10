@@ -1,7 +1,6 @@
 ---
 title: "P8105 Final Project"
-subtitle: "Exploring the Potential Associations between Specialized High School 
-Admissions Offers and COVID-19 Rates in NYC"
+subtitle: "Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC"
 author: "Tanya Butt, Catherine Lucey, Irene Martinez Morata"
 date: '`r format(Sys.time(), "%m-%d-%y")`'
 output: 
