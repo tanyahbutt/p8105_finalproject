@@ -21,6 +21,8 @@ Admission to eight of the nine schools is determined by one's score on a standar
 
 Like school systems across the country, the New York City public school system has had its share of disruption due to the Covid-19 pandemic. The New York Times [recently reported](https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html) that total public school enrollment decreased significantly during the pandemic, and both students and teachers were faced with the significant hardships that came with the sudden, unprecedented shift to fully virtual learning. In New York, something about access to quiet learning spaces, technology etc? FINISH
 
+^^ UNFINISHED SENTENCE HERE
+
 In this way, this project assesses whether the Covid-19 pandemic affected specialized high school applications, especially whether the disproportionately distributed impacts of the pandemic exacerbated existing inequalities in the specialized high school system. 
 
 
@@ -61,7 +63,7 @@ currently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA 
 
 #### SHSAT Data
 
-Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not inlcuded in the DOE middle school directory 
+Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not included in the DOE middle school directory 
 
 ### Visualizations
 
@@ -79,6 +81,26 @@ For our secondary analysis, we excluded all schools with less than 5 students re
 Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
 
 ## Results
+
+*Figure 1: Understanding the Baseline Distribution of Specialized HS Admissions in New York City*
+
+<img src = "offer_per_tester.png">
+
+First, it is important to have a sense of WHAT THE GENERAL DISTRIBUTION OF OFFERS IS
+
+HUGE SPREAD
+MANHATTAN GETS THE MOST OFFERS PER N APPLICANTS, GENERALLY
+STATEN ISLAND HAS GOOD AND BAD YEARS
+
+Here, the red points are the underlying datapoints.
+
+
+*Figure 2*
+
+<img src="pre_post_covid_boxplot.png" style="width:90%">
+DESCRIPTION OF THIS FIGURE Pre-covid data (2015-2019) is the weighted average number of offers per zip code, averaged again across the years 2015-2019. The red points are the underlying datapoints.
+
+
 #Descriptive statistics
 The mean and the median cumulative Covid-19 positive rate were XXXX and XXX respectively. The maximum was XXX, this area was located in the borough of XXX. The minimum was XXX, this area was located in the borough of XXX.
 The mean and the median cumulative death rate was......
