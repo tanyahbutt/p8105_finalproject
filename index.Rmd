@@ -2,13 +2,14 @@
 title: "P8105 Final Project"
 subtitle: "Exploring the Potential Associations between Specialized High School 
 Admissions Offers and COVID-19 Rates in NYC"
-author: Tanya Butt, Catherine Lucey, Irene Martinez Morata
+author: "Tanya Butt, Catherine Lucey, Irene Martinez Morata"
 date: '`r format(Sys.time(), "%m-%d-%y")`'
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
+
 ## Project Motivation
 New York City has the largest public school system in the United States, with
 approximately 1 million students enrolled in public schools every year, and a 
