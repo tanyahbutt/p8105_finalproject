@@ -9,10 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Tanya Butt, Catherine Lucey, Irene Martinez Morata" />
 
 
-<title>P8105 Final Project Report</title>
+<title>index.knit</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -353,30 +352,57 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">P8105 Final Project Report</h1>
-<h3 class="subtitle">Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC</h3>
-<h4 class="author">Tanya Butt, Catherine Lucey, Irene Martinez Morata</h4>
-<h4 class="date">12-10-21</h4>
 
 </div>
 
 
+<table>
+<tbody>
+<tr class="odd">
+<td>title: “P8105 Final Project”</td>
+</tr>
+<tr class="even">
+<td>subtitle: "Exploring the Potential Associations between Specialized High School</td>
+</tr>
+<tr class="odd">
+<td>Admissions Offers and COVID-19 Rates in NYC"</td>
+</tr>
+<tr class="even">
+<td>author: Tanya Butt, Catherine Lucey, Irene Martinez Morata</td>
+</tr>
+<tr class="odd">
+<td>date: ‘12-10-21’</td>
+</tr>
+<tr class="even">
+<td>output:</td>
+</tr>
+<tr class="odd">
+<td>html_document:</td>
+</tr>
+<tr class="even">
+<td>toc: true</td>
+</tr>
+<tr class="odd">
+<td>toc_float: true</td>
+</tr>
+</tbody>
+</table>
 <div id="project-motivation" class="section level2">
 <h2>Project Motivation</h2>
-<p>New York City has the largest public school system in the United States, with approximately 1 million students enrolled in public schools every year, and a notoriously complex enrollment system. At all stages of education - elementary, middle, and high school - students can apply outside of their district school, often into specialized or highly selective schools. New York is unique in that a comprehensive application for admission to a competitive, well known school can be prepared on behalf of a pre-kindergartner.</p>
-<p>The largest admissions process occurs for high school, where all eighth grade students can apply out to any public high school in the city. The <a href="https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat">official DOE guide to high school admissions</a> for 2021 is 492 pages long, but in short: the high school admissions process is split into applications to non-specialized (most) and to specialized (a small set of 9) public high schools. Eighth graders who do not enter the high school admissions process at all receive an offer from the closest high school that has an available seat. Charter schools, which are largely separate from the public school system but still associated with the City, each have their own admissions processes and requirements.</p>
-<p>The specialized high schools are a set of nine schools across New York City known for their academic rigor that accept students through a separate admissions process from general high school admissions. The specialized high schools are Stuyvesant High School, often ranked as the best public high school in the country, Bronx High School of Science, Brooklyn Latin School, Fiorello H. LaGuardia High School, Brooklyn Technical High School, High School of American Studies at Lehman College, Queens High School for the Sciences at York College, and Staten Island Technical High School. Though the DOE does not report admissions rates for each school individually, roughly only 18% of students in the specialized high school application process receive an offer to one of the nine schools <a href="https://infohub.nyced.org/docs/default-source/default-document-library/shsat-statistics-sy-2014-2021.pdf">according to yearly DOE data</a>.</p>
-<p>Admission to eight of the nine schools is determined by one’s score on a standardized entrance exam called the Specialized High School Admissions Test (SHSAT) administered by the NYC Department of Education. LaGuardia, a performing arts high school, selects students primarily on auditions for each of the arts specialties offered there and does not require SHSAT scores. For testing-required schools, SHSAT scores are main selection criterion, though how highly a student ranked a particular school in their application can also influence admission. Though there is no entrance fee for the SHSAT, many private companies offer SHSAT test prep courses with price tags as high as <a href="https://www.kaptest.com/shsat/courses/shsat-prep">$1599</a> for one on one tutoring. Indeed, though the city’s specialized high school system has been touted as a mechanism for economic mobility and a means of offering an outstanding education to any student in the city, in reality the specialized high school system reflects the segregation and inequality rooted in the New York City public school system as a whole. The injustices of the New York City public school system have recently come to the fore of public discussion, and changes to the specialized high school admissions process and the desegregation of New York City’s school system writ large are highly divisive and critical issues in many local elections.</p>
-<p>Like school systems across the country, the New York City public school system has had its share of disruption due to the Covid-19 pandemic. The New York Times <a href="https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html">recently reported</a> that total public school enrollment decreased significantly during the pandemic, and both students and teachers were faced with the significant hardships that came with the sudden, unprecedented shift to fully virtual learning. In New York, something about access to quiet learning spaces, technology etc? FINISH</p>
-<p>^^ UNFINISHED SENTENCE HERE</p>
-<p>In this way, this project assesses whether the Covid-19 pandemic affected specialized high school applications, especially whether the disproportionately distributed impacts of the pandemic exacerbated existing inequalities in the specialized high school system.</p>
+<p>New York City has the largest public school system in the United States, with approximately 1 million students enrolled in public schools every year, and a notoriously complex enrollment system. At all stages of education - elementary, middle, and high school - students can apply outside of their district school, often into specialized or highly selective schools. New York is unique in that a comprehensive application for admission to a competitive, well known school can begin as early as pre-kindergarten.</p>
+<p>The largest admissions process occurs for high school, where all eighth grade students are eligible to apply to any public high school in the city. The official DOE <a href="https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat">guide</a> to high school admissions for 2021 splits the high school admissions process into applications for non-specialized and specialized public high schools. Eighth graders who do not enter the high school admissions process at all receive an offer from the closest high school that has an available seat.</p>
+<p>Like school systems across the country, the New York City public school system has had its share of disruption due to the COVID-19 pandemic. The New York Times recently <a href="https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html">reported</a> that total public school enrollment decreased significantly during the pandemic, and both students and teachers were faced with the significant hardships that came with the sudden, unprecedented shift to fully virtual learning.</p>
+<p>Due to the major challenges posed to educational systems during the pandemic, we were curious to see if rates of COVID-19 exacerbated existing inequalities in New York’s specialized high school system. With this project, we aimed to determine whether incidence and death rates of COVID-19 at the zip-code tabulation area (ZCTA)-level were associated the number of offers made to specialized high schools in 2020.</p>
 </div>
-<div id="related-work" class="section level2">
-<h2>Related Work</h2>
+<div id="related-background" class="section level2">
+<h2>Related Background</h2>
+<p>Specialized high schools are a set of nine schools across New York City known for their academic rigor that accept students through a separate admissions process from general high school admissions. The specialized high schools are Stuyvesant High School, often ranked as the best public high school in the country, Bronx High School of Science, Brooklyn Latin School, Fiorello H. LaGuardia High School, Brooklyn Technical High School, High School of American Studies at Lehman College, Queens High School for the Sciences at York College, and Staten Island Technical High School. Though the DOE does not report admissions rates for each school individually, roughly only 18% of students in the specialized high school application process receive an offer to one of the nine schools according to yearly DOE <a href="https://infohub.nyced.org/docs/default-source/default-document-library/shsat-statistics-sy-2014-2021.pdf">data</a>.</p>
+<p>Admission to eight of the nine schools is determined by one’s score on a standardized entrance exam called the Specialized High School Admissions Test (SHSAT) administered by the NYC Department of Education. For testing-required schools, SHSAT scores are main selection criterion, though how highly a student ranked a particular school in their application can also influence admission.</p>
+<p>hough there is no entrance fee for the SHSAT, many private companies offer SHSAT test prep courses with price tags as high as <a href="https://www.kaptest.com/shsat/courses/shsat-prep">$1599</a> for one on one tutoring. Indeed, though the city’s specialized high school system has been touted as a mechanism for economic mobility and a means of offering an outstanding education to any student in the city, in reality the specialized high school system reflects the segregation and inequality rooted in the New York City public school system as a whole. The injustices of the New York City public school system have recently come to the fore of public discussion, and changes to the specialized high school admissions process and the desegregation of New York City’s school system writ large are highly divisive and critical issues in many local elections.</p>
 <p>##Initial research question</p>
 </div>
 <div id="data-sources-and-preparation" class="section level2">
-<h2>Data Sources and preparation</h2>
+<h2>Data Sources and Preparation</h2>
 <ul>
 <li><p><strong>SHSAT Admissions Test Offers by Sending School (2015-2021)</strong> Specialized high school admission offers by middle school (denoted by district borough number) was obtained from <a href="https://data.cityofnewyork.us/browse?q=SHSAT&amp;sortBy=relevance">NYC Open Data</a>.</p></li>
 <li><p><strong>2020 DOE Middle School Directory</strong> Addresses and key characteristics of each sending middle school were obtained from <a href="https://data.cityofnewyork.us/Education/2020-DOE-Middle-School-Directory/fdpt-nzk4">NYC Open Data</a></p></li>
@@ -384,7 +410,7 @@ div.tocify {
 </ul>
 <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD * <strong>NYC COVID-19 Death Rates by Zip-Code</strong> Monthly zip-code tabulation area (ZCTA)-level SARS-CoV2 death rate data was obtained from the <a href="https://github.com/nychealth/coronavirus-data">NYC Department of Health and Mental Hygiene</a>. ======= * <strong>NYC COVID-19 Death Rates by Zip-Code</strong> Monthly modified zip-code tabulation area (MODZCTA)-level SARS-CoV2 death rate data was obtained from the <a href="https://github.com/nychealth/coronavirus-data">NYC Department of Health and Mental Hygiene (NYC DOHMH)</a>. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 681a11e71118d1688f52bdf5566100ed66175990</p>
 <ul>
-<li><strong>Crosswalk File for Zip-Code to MODZCTA</strong> To obtain consistent area units across the datasets, we used a <a href="https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv">crosswalk file</a> to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, are currently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people’s MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.</li>
+<li><strong>Crosswalk File for Zip-Code to MODZCTA</strong> To obtain consistent area units across the datasets, we used a <a href="https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv">crosswalk file</a> to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people’s MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.</li>
 </ul>
 </div>
 <div id="methods" class="section level2">
@@ -394,6 +420,10 @@ div.tocify {
 <div id="shsat-data" class="section level4">
 <h4>SHSAT Data</h4>
 <p>Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not included in the DOE middle school directory</p>
+</div>
+<div id="covid-19-2020-cumulative-indicence-data" class="section level4">
+<h4>Covid-19 2020 Cumulative Indicence Data</h4>
+<p>The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the <a href="https://github.com/nychealth/coronavirus-data">NYC Department of Health and Mental Hygiene</a> This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the “noise” from external individuals testing positive for Covid-19 in a neighborhood but not residing there.</p>
 </div>
 </div>
 <div id="visualizations" class="section level3">
@@ -406,7 +436,8 @@ div.tocify {
 </div>
 <div id="analysis" class="section level3">
 <h3>Analysis</h3>
-<p>We used descriptive statistics to summarize the distribution of our dependent variable, the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
+<p>We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
+<p>We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
 <p>For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
 </div>
 </div>
@@ -419,11 +450,14 @@ div.tocify {
 <p>Here, the red points are the underlying datapoints.</p>
 <p><em>Figure 2</em></p>
 <p><img src="pre_post_covid_boxplot.png" style="width:90%"> DESCRIPTION OF THIS FIGURE Pre-covid data (2015-2019) is the weighted average number of offers per zip code, averaged again across the years 2015-2019. The red points are the underlying datapoints.</p>
-<p>#Descriptive statistics The mean and the median cumulative Covid-19 positive rate were XXXX and XXX respectively. The maximum was XXX, this area was located in the borough of XXX. The minimum was XXX, this area was located in the borough of XXX. The mean and the median cumulative death rate was…… The correlation between cumulative Covid-19 rate and cumulative death rate was</p>
-<p>#Secondary analysis Every 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
+<p>#Descriptive statistics The mean and the median cumulative Covid-19 positive rate were 23.85% and 24.90% respectively. The maximum was 88.50%, and the minimum was 9.3%. The mean and the median cumulative death rate by 100,000 inhabitants were 56.31 and 53.60 respectively, the minimum was 0% and the maximum was 160.43.</p>
+<p>#Secondary analysis A significant difference between the number of testers in 2020 compared to the previous 5 years was identified (p value &lt;0.0001). However, the difference in the number of offers during 2020 compared to the previous 5 years was not significant. In our regression models, we identified that very 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
+<p>In this project, we identified a significant difference in the number of testers between 2020 and the previous five years. We represented the distribution of the SH SAT offers across NYC in a visually friendly manner, identifying the areas with higher proportion of offers in the borough of Manhattan. In contrast, the Covid-19 positive rate and cumulative mortality rate by 100,000 inhabitants was higher in the boroughs of Queens, The Bronx and Staten Island. We identified a significant association between an increase of Covid-19 incidence and a decrease in the number of offers by MOZCTA on average. Several mechanisms could explain this identified association. The pandemic has impacted human lives at several levels, including accessibility to education. We believe, these findings remark those areas where most efforts to enhance students accessibility to education and exam preparation is needed. These preexisting disparities across neighborhoods are likely to be exacerbated by the pandemic, which not only impacts the students directly (i.e., by remote education, reduced hours of class), but also can impact their education through a negative impact on their families (i.e., loss of family members, decrease of median household income due to unemployment, or increased healthcare expenses for Covid-19 hopsitalizations, among other hypothetical mechanisms).</p>
+<p>Nevertheless, this study has a serial of limitations. First of all, given the cross sectional nature of the analysis, it is impossible to understand the direction of the association. Longitudinal studies are needed, particularly documenting the same parameters over the next years as Covid-19 infections remain an issue for the community. Additional, we excluded several schools which did not have information about their zip code or MOZCTA, moreover, we excluded all the schools with less than 5 participants to avoid non positivity violations. This could be a source of selection bias, particularly tending to exclude schools with a smaller number of students. Additionally, our regression models were not adjusted for potential confounders, which represents a major limitation for the interpret ability of this association as a potential causal effect. Nevertheless, to our knowledge, this is the first project that looked at the association between Covid-19 positivity rate and SH SAT offers during the first year of the Covid-19 pandemic. The visualization of the distribution of SH SAT offers and Covid-19 incidence an mortality, provides a useful description that allow us to identify areas where the opportunities for students to access specialized high schools are particularly low. Interestingly, these areas are those where the incidence and mortality rates are higher.</p>
+<p>There is a need for longitudinal studies that assess this association over time, additionally, further studies should seek to include potential confounders (i.e., socioeconomic status, mental health) for the association between Covid 19 and SH SAT offers.</p>
 </div>
 <div id="contributors-tanya-butt-catherine-lucey-irene-martinez-morata" class="section level2">
 <h2>Contributors: Tanya Butt | Catherine Lucey | Irene Martinez Morata</h2>

@@ -1,6 +1,7 @@
 ---
-title: "P8105 Final Project Report"
-subtitle: "Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC"
+title: "P8105 Final Project"
+subtitle: "Exploring the Potential Associations between Specialized High School 
+Admissions Offers and COVID-19 Rates in NYC"
 author: Tanya Butt, Catherine Lucey, Irene Martinez Morata
 date: '`r format(Sys.time(), "%m-%d-%y")`'
 output: 
@@ -10,28 +11,71 @@ output:
 ---
 
 ## Project Motivation
+New York City has the largest public school system in the United States, with
+approximately 1 million students enrolled in public schools every year, and a 
+notoriously complex enrollment system. At all stages of education - elementary,
+middle, and high school - students can apply outside of their district school,
+often into specialized or highly selective schools. New York is unique in that a
+comprehensive application for admission to a competitive, well known school can 
+begin as early as pre-kindergarten.
 
-New York City has the largest public school system in the United States, with approximately 1 million students enrolled in public schools every year, and a notoriously complex enrollment system. At all stages of education - elementary, middle, and high school - students can apply outside of their district school, often into specialized or highly selective schools. New York is unique in that a comprehensive application for admission to a competitive, well known school can be prepared on behalf of a pre-kindergartner.
+The largest admissions process occurs for high school, where all eighth grade 
+students are eligible to apply to any public high school in the city. The
+official DOE [guide](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat) to high school
+admissions for 2021 splits the high school admissions process into applications 
+for non-specialized and  specialized public high schools. Eighth graders who do 
+not enter the high school admissions process at all receive an offer from the
+closest high school that has an available seat. 
 
-The largest admissions process occurs for high school, where all eighth grade students can apply out to any public high school in the city. The [official DOE guide to high school admissions](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat) for 2021 is 492 pages long, but in short: the high school admissions process is split into applications to non-specialized (most) and to specialized (a small set of 9) public high schools. Eighth graders who do not enter the high school admissions process at all receive an offer from the closest high school that has an available seat. Charter schools, which are largely separate from the public school system but still associated with the City, each have their own admissions processes and requirements. 
+Like school systems across the country, the New York City public school system 
+has had its share of disruption due to the COVID-19 pandemic. The New York Times 
+recently [reported](https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html) 
+that total public school enrollment decreased significantly during the pandemic, 
+and both students and teachers were faced with the significant hardships that
+came with the sudden, unprecedented shift to fully virtual learning. 
 
-The specialized high schools are a set of nine schools across New York City known for their academic rigor that accept students through a separate admissions process from general high school admissions. The specialized high schools are Stuyvesant High School, often ranked as the best public high school in the country, Bronx High School of Science, Brooklyn Latin School, Fiorello H. LaGuardia High School, Brooklyn Technical High School, High School of American Studies at Lehman College, Queens High School for the Sciences at York College, and Staten Island Technical High School. Though the DOE does not report admissions rates for each school individually, roughly only 18% of students in the specialized high school application process receive an offer to one of the nine schools [according to yearly DOE data](https://infohub.nyced.org/docs/default-source/default-document-library/shsat-statistics-sy-2014-2021.pdf).
+Due to the major challenges posed to educational systems during the pandemic, we 
+were curious to see if rates of COVID-19 exacerbated existing inequalities in New
+York's specialized high school system. With this project, we aimed to determine 
+whether incidence and death rates of COVID-19 at the zip-code tabulation area 
+(ZCTA)-level were associated the number of offers made to specialized high 
+schools in 2020. 
 
-Admission to eight of the nine schools is determined by one's score on a standardized entrance exam called the Specialized High School Admissions Test (SHSAT) administered by the NYC Department of Education. LaGuardia, a performing arts high school, selects students primarily on auditions for each of the arts specialties offered there and does not require SHSAT scores. For testing-required schools, SHSAT scores are main selection criterion, though how highly a student ranked a particular school in their application can also influence admission. Though there is no entrance fee for the SHSAT, many private companies offer SHSAT test prep courses with price tags as high as [$1599](https://www.kaptest.com/shsat/courses/shsat-prep) for one on one tutoring. Indeed, though the city's specialized high school system has been touted as a mechanism for economic mobility and a means of offering an outstanding education to any student in the city, in reality the specialized high school system reflects the segregation and inequality rooted in the New York City public school system as a whole. The injustices of the New York City public school system have recently come to the fore of public discussion, and changes to the specialized high school admissions process and the desegregation of New York City's school system writ large are highly divisive and critical issues in many local elections.
+## Related Background
+Specialized high schools are a set of nine schools across New York City 
+known for their academic rigor that accept students through a separate 
+admissions process from general high school admissions. The specialized high 
+schools are Stuyvesant High School, often ranked as the best public high school
+in the country, Bronx High School of Science, Brooklyn Latin School, Fiorello H.
+LaGuardia High School, Brooklyn Technical High School, High School of American
+Studies at Lehman College, Queens High School for the Sciences at York College,
+and Staten Island Technical High School. Though the DOE does not report 
+admissions rates for each school individually, roughly only 18% of students in 
+the specialized high school application process receive an offer to one of the
+nine schools according to yearly DOE [data](https://infohub.nyced.org/docs/default-source/default-document-library/shsat-statistics-sy-2014-2021.pdf).
 
-Like school systems across the country, the New York City public school system has had its share of disruption due to the Covid-19 pandemic. The New York Times [recently reported](https://www.nytimes.com/2021/10/29/nyregion/nyc-schools-enrollment-covid.html) that total public school enrollment decreased significantly during the pandemic, and both students and teachers were faced with the significant hardships that came with the sudden, unprecedented shift to fully virtual learning. In New York, something about access to quiet learning spaces, technology etc? FINISH
+Admission to eight of the nine schools is determined by one's score on a 
+standardized entrance exam called the Specialized High School Admissions Test 
+(SHSAT) administered by the NYC Department of Education. For testing-required 
+schools, SHSAT scores are main selection criterion, though how highly a student 
+ranked a particular school in their application can also influence admission.
 
-^^ UNFINISHED SENTENCE HERE
-
-In this way, this project assesses whether the Covid-19 pandemic affected specialized high school applications, especially whether the disproportionately distributed impacts of the pandemic exacerbated existing inequalities in the specialized high school system. 
-
-
-## Related Work
+hough there is no entrance fee for the SHSAT, many private companies offer SHSAT
+test prep courses with price tags as high as [$1599](https://www.kaptest.com/shsat/courses/shsat-prep)
+for one on one tutoring. Indeed, though the city's specialized high school system
+has been touted as a mechanism for economic mobility and a means of offering an 
+outstanding education to any student in the city, in reality the specialized 
+high school system reflects the segregation and inequality rooted in the New York
+City public school system as a whole. The injustices of the New York City public 
+school system have recently come to the fore of public discussion, and changes
+to the specialized high school admissions process and the desegregation of New 
+York City's school system writ large are highly divisive and critical issues in 
+many local elections.
 
 ##Initial research question 
 
 
-## Data Sources and preparation
+## Data Sources and Preparation
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
 high school admission offers by middle school (denoted by district borough number) was obtained
 from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
