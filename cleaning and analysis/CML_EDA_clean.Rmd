@@ -19,6 +19,7 @@ This document is a cleaner, easier to understand and use version of the CML_EDA_
 library(tidyverse)
 library(plotly)
 library(patchwork)
+getwd()
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
@@ -36,7 +37,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```{r}
 
 shsat_covid_df = 
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   mutate(
     year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
   ) %>% 
@@ -69,17 +70,29 @@ Does the association change when the denominator is all hs applicants and not js
 
 ```{r}
 
-offer_per_applicants_gg =
+# offer_per_applicants_gg =
+  
   shsat_covid_df %>%
   filter(n_offers > 5) %>% 
+  filter(year != 2015) %>% 
   mutate(
     offers_per_applicants = n_offers / n_hs_applicants
   ) %>% 
   group_by(year) %>% 
   ggplot(aes(x = year, y = offers_per_applicants)) +
   geom_boxplot() +
+  geom_jitter(alpha = 0.1, color = "red") +
   facet_grid(. ~borough) +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position = "bottom") +
+  labs(
+    title = "Borough and Year Differences in Number of Specialized HS Admissions",
+    subtitle = "Offers per applicants is the fraction of students among those applying to specialized schools who receive offers",
+    x = "Year",
+    y = "Offers Per Applicants"
+  )
+
+ggsave("offer_per_tester.png", width = 10, height = 6)
 
 offer_per_tester_gg / offer_per_applicants_gg
 
@@ -91,7 +104,8 @@ Did the proportion of hs applicants applying to specialized high schools change 
 
 testers_per_applicants_gg =
   shsat_covid_df %>%
-  filter(n_offers > 5) %>% 
+  filter(n_offers > 5,
+         year != 2015) %>% 
   mutate(
     spec_per_applicants = n_testers / n_hs_applicants
   ) %>% 
@@ -109,13 +123,13 @@ relationship between proportion of specialized hs testers and offers?
 
 what this graph means:
 
-the x axis represents the proportion of students in the high school application process who are additionally applying to specialized high schools. The y axis represents the proportion of students, out of those applying to specialized high schools, receive an offer to one. In the Bronx and on Staten Island, there are few schools where a majority of the students applying out to high school are applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
+The X axis represents, for a given school, the proportion of students in the high school application process who are additionally applying to specialized high schools. The y axis represents the proportion of students, out of those applying to specialized high schools, receive an offer to one. In the Bronx and on Staten Island, there are few schools where a majority of the students applying out to high school are applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
 
 In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. There are some interesting exceptions in Manhattan, where there are few students who apply to specialized high schools, but of those, most get in. This suggests that schools hand-pick students to apply to specialized high schools, and perhaps offer additional coaching and test prep. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in.
 
-```{r}
+Overall, the trends seen here across the boroughs suggest that where you go to middle school has a significant impact on your chances of getting into a specialized high school in eigth grade.
 
-individ_schools =
+```{r}
   shsat_covid_df %>%
   filter(n_offers > 5,
          year != 2015) %>% 
@@ -127,27 +141,15 @@ individ_schools =
   ggplot(aes(y = offers_per_tester, x = spec_per_applicants)) +
   geom_point() +
   geom_smooth(method = lm) +
-  facet_grid(. ~borough)
+  facet_grid(. ~borough) +
+  labs(
+    title = "Do schools with more students applying to specialized schools get more offers?",
+    x = "Proportion of HS Applicants Applying to Specialized High Schools",
+    y = "Proportion of Offers to # Specailized HS Applicants"
+  ) +
   theme(axis.text.x = element_text(angle = 90))
-  
-  ggplotly(individ_schools)  
-  
-  
-# plotly version:
-  
-shsat_covid_df %>%
-  filter(n_offers > 5,
-         year != 2015) %>% 
-  mutate(
-    spec_per_applicants = n_testers / n_hs_applicants,
-    offers_per_tester = n_offers / n_testers
-  ) %>% 
-  group_by(year) %>% 
-  plot_ly(
-    x = ~spec_per_applicants, y = ~ offers_per_tester, type = "scatter", mode = "markers"
-  )
-  
 
+ggsave("spec_per_school.png", width = 10, height = 6)
 
 ```
 
@@ -156,6 +158,79 @@ shsat_covid_df %>%
 
 Generate the apropriate data frame:
 
+reference:
+
+```{r}
+pre_covid_prop_offers_testers_ggplot =
+  boro_df %>%
+  filter(year != 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            prop_test_offers = avg_n_offers / avg_n_testers) %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = prop_test_offers)) +
+  geom_violin()
+```
+
+```{r message=FALSE}
+
+precovid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  select(modzcta, year, wt_avg_offers, borough) %>%
+  drop_na() %>% 
+  group_by(modzcta, year, borough) %>%
+  summarize(
+    avg_wt_avg = mean(wt_avg_offers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    precovid_wt_avg = mean(`2015`:`2019`)
+    ) %>%
+  ggplot(aes(x = borough, y = precovid_wt_avg)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = "red") +
+  ylim(-10, 225) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough",
+    title = "Pre-Covid (2015-2019)"
+    ) +
+   theme(plot.title = element_text(hjust = 0.5))
+
+
+covid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  filter(year == 2020) %>% 
+  group_by(borough) %>% 
+  ggplot(aes(x = borough, y = wt_avg_offers)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = "red") +
+  ylim(-10, 225) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough", 
+    title = "Covid (2020)"
+    ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
+
+patchwork + plot_annotation(
+  title = "Difference in Admissions Offers Before and During the Covid-19 Pandemic",
+  subtitle = "Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across a ZCTA",
+  theme(text = element_text(hjust = 0.5))
+)
+
+ggsave("pre_post_covid_boxplot.png", width = 10, height = 11)
+
+```
+
+MAKE SURE TO SAY THAT 2015 IS EXCLUDED
 
 
 ```{r}
@@ -179,9 +254,6 @@ zcta_wt_avgs_df =
     avg_spec_per_applicants = mean(spec_per_applicants)
   )
 
-zcta_wt_avgs_df %>% 
-  ggplot(aes(x = year, y = wt_avg_offers, color = borough)) +
-  geom_point()
 
 avg_by_zop =
   zcta_wt_avgs_df %>% 
@@ -189,19 +261,125 @@ avg_by_zop =
   ggplot(aes(x = avg_spec_per_applicants, y = avg_offer_per_tester)) +
   geom_point() +
   geom_smooth(method = lm) +
-  facet_grid(. ~borough)
+  facet_grid(. ~borough) 
+
   
 avg_by_zop / individ_schools
+
+
+```
+
+### Quickly make a df to add in borough info that got lost somewhere along the line
+
+```{r}
+modzcta_to_borough = 
+  shsat_covid_df %>% 
+  select(modzcta, borough) %>% 
+  unique()
+```
+
+### Plotting the Effect of Covid on Specialized HS Admissions
+
+```{r}
+
+final_shsat_modzcta =
+  read_csv("raw_data/final_mod_zcta.csv") %>% 
+  select(modzcta,
+         all_years_avg_testers, 
+         all_years_avg_offers, 
+         all_years_wt_avg, 
+         `2015_19_avg_testers`,	
+         `2015_19_avg_offers`, 
+         `2015_19_wt_avg`, 
+         avg_testers_2020, 
+         avg_offers_2020, 
+         wt_avg_2020,	
+         modzcta_cum_perc_pos,
+         cum_ave_death_rate) %>% 
+  drop_na() %>% 
+  full_join(modzcta_to_borough, .x, by = "modzcta")
   
 
+wt_avg_vs_covidtest =
+  final_shsat_modzcta %>% 
+  ggplot(aes(x = modzcta_cum_perc_pos, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+   x = "Cumulative Covid-19 % Positivity Rate 3/20 - 12/20",
+   y = "Weighted Average # Offers Per ZCTA",
+   title = "Positivity Rate"
+  )
+
+wt_avg_vs_death =
+  final_shsat_modzcta %>%
+  ggplot(aes(x = cum_ave_death_rate, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Cumulative Avg Covid-19 Death Rate Per 1000  3/20 - 12/20",
+    y = "Weighted Average # Offers Per ZCTA",
+    title = "Death Rate"
+  )
+
+patchwork = wt_avg_vs_covidtest + wt_avg_vs_death
+
+patchwork + plot_annotation(
+  title = "Relationship Bewteen Covid Positvity Rate, Death Rate and Number of Offers per ZCTA"
+)
+
+ggsave("covid_n_offers.png")
 
 ```
 
 
 ```{r}
 
-zip_avg_shsat_df =
-  read_csv("filtered_weighted_avgs")
+offers_box =
+  final_shsat_modzcta %>%
+  drop_na() %>% 
+  ggplot(aes(x = borough, y = all_years_avg_offers)) +
+  geom_boxplot() +
+  ylim(-5, 350) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    x = "Borough",
+    y = "Avg Number Offers"
+  )
+
+testers_box =
+  final_shsat_modzcta %>% 
+  drop_na() %>% 
+  ggplot(aes(x = borough, y = all_years_avg_testers)) +
+  geom_boxplot() +
+  ylim(-5, 350) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    x = "Borough",
+    y = "Avg Number Applicants"
+  )
+
+wt_avg_box =
+  final_shsat_modzcta %>% 
+  drop_na() %>% 
+  ggplot(aes(x = borough, y = all_years_wt_avg)) +
+  geom_boxplot() +
+  ylim(-5, 350) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    x = "Borough",
+    y = "Avg Offers Weighted by # Applicants"
+  )
+  
+patchwork = offers_box + testers_box + wt_avg_box
+
+patchwork + plot_annotation(
+  title = "Measuring the Distribution of Specialized High Shool Admissions and Applications at the Borough Level",
+  subtitle = "Data presented are averaged within a ZCTA across all years 2015-2020"
+)
+
+ggsave("eda_admissions.png", width = 10, height = 7)
 
 ```
+
 

@@ -187,7 +187,7 @@ shsat_zip_df =
   select(dbn, n_hs_applicants, n_testers, n_offers, year, borough, zip) %>% 
   drop_na()
 
-write.csv(shsat_zip_df, "shsat_data.csv")
+# write.csv(shsat_zip_df, "shsat_data.csv")
 
 ```
 

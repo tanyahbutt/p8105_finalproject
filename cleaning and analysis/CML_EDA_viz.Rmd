@@ -28,7 +28,7 @@ read in shsat data
 ```{r}
 
 shsat_df = 
-  read_csv("shsat_data.csv") %>% 
+  read_csv("raw_data/shsat_data.csv") %>% 
   select(-`...1`) %>% 
   mutate(
     year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
@@ -86,7 +86,7 @@ prop_offers_testers_ggplot =
   facet_grid(. ~borough) +
   theme(axis.text.x = element_text(angle = 90))
 
-# n_offers_ggplot / n_testers_ggplot / 
+n_offers_ggplot / n_testers_ggplot / prop_offers_testers_ggplot
   
 prop_offers_testers_ggplot / wt_boro_ggplot
 

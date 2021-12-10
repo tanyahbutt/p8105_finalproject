@@ -16,4 +16,4 @@ navbar:
 
 output:
   html_document:
-    theme: united
+    theme: spacelab
