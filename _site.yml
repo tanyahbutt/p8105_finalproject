@@ -3,16 +3,16 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Project Report"
-      href: Final_Project_Report.html
     - text: "Exploratory Analysis"
       href: analysis.html
     - text: "Map Visualizations"
       href: nyc_maps.html
+    - text: "Project Report"
+      href: Final_Project_Report.html
     - icon: fa-envelope fa-lg
       href: mailto:<thb2114@cumc.columbia.edu>
     - icon: fa-github fa-lg
-      href: http://github.com/tanyahbutt/p8105finalproject
+      href: https://github.com/tanyahbutt/p8105_finalproject
 
 output:
   html_document:
