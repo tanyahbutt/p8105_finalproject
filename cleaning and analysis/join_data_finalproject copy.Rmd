@@ -71,10 +71,10 @@ write_csv(school_covidtest_death, "project_df.csv")
 #this dataset includes schools with ≤ 5 offers
 
 wt_avgs_df =
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   select(modzcta, dbn, n_testers, n_offers, year, modzcta_cum_perc_pos) %>%
   drop_na() %>% 
-  group_by(modzcta, year) %>% 
+  group_by(modzcta, year) %>%
   summarize(
     avg_testers = mean(n_testers),
     avg_offers = mean(n_offers),

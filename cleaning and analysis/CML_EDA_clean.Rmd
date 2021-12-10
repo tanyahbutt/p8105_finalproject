@@ -72,6 +72,7 @@ Does the association change when the denominator is all hs applicants and not js
 offer_per_applicants_gg =
   shsat_covid_df %>%
   filter(n_offers > 5) %>% 
+  filter(year != 2015) %>% 
   mutate(
     offers_per_applicants = n_offers / n_hs_applicants
   ) %>% 
@@ -91,7 +92,8 @@ Did the proportion of hs applicants applying to specialized high schools change 
 
 testers_per_applicants_gg =
   shsat_covid_df %>%
-  filter(n_offers > 5) %>% 
+  filter(n_offers > 5,
+         year != 2015) %>% 
   mutate(
     spec_per_applicants = n_testers / n_hs_applicants
   ) %>% 
@@ -156,6 +158,79 @@ shsat_covid_df %>%
 
 Generate the apropriate data frame:
 
+reference:
+
+```{r}
+pre_covid_prop_offers_testers_ggplot =
+  boro_df %>%
+  filter(year != 2020) %>% 
+  group_by(dbn, borough) %>% 
+  summarize(avg_n_offers = mean(n_offers),
+            avg_n_testers = mean(n_testers),
+            prop_test_offers = avg_n_offers / avg_n_testers) %>% 
+  mutate(
+    borough = as.factor(borough),
+    borough = fct_reorder(borough, prop_test_offers)
+  ) %>%
+  ggplot(aes(x = borough, y = prop_test_offers)) +
+  geom_violin()
+```
+
+```{r}
+
+precovid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  select(modzcta, year, wt_avg_offers, borough) %>%
+  drop_na() %>% 
+  group_by(modzcta, year, borough) %>%
+  summarize(
+    avg_wt_avg = mean(wt_avg_offers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    precovid_wt_avg = mean(`2015`:`2019`)
+    ) %>%
+  ggplot(aes(x = borough, y = precovid_wt_avg)) +
+  geom_boxplot() +
+  geom_jitter() +
+  ylim(0, 300) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough",
+    title = "Pre-Covid (2015-2019)"
+    ) +
+   theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90)
+        )
+
+
+covid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  filter(year == 2020) %>% 
+  group_by(borough) %>% 
+  ggplot(aes(x = borough, y = wt_avg_offers)) +
+  geom_boxplot() +
+  geom_jitter() +
+  ylim(0, 300) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough", 
+    title = "Covid (2020)"
+    ) +
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90)
+        )
+
+patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
+
+patchwork + plot_annotation(
+  title = "Difference in Admissions Offers Before and During the Covid-19 Pandemic",
+  subtitle = "Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across a ZCTA",
+  theme(text = element_text(hjust = 0.5))
+)
+
+```
+
+
 
 
 ```{r}
@@ -180,8 +255,8 @@ zcta_wt_avgs_df =
   )
 
 zcta_wt_avgs_df %>% 
-  ggplot(aes(x = year, y = wt_avg_offers, color = borough)) +
-  geom_point()
+  ggplot(aes(x = modzcta, y = wt_avg_offers, color = borough, group = borough)) +
+  geom_boxplot()
 
 avg_by_zop =
   zcta_wt_avgs_df %>% 
