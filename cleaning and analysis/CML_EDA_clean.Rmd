@@ -36,7 +36,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```{r}
 
 shsat_covid_df = 
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   mutate(
     year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
   ) %>% 
@@ -69,7 +69,8 @@ Does the association change when the denominator is all hs applicants and not js
 
 ```{r}
 
-offer_per_applicants_gg =
+# offer_per_applicants_gg =
+  
   shsat_covid_df %>%
   filter(n_offers > 5) %>% 
   filter(year != 2015) %>% 
@@ -79,8 +80,18 @@ offer_per_applicants_gg =
   group_by(year) %>% 
   ggplot(aes(x = year, y = offers_per_applicants)) +
   geom_boxplot() +
+  geom_jitter(alpha = 0.1, color = "red") +
   facet_grid(. ~borough) +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position = "bottom") +
+  labs(
+    title = "Borough and Year Differences in Number of Specialized HS Admissions",
+    subtitle = "Offers per applicants is the fraction of students among those applying to specialized schools who receive offers",
+    x = "Year",
+    y = "Offers Per Applicants"
+  )
+
+ggsave("offer_per_tester.png")
 
 offer_per_tester_gg / offer_per_applicants_gg
 
@@ -111,13 +122,13 @@ relationship between proportion of specialized hs testers and offers?
 
 what this graph means:
 
-the x axis represents the proportion of students in the high school application process who are additionally applying to specialized high schools. The y axis represents the proportion of students, out of those applying to specialized high schools, receive an offer to one. In the Bronx and on Staten Island, there are few schools where a majority of the students applying out to high school are applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
+The X axis represents, for a given school, the proportion of students in the high school application process who are additionally applying to specialized high schools. The y axis represents the proportion of students, out of those applying to specialized high schools, receive an offer to one. In the Bronx and on Staten Island, there are few schools where a majority of the students applying out to high school are applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
 
 In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. There are some interesting exceptions in Manhattan, where there are few students who apply to specialized high schools, but of those, most get in. This suggests that schools hand-pick students to apply to specialized high schools, and perhaps offer additional coaching and test prep. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in.
 
-```{r}
+Overall, the trends seen here across the boroughs suggest that where you go to middle school has a significant impact on your chances of getting into a specialized high school in eigth grade.
 
-individ_schools =
+```{r}
   shsat_covid_df %>%
   filter(n_offers > 5,
          year != 2015) %>% 
@@ -129,27 +140,15 @@ individ_schools =
   ggplot(aes(y = offers_per_tester, x = spec_per_applicants)) +
   geom_point() +
   geom_smooth(method = lm) +
-  facet_grid(. ~borough)
+  facet_grid(. ~borough) +
+  labs(
+    title = "Do schools with more students applying to specialized schools get more offers?",
+    x = "Proportion of HS Applicants Applying to Specialized High Schools",
+    y = "Proportion of Offers to # Specailized HS Applicants"
+  ) +
   theme(axis.text.x = element_text(angle = 90))
-  
-  ggplotly(individ_schools)  
-  
-  
-# plotly version:
-  
-shsat_covid_df %>%
-  filter(n_offers > 5,
-         year != 2015) %>% 
-  mutate(
-    spec_per_applicants = n_testers / n_hs_applicants,
-    offers_per_tester = n_offers / n_testers
-  ) %>% 
-  group_by(year) %>% 
-  plot_ly(
-    x = ~spec_per_applicants, y = ~ offers_per_tester, type = "scatter", mode = "markers"
-  )
-  
 
+ggsave("spec_per_school.png")
 
 ```
 
@@ -200,8 +199,7 @@ precovid_boro_wt_avg =
     x = "Borough",
     title = "Pre-Covid (2015-2019)"
     ) +
-   theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90)
-        )
+   theme(plot.title = element_text(hjust = 0.5))
 
 
 covid_boro_wt_avg =
@@ -217,8 +215,7 @@ covid_boro_wt_avg =
     x = "Borough", 
     title = "Covid (2020)"
     ) +
-  theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90)
-        )
+  theme(plot.title = element_text(hjust = 0.5))
 
 patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
 
@@ -227,6 +224,8 @@ patchwork + plot_annotation(
   subtitle = "Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across a ZCTA",
   theme(text = element_text(hjust = 0.5))
 )
+
+ggsave("pre_post_covid_boxplot.png")
 
 ```
 
@@ -264,7 +263,8 @@ avg_by_zop =
   ggplot(aes(x = avg_spec_per_applicants, y = avg_offer_per_tester)) +
   geom_point() +
   geom_smooth(method = lm) +
-  facet_grid(. ~borough)
+  facet_grid(. ~borough) 
+
   
 avg_by_zop / individ_schools
   
