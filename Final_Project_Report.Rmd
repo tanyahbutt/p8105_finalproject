@@ -240,6 +240,26 @@ AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
 
 `feeder_school` = full name of the "sending" middle school (middle school at which applicants are currently enrolled)
 
+
+### Covid-19 cumulative incidence rate in 2020
+
+The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data)
+This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the "noise" from external individuals testing positive for Covid-19 in a neighborhood but not residing there.
+
+### Variable Dictionary
+`modzcta_cum_perc_pos` = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.
+
+```{r covid positive data}
+test2 <- read.csv("tests-by-zcta.csv")
+```
+
+## MODZCTA level shapefile
+
+To obtain consistent area units  across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people's MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.
+
+
+
+
 ## Exploratory Data Analysis (EDA)
 
 ## Additional Analysis: Modeling
