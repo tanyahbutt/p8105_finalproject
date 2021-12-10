@@ -6,7 +6,6 @@ output:
     toc_float: true
 ---
 
-
 *The home page can be accessed [here](index.html)*.
 
 ### Distribution of Admissions Offers By Borough, All Years
