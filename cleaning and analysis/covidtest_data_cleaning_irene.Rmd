@@ -38,33 +38,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ## Clean the data
 
 ```{r}
-test <- read_csv("New_York_State_Statewide_COVID-19_Testing_by_Zip_Code.csv") %>% 
-  janitor::clean_names() %>% 
-  na.omit() %>% 
-  separate(test_date, into = c("month", "day", "year"))
-
-#according to this, there are 22,218 unique zip codes with information for 2018
-test20ny <- test20 %>% 
-  filter(year == 2020) %>% 
-  mutate(zip_code = as.numeric(zip_code)) %>% 
-  filter(zip_code >= 00501 & zip_code <= 14925)
-  
-#count how many unique zip codes the data set contains
-test20ny %>% 
-  group_by(zip_code) %>% 
-  summarise(n = n()) %>% 
-  distinct()
-  
-#according to this, there are 1,104 unique zip codes with information for 2020 in NY state
-
-#second data (we decided to use this one)
-
 test2 <- read.csv("tests-by-zcta.csv")
-
-
-
-
-  
 
 ```
 

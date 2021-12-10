@@ -42,8 +42,11 @@ Exploring the Potential Associations between Specialized High School Admissions 
 ## Motivation and Related Work
 
 ## Project Aims
-
-(this is the initial questions section)
+1) Identify and evaluate the Covid-19 positive rate incidence, death rate, high school applications and SH SAT testers and offers in New York City during 2020 and the previous 4 years.
+2) Compare the time-trends of SH SAT test takers and from 2015 to 2020
+3) Visualize the geographical distribution of Covid-19 incidence, death rate and proportion of SG SAT offers during 2020 across MOZCTA
+4) Assess the association between Covid-19 positive rate cumulative incidence and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
+5) Assess the association between Covid-19 death rate by 100,000 inhabitants and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.
 
 ## Data Cleaning
 
@@ -184,7 +187,7 @@ shsat_zip_df =
   select(dbn, n_hs_applicants, n_testers, n_offers, year, borough, zip) %>% 
   drop_na()
 
-write.csv(shsat_zip_df, "shsat_data.csv")
+# write.csv(shsat_zip_df, "shsat_data.csv")
 
 ```
 
@@ -223,7 +226,47 @@ n_removed_table =
 
 ```
 
-AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
+Lastly, we calculated the weighted average of offers for all years, 2015-2019, and 2020 by using the `weighted.mean()` function, weighting the number of offers at a school by the number of students applying to specialized high schools, and averaging across all schools within a ZCTA. All weighted averages were calculated after filtering to select only schools with > 5 offers total. Furthermore, `n_offers` and `n_testers` were similarly averaged within a ZCTA and for all years, 2015-2019, and 2020 alone.
+
+```{r}
+
+filtered_wt_avgs_df =
+  read_csv("raw_data/project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  filter(n_offers > 5) %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+# write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
+
+```
+
 
 ### Variable Dictionary
 
@@ -237,9 +280,161 @@ AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
 
 `feeder_school` = full name of the "sending" middle school (middle school at which applicants are currently enrolled)
 
+
+### Covid-19 cumulative incidence rate in 2020
+
+The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data)
+This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the "noise" from external individuals testing positive for Covid-19 in a neighborhood but not residing there.
+
+### Variable Dictionary
+`modzcta_cum_perc_pos` = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.
+
+```{r covid positive data}
+test2 <- read.csv("tests-by-zcta.csv")
+```
+
+## MODZCTA level shapefile
+
+To obtain consistent area units  across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people's MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.
+
+
+
+## Data Join
+In order to join all the separate data sets, some of which were at the zip code level, we used an additional zip code-modzcta conversion file to convert them to such levels. 
+Once all datasets had a modzcta variable, we joined them together.
+
+```{r}
+
+zip_mod <- read_csv("raw_data/ZCTA-to-MODZCTA.csv") %>% 
+  rename(zip = ZCTA)
+
+school <- read_csv("raw_data/shsat_data.csv") 
+
+covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv")
+
+zcta_skool <- full_join(zip_mod, school, by = "zip") %>% 
+  rename(
+     modzcta = MODZCTA
+  ) %>% 
+  select(-`...1`)
+
+zcta_skool_covidtest = full_join(zcta_skool, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+project_df_deathrate = 
+  full_join(zcta_skool_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names()
+
+
+write_csv(zcta_skool_covidtest, "project_df.csv")
+
+```
+
+```{r}
+
+covid_test <- read_csv("raw_data/tests-by-zcta.csv")
+covid_deathrate <- read_csv("deathrate_byzcta_clean.csv")
+school_data_clean <- read_csv("filtered_weighted_avgs.csv")
+
+
+school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
+  janitor::clean_names()
+
+final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %>% 
+  janitor::clean_names() %>% 
+  rename_with(~ gsub('x', '', .x)) 
+
+
+# write_csv(final_mod_zcta, "final_mod_zcta.csv")
+
+```
+
+
 ## Exploratory Data Analysis (EDA)
+We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
+
+
+We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
+```{r}
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+chisq_df =
+  read_csv("raw_data/project_df.csv") %>%
+  filter(n_offers > 5) %>% 
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  group_by(dbn, year) %>% 
+  pivot_wider(names_from = year, values_from = n_testers:n_offers) %>%
+  drop_na() %>% 
+  summarize(
+    `2015-19_avg_testers` = mean(n_testers_2015:n_testers_2019),
+    `2020_testers` = n_testers_2020,
+    `2015-19_avg_offers` = mean(n_offers_2015:n_offers_2019),
+    `2020_offers` = n_offers_2020
+  ) %>% 
+  mutate(
+    `2015-19_prop` = `2015-19_avg_offers` / `2015-19_avg_testers`,
+    `2020_prop` = `2020_offers` / `2020_testers`
+  )
+
+chi1 <- chisq_df %>% 
+  select(`2015-19_avg_testers`, `2020_testers`) %>% 
+  chisq.test() 
+
+chi1 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
+
+chi2 <- chisq_df %>% 
+  select(`2015-19_avg_offers`, `2020_offers`) %>% 
+  chisq.test() 
+
+chi2 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
+
+```
 
 ## Additional Analysis: Modeling
+For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. 
+Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a  Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.
+
+```{r }
+#this is the main model (10% change in cumulative incidence as predictor)
+model1 <- glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+model1 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model adjusted by number of testers
+model3 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+model3 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model adjusted by number of testers and death rate
+model4 <- glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+model4 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  knitr::kable(digits = 3)
+
+#model with a 10% change in death rate as the main predictor
+
+model2 <- glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+model2 %>% 
+broom::tidy() %>% 
+dplyr::select(term, estimate, p.value) %>% 
+  mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
+  knitr::kable(digits = 5)
+
+```
 
 ## Discussion
 
