@@ -226,7 +226,47 @@ n_removed_table =
 
 ```
 
-AT THIS POINT I'LL PUT IN DOING THE WEIGHTED AVERAGES ETC ETC ETC ETC
+Lastly, we calculated the weighted average of offers for all years, 2015-2019, and 2020 by using the `weighted.mean()` function, weighting the number of offers at a school by the number of students applying to specialized high schools, and averaging across all schools within a ZCTA. All weighted averages were calculated after filtering to select only schools with > 5 offers total. Furthermore, `n_offers` and `n_testers` were similarly averaged within a ZCTA and for all years, 2015-2019, and 2020 alone.
+
+```{r}
+
+filtered_wt_avgs_df =
+  read_csv("raw_data/project_df.csv") %>%
+  select(modzcta, dbn, n_testers, n_offers, year) %>%
+  drop_na() %>% 
+  filter(n_offers > 5) %>% 
+  group_by(modzcta, year) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    wt_avg = weighted.mean(n_offers, n_testers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_testers:wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    `2015-19_avg_testers` = mean(avg_testers_2015:avg_testers_2019),
+    `2015-19_avg_offers` = mean(avg_offers_2015:avg_testers_2019),
+    `2015-19_wt_avg` = mean(wt_avg_2015:wt_avg_2019),
+    all_years_avg_testers = mean(avg_testers_2015:avg_testers_2020),
+    all_years_avg_offers = mean(avg_offers_2015:avg_testers_2020),
+    all_years_wt_avg = mean(wt_avg_2015:wt_avg_2020)
+  ) %>% 
+  select(
+    all_years_avg_testers, 
+    all_years_avg_offers, 
+    all_years_wt_avg, 
+    `2015-19_avg_testers`,
+    `2015-19_avg_offers`, 
+    `2015-19_wt_avg`, 
+    avg_testers_2020, 
+    avg_offers_2020, 
+    wt_avg_2020
+    )
+
+# write.csv(wt_avgs_df, "filtered_weighted_avgs.csv")
+
+```
+
 
 ### Variable Dictionary
 
@@ -260,8 +300,8 @@ To obtain consistent area units  across the datasets, we used a [crosswalk file]
 
 
 ## Data Join
-In order to join all the separate data sets, some of which were at the zip code level, we used a zip code- modzcta additional file to convert them to such levels. 
-Once all datasets had a modzcta variable, we joined them together
+In order to join all the separate data sets, some of which were at the zip code level, we used an additional zip code-modzcta conversion file to convert them to such levels. 
+Once all datasets had a modzcta variable, we joined them together.
 
 ```{r}
 
@@ -305,9 +345,11 @@ final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %
   rename_with(~ gsub('x', '', .x)) 
 
 
-write_csv(final_mod_zcta, "final_mod_zcta.csv")
+# write_csv(final_mod_zcta, "final_mod_zcta.csv")
 
 ```
+
+
 ## Exploratory Data Analysis (EDA)
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
 
