@@ -9,6 +9,9 @@ output:
     toc_float: true
 ---
 
+
+<img src = "public_schools_zcta.png">
+
 ## Project Motivation
 New York City has the largest public school system in the United States, with
 approximately 1 million students enrolled in public schools every year, and a 
@@ -70,12 +73,13 @@ associations between the COVID-19 pandemic and specialized high school admission
 Questions we aimed to address are:
 
 * Were the incidence or mortality rates of COVID-19 at the ZCTA-level associated 
-with SHSAT testers and offers during 2020? 
-* Is the number of SHSAT testers and offers in 2020 significantly
+with SHSAT applicants and offers during 2020? 
+* Is the number of SHSAT applicants and offers in 2020 significantly
 different from previous years?
-* At the ZCTA-level, what does the geographic distribution of COVID-19 incidence 
-and mortality rates, and the proportion of SHSAT offers made in 2020, look like?
-* geographic distribution of the proportion of offers to applicants by borough and by zip code (borough summaries)
+* At the ZCTA-level, what are the geographic distributions of COVID-19 incidence 
+and mortality rates for 2020?
+* At the ZCTA and borough levels, what is the geographic distribution of the 
+proportion of SHSAT offers to applicants?
 
 ## Data Sources and Preparation
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
@@ -93,41 +97,36 @@ testing data was compiled for New York State beginning March 1, 2020 by the
 the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data).
 
 * **Crosswalk File for Zip-Code to MODZCTA** To obtain consistent area units 
-across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, are currently 
-used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as our 
-spatial level allows us to overcome several limitations of using zip-code level
-data.
+across the datasets, we used a [crosswalk file](https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv) 
+to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, are
+currently used by the NYC DOHMH for the mapping of COVID-19. 
 
-* Why look at ZCTAs instead of zip-codes? 
+**Why look at ZCTAs instead of zip-codes?**
 
-A ZIP Code doesn’t actually refer to an area, but rather a collection of points 
+Using MODZCTA as our spatial level allows us to overcome several limitations of
+zip-code level data.A ZIP Code doesn’t refer to an area, but rather a collection of points 
 that make up a mail delivery route. The modified ZCTA (MODZCTA) geography combines 
 census blocks with smaller populations to allow more stable estimates of 
-population size for rate calculation. Information by geography reflect people's 
-MODZCTA of residence at the time of reporting, and not the location of testing, 
-diagnosing, or hospitalization. 
+population size for rate calculations. For the COVID-19 data that we used, the 
+MODZCTA reflects people's residence at the time of reporting, and not the 
+location of their COVID-19 testing, diagnosing, or hospitalization. 
 
 ## Methods
 
 ### Data Cleaning
 
-#### SHSAT Data
 
+
+
+#### SHSAT Data
 Though charter middle schools are included in the yearly specialized high school admissions by sending school dataset, they are not included in the DOE middle school directory 
 
 #### Covid-19 2020 Cumulative Indicence Data
-
 The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the [NYC Department of Health and Mental Hygiene](https://github.com/nychealth/coronavirus-data)
 This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the "noise" from external individuals testing positive for Covid-19 in a neighborhood but not residing there.
 
 ### Visualizations
-
-We created MOZCTA level interactive maps with the distribution of:
-* **Cumulative death rate by 100.000 inhabitants**
-
-* **Cumulative Covid-19 positive rate incidence between March and December 2020**
-
-* **Proportion of Specialized High School offers received by the number of students who took the SHSAT test in 2020** 
+Our interactive maps can be found [here](nyc_maps.html).
 
 ### Analysis
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
