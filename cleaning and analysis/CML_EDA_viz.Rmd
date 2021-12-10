@@ -88,7 +88,7 @@ prop_offers_testers_ggplot =
 
 n_offers_ggplot / n_testers_ggplot / prop_offers_testers_ggplot
   
-prop_offers_testers_ggplot / wt_boro_ggplot
+# prop_offers_testers_ggplot / wt_boro_ggplot
 
 ```
 
@@ -112,7 +112,13 @@ bavg_n_offers_ggplot =
     borough = fct_reorder(borough, prop_test_offers)
   ) %>%
   ggplot(aes(x = borough, y = avg_n_offers)) +
-  geom_boxplot()
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2) +
+  labs(
+    title = "Average Number of Offers Per School, 2015-2020",
+    x = "",
+    y = "# Offers"
+  )
 
 bavg_n_testers_ggplot = 
   avg_boro_df %>% 
@@ -121,7 +127,13 @@ bavg_n_testers_ggplot =
     borough = fct_reorder(borough, prop_test_offers)
   ) %>%
   ggplot(aes(x = borough, y = avg_n_testers)) +
-  geom_boxplot()
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2) +
+  labs(
+    title = "Average Number of Specialized HS Applicants Per School, 2015-2020",
+    x = "",
+    y = "# Applicants"
+  )
 
 bavg_prop_offers_testers_ggplot =
   avg_boro_df %>% 
@@ -130,9 +142,19 @@ bavg_prop_offers_testers_ggplot =
     borough = fct_reorder(borough, prop_test_offers)
   ) %>%
   ggplot(aes(x = borough, y = prop_test_offers)) +
-  geom_boxplot()
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2) +
+  labs(
+    title = "Average Proportion of Offers to Applicants Per School, 2015-2020",
+    x = "Borough",
+    y = "# Offers / # Applicants"
+  )
 
-bavg_n_offers_ggplot / bavg_n_testers_ggplot / bavg_prop_offers_testers_ggplot + plot_layout(heights = c(2, 2, 2), widths = c(1, 1, 1))
+bavg_n_offers_ggplot / bavg_n_testers_ggplot / bavg_prop_offers_testers_ggplot
+
+ggsave("eda_testers_offers_prop.png", width = 8, height = 10)
+  
+  plot_layout(heights = c(2, 2, 2), widths = c(1, 1, 1))
 
 
 ```
