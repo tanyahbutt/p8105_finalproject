@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     code_folding: hide
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -17,6 +19,7 @@ library(lubridate)
 library(ggridges)
 library(purrr)
 library(plotly)
+library(patchwork)
 
 
 getwd()
@@ -228,7 +231,7 @@ n_removed_table =
 
 Lastly, we calculated the weighted average of offers for all years, 2015-2019, and 2020 by using the `weighted.mean()` function, weighting the number of offers at a school by the number of students applying to specialized high schools, and averaging across all schools within a ZCTA. All weighted averages were calculated after filtering to select only schools with > 5 offers total. Furthermore, `n_offers` and `n_testers` were similarly averaged within a ZCTA and for all years, 2015-2019, and 2020 alone.
 
-```{r}
+```{r wt_avgs_df, message=FALSE}
 
 filtered_wt_avgs_df =
   read_csv("raw_data/project_df.csv") %>%
@@ -289,7 +292,7 @@ This data set contains the cumulative Covid-19 positive incidence rate from Marc
 ### Variable Dictionary
 `modzcta_cum_perc_pos` = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.
 
-```{r covid positive data}
+```{r covid positive data, message=FALSE}
 test2 <- read_csv("raw_data/tests-by-zcta.csv")
 ```
 
@@ -303,7 +306,7 @@ To obtain consistent area units  across the datasets, we used a [crosswalk file]
 In order to join all the separate data sets, some of which were at the zip code level, we used an additional zip code-modzcta conversion file to convert them to such levels. 
 Once all datasets had a modzcta variable, we joined them together.
 
-```{r}
+```{r joining_chunk, message=FALSE}
 covid_test <- read_csv("raw_data/tests-by-zcta.csv")
 covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv")
 school_data_clean <- read_csv("raw_data/filtered_weighted_avgs.csv")
@@ -333,7 +336,7 @@ project_df_deathrate =
 
 ```
 
-```{r}
+```{r joining_chunk2, message=FALSE}
 
 school_covidtest <- full_join(school_data_clean, covid_test, by = "modzcta") %>% 
   janitor::clean_names()
@@ -349,11 +352,231 @@ final_mod_zcta <- full_join(school_covidtest, covid_deathrate, by = "modzcta") %
 
 
 ## Exploratory Data Analysis (EDA)
+
+#### The Distribution of Specialized High School Offers in New York City
+
+*Figure 1: Proportion of Offers by Number of Testers Across NYC Boroughs, 2015-2020* 
+
+```{r hs_admits_overview, message=FALSE, fig.width=10, fig.height=8}
+
+shsat_covid_df = 
+  read_csv("raw_data/project_df.csv") %>%
+  mutate(
+    year = factor(year, levels = c("2015", "2016", "2017", "2018", "2019", "2020"))
+  ) %>% 
+  select(zip, modzcta, borough, 
+         dbn, year, n_hs_applicants, n_testers, n_offers, 
+         modzcta_cum_perc_pos, cum_ave_death_rate
+         )
+
+shsat_covid_df %>%
+  filter(n_offers > 5) %>% 
+  filter(year != 2015) %>% 
+  mutate(
+    offers_per_applicants = n_offers / n_hs_applicants
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = year, y = offers_per_applicants)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.1, color = "red") +
+  facet_grid(. ~borough) +
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position = "bottom") +
+  labs(
+    title = "Borough and Year Differences in Number of Specialized High School Admissions Offers",
+    subtitle = "Offers per applicants is the fraction of students among those applying to specialized schools who receive offers",
+    x = "Year",
+    y = "Offers Per Applicants"
+  )
+```
+
+*Figure 2: Number of Offers by Proportion of Students Additionally Applying to Specialized Schools* 
+
+```{r teters_vs_allapps, message=FALSE, warning=FALSE, fig.width=10, fig.height=9}
+
+shsat_covid_df %>%
+  filter(n_offers > 5,
+         year != 2015) %>% 
+  mutate(
+    spec_per_applicants = n_testers / n_hs_applicants,
+    offers_per_tester = n_offers / n_testers
+  ) %>% 
+  group_by(year) %>% 
+  ggplot(aes(y = offers_per_tester, x = spec_per_applicants)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  facet_grid(. ~borough) +
+  labs(
+    title = "Do schools with more students applying to specialized schools get more offers?",
+    x = "Proportion of HS Applicants Applying to Specialized High Schools",
+    y = "Proportion of Offers to # Specailized HS Applicants"
+  ) +
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+Note that data from 2015 are excluded from this figure as the number of students applying specifically to specialized high school applicants was the same as the number of students in general high school admissions, suggesting that the number of students in general admissions was not recorded for 2015.
+
+Since applying to most high schools and to specialized high schools are two separate processes, we were interested in whether there is a relationship between how common it is to apply to specialized high schools at a given middle school, and how many specialized high school admissions offers that school receives. The X axis of Figure 2 describes: out of the students applying to high school, how many are also applying to specialized high schools? The Y axis then adds: how many students receive offers to specialized high schools for different prevalence of specialized high school applications?
+
+In the Bronx and on Staten Island, there are few schools where a majority of the students applying to high school are additionally applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. 
+
+In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in. Overall, these data suggest that the middle school a student attends is strongly correlated with how likely that student is to be offered admission to a specialized high school.
+
+#### Specialized High School Offers and Covid-19
+
+*Figure 3: Number of Offers Before and During the Covid-19 Pandemic*
+
+```{r wt_avg_covid_precovid, message=FALSE, warning=FALSE, fig.width=9.5,fig.height=14}
+
+# Re-define a df with weighed averages to include borough (which is excluded in the final_mod_zcta file)
+
+zcta_wt_avgs_df =
+  read_csv("raw_data/project_df.csv") %>%
+  select(modzcta, dbn, borough, n_hs_applicants, n_testers, n_offers, year, modzcta_cum_perc_pos, cum_ave_death_rate) %>%
+  filter(n_offers > 5) %>% 
+  drop_na() %>% 
+  mutate(
+    offers_per_testers = n_offers / n_testers,
+    spec_per_applicants = n_testers / n_hs_applicants
+  ) %>% 
+  group_by(modzcta, year, borough) %>% 
+  summarize(
+    avg_testers = mean(n_testers),
+    avg_offers = mean(n_offers),
+    avg_applicants = mean(n_hs_applicants),
+    wt_avg_offers = weighted.mean(n_offers, n_testers),
+    avg_offer_per_tester = mean(offers_per_testers),
+    avg_spec_per_applicants = mean(spec_per_applicants)
+  )
+
+# Plot the zipcode level weighted average number of offers by borough before and during the Covid-19 pandemic
+
+precovid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  select(modzcta, year, wt_avg_offers, borough) %>%
+  drop_na() %>% 
+  group_by(modzcta, year, borough) %>%
+  summarize(
+    avg_wt_avg = mean(wt_avg_offers)
+  ) %>% 
+  pivot_wider(names_from = year, values_from = avg_wt_avg) %>%
+  drop_na() %>% 
+  mutate(
+    precovid_wt_avg = mean(`2015`:`2019`)
+    ) %>%
+  ggplot(aes(x = borough, y = precovid_wt_avg)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = "red") +
+  ylim(-10, 225) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough",
+    title = "Pre-Covid (2015-2019)"
+    ) +
+   theme(plot.title = element_text(hjust = 0.5))
+
+
+covid_boro_wt_avg =
+  zcta_wt_avgs_df %>% 
+  filter(year == 2020) %>% 
+  group_by(borough) %>% 
+  ggplot(aes(x = borough, y = wt_avg_offers)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.2, color = "red") +
+  ylim(-10, 225) +
+  labs(
+    y = "Weighted Avg. # Offers", 
+    x = "Borough", 
+    title = "Covid (2020)"
+    ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
+
+patchwork + plot_annotation(
+  title = "Difference in Admissions Offers Before and During the Covid-19 Pandemic",
+  subtitle = "Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across ZCTA",
+  theme(text = element_text(hjust = 0.5))
+)
+```
+
+
+*Figure 4* 
+
+```{r covid_admit_rate_gg, message=FALSE, warning=FALSE, fig.width=10, fig.height=9}
+
+# join in borough data that was excluded from the final analysis df
+modzcta_to_borough = 
+  shsat_covid_df %>% 
+  select(modzcta, borough) %>% 
+  unique()
+
+final_shsat_modzcta =
+  read_csv("raw_data/final_mod_zcta.csv") %>% 
+  select(modzcta,
+         all_years_avg_testers, 
+         all_years_avg_offers, 
+         all_years_wt_avg, 
+         `2015_19_avg_testers`,	
+         `2015_19_avg_offers`, 
+         `2015_19_wt_avg`, 
+         avg_testers_2020, 
+         avg_offers_2020, 
+         wt_avg_2020,	
+         modzcta_cum_perc_pos,
+         cum_ave_death_rate) %>% 
+  drop_na() %>% 
+  full_join(modzcta_to_borough, .x, by = "modzcta")
+  
+# plot weighted average n offers before and during Covid
+
+wt_avg_vs_covidtest =
+  final_shsat_modzcta %>% 
+  ggplot(aes(x = modzcta_cum_perc_pos, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+   x = "Cumulative Covid-19 % Positivity 
+   Rate 3/20 - 12/20",
+   y = "Weighted Average # Offers Per ZCTA",
+   title = "Positivity Rate"
+  )
+
+wt_avg_vs_death =
+  final_shsat_modzcta %>%
+  ggplot(aes(x = cum_ave_death_rate, y = wt_avg_2020)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Cumulative Avg Covid-19 Death Rate 
+    Per 100,000 3/20 - 12/20",
+    y = "Weighted Average # Offers Per ZCTA",
+    title = "Death Rate"
+  )
+
+patchwork = wt_avg_vs_covidtest + wt_avg_vs_death
+
+patchwork + plot_annotation(
+  title = "Relationship Bewteen Covid Positvity Rate, Death Rate and Number of Offers per ZCTA"
+)
+
+```
+
+
+
+
+## Primary Analysis
+
+
+
+
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
 
 
-We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
-```{r}
+We rann chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
+
+```{r chisq, message=FALSE}
 
 chisq_df =
   read_csv("raw_data/project_df.csv") %>%
