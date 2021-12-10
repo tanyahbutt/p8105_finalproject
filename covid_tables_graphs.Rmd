@@ -8,8 +8,6 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(plotly)
-library(rgdal)
-library(sf)
 library(viridis)
 
 getwd()
@@ -28,6 +26,7 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
+## graph of death rate vs. date by zcta
 ```{r}
 covid_deathrate <- read_csv("raw_data/deathrate_byzcta_clean.csv") %>% 
   pivot_longer(
@@ -51,5 +50,34 @@ plot = ggplot(covid_deathrate, aes(x = date, y = death_rate, color = ZCTA)) +
 
 ggplotly(plot)
   
+```
+
+```{r}
+covid_incidence_rate <- read_csv("raw_data/New_York_State_Statewide_COVID-19_Testing_by_Zip_Code.csv") %>% 
+  janitor::clean_names() %>% 
+  na.omit() %>% 
+  separate(test_date, into = c("month", "day", "year")) %>% 
+  filter(year == 2020) %>% 
+  mutate(zip_code = as.numeric(zip_code)) %>% 
+  filter(zip_code >= 00501 & zip_code <= 14925) %>% 
+  group_by(zip_code, month) %>% 
+  mutate(monthly_pos_rate = (positive_cases/total_tests)*100) %>% 
+  select(month, zip_code, monthly_pos_rate) %>% 
+  rename("Zip-Code" = zip_code) %>% 
+  mutate("Zip-Code" = as.character("Zip-Code"))
+  
+  
+incidence_plot = ggplot(covid_incidence_rate, aes(x = month, y = monthly_pos_rate,
+                                                  color = "Zip-Code")) +
+  geom_line(aes(group = "Zip-Code")) +
+  geom_point(alpha = .55) + 
+  theme(legend.text = element_text(size = 6), 
+        axis.text.x = element_text(angle = 45)) +
+  labs(
+    title = "COVID-19 Incidence Rate Rate per 100,000\n in 2020 by Zip-Code",
+    x = "Date",
+    y = "COVID-19 Incidence Rate\n (cases/100,000)") 
+
+ggplotly(incidence_plot)
 ```
 
