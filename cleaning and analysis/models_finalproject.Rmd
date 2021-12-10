@@ -13,7 +13,8 @@ library(modelr)
 ##load datasets
 
 ```{r}
-data <- read_csv("final_mod_zcta.csv") %>% 
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
+data <- read_csv("raw_data/final_mod_zcta.csv") %>% 
   mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
          all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
          wt_avg_2020 = round(wt_avg_2020, digits = 0)) %>% 
@@ -25,9 +26,9 @@ data <- read_csv("final_mod_zcta.csv") %>%
 
 ```{r}
 #chi sq between the numbr of offers in 2015-2019 vs 2020 and the number of testers 2015-2019 vs 2020
-
+setwd("~/Desktop/DATA SCIENCE/p8105_finalproject")
 chisq_df =
-  read_csv("project_df.csv") %>%
+  read_csv("raw_data/project_df.csv") %>%
   filter(n_offers > 5) %>% 
   select(modzcta, dbn, n_testers, n_offers, year) %>%
   drop_na() %>% 
@@ -45,13 +46,23 @@ chisq_df =
     `2020_prop` = `2020_offers` / `2020_testers`
   )
 
-chisq_df %>% 
+chi1 <- chisq_df %>% 
   select(`2015-19_avg_testers`, `2020_testers`) %>% 
-  chisq.test()
+  chisq.test() 
 
-chisq_df %>% 
+chi1 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
+
+chi2 <- chisq_df %>% 
   select(`2015-19_avg_offers`, `2020_offers`) %>% 
-  chisq.test()
+  chisq.test() 
+
+chi2 %>% 
+  broom::tidy() %>% 
+  dplyr::select(p.value) %>% 
+  knitr::kable(digits = 5)
 
 ```
 
