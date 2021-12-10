@@ -30,7 +30,7 @@ covid_death_sdf1 = st_read("shapefiles/deathrate_map1.shp")
 Column {data-width=600}
 -----------------------------------------------------------------------
 
-### Chart A
+### COVID-19 Cumulative Incidence Rate from March - September 2020 by ZCTA
     
 ```{r, echo = FALSE}
 ggplotly(
@@ -49,7 +49,7 @@ ggplotly(
 
 Column {data-width=500}
 -----------------------------------------------------------------------
-### Chart B 
+### COVID-19 Cumulative Death Rate from March - September 2020 by ZCTA
 
 ```{r, echo = FALSE}
 ggplotly(
@@ -65,7 +65,7 @@ ggplotly(
          yaxis = list(autorange = TRUE))
 ```
 
-### Chart C
+### Proportion of SHSAT Offers in 2020 by ZCTA
 
 ```{r, echo = FALSE}
 ggplotly(
