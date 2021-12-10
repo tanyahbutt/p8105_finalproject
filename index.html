@@ -324,13 +324,13 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="Final_Project_Report.html">Project Report</a>
-</li>
-<li>
   <a href="analysis.html">Exploratory Analysis</a>
 </li>
 <li>
   <a href="nyc_maps.html">Map Visualizations</a>
+</li>
+<li>
+  <a href="Final_Project_Report.html">Project Report</a>
 </li>
 <li>
   <a href="mailto:&lt;thb2114@cumc.columbia.edu&gt;">
@@ -339,7 +339,7 @@ div.tocify {
   </a>
 </li>
 <li>
-  <a href="http://github.com/tanyahbutt/p8105finalproject">
+  <a href="https://github.com/tanyahbutt/p8105_finalproject">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -380,7 +380,7 @@ div.tocify {
 <p>Questions we aimed to address are:</p>
 <ul>
 <li>Were the incidence or mortality rates of COVID-19 at the ZCTA-level associated with SHSAT testers and offers during 2020?</li>
-<li>Is the number of SHSAT testers in 2020 significantly different from previous years?</li>
+<li>Is the number of SHSAT testers and offers in 2020 significantly different from previous years?</li>
 <li>At the ZCTA-level, what does the geographic distribution of COVID-19 incidence and mortality rates, and the proportion of SHSAT offers made in 2020, look like?</li>
 <li>geographic distribution of the proportion of offers to applicants by borough and by zip code (borough summaries)</li>
 </ul>
@@ -421,27 +421,34 @@ div.tocify {
 <div id="analysis" class="section level3">
 <h3>Analysis</h3>
 <p>We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
-<p>We run chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
+<p>We ran chi-square tests to test if there was a significant difference between the number of offers in 2020 and the average number of offers between 2015 and 2019. Additionally, we tested if there was a significant difference between the number of applicants to specialized high schools in 2020 and the average number of applicants from 2015 until 2019.</p>
 <p>For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
 </div>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<p><em>Figure 1: Understanding the Baseline Distribution of Specialized HS Admissions in New York City</em></p>
-<p><img src = "offer_per_tester.png"></p>
-<p>First, it is important to have a sense of WHAT THE GENERAL DISTRIBUTION OF OFFERS IS</p>
-<p>HUGE SPREAD MANHATTAN GETS THE MOST OFFERS PER N APPLICANTS, GENERALLY STATEN ISLAND HAS GOOD AND BAD YEARS</p>
-<p>Here, the red points are the underlying datapoints.</p>
-<p><em>Figure 2</em></p>
-<p><img src="pre_post_covid_boxplot.png" style="width:90%"> DESCRIPTION OF THIS FIGURE Pre-covid data (2015-2019) is the weighted average number of offers per zip code, averaged again across the years 2015-2019. The red points are the underlying datapoints.</p>
-<p>#Descriptive statistics The mean and the median cumulative Covid-19 positive rate were 23.85% and 24.90% respectively. The maximum was 88.50%, and the minimum was 9.3%. The mean and the median cumulative death rate by 100,000 inhabitants were 56.31 and 53.60 respectively, the minimum was 0% and the maximum was 160.43.</p>
-<p>#Secondary analysis A significant difference between the number of testers in 2020 compared to the previous 5 years was identified (p value &lt;0.0001). However, the difference in the number of offers during 2020 compared to the previous 5 years was not significant. In our regression models, we identified that very 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of SHSAT, on average, across all boroughs in New York City.This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of testers during the year, a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020, was observed.The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
+<p><em>Figure 1: Understanding the Baseline Distribution of Specialized HS Admissions in New York City</em> <img src = "offer_per_tester.png"></p>
+<p>First, it is important to have a sense of how specialized high school applications process differ in in schools across the city. Here, the proportion of admissions offers to the number of students applying to specialized schools represents the “success rate” of each middle school. These data answer the question: “of the students applying to specialized schools, how many get in?” The red points are the underlying datapoints.</p>
+<p>Overall, there is a large spread in the data: in some schools, a majority of the students applying to specialized high schools receive an offer, and in other schools, almost none of the students applying receive an offer from a specialized school. Brooklyn and Queens have the greatest range in proportion of offers to applicants, and the Bronx and Staten island consistently have a much lower “success rate” of offers per students applying. Manhattan consistently has the greatest number of offers per number of applicants. The observed trends are relatively stable across the years 2015-2020.</p>
+<p><em>Figure 2: Number of Offers Before and During the Covid-19 Pandemic</em></p>
+<p><img src="pre_post_covid_boxplot.png" style="width:90%"></p>
+<p>The weighted average number of offers is the number of offers per school, weighted by the number of applicants at that school, averaged within a ZCTA. Pre-covid data (2015-2019) is the weighted average number of offers per ZCTA, averaged again across the years 2015-2019. The red points are the underlying datapoints.</p>
+<p>The weighted average number of offers seems to have stayed largely the same pre- and during the Covid-19 pandemic in the Bronx and on Staten Island, while the median weighted average number of offers for zip codes Manhattan decreased in the pandemic. In Brooklyn, there are a few ZCTAs in which students had an unusually high number of offers in 2020, though the median number-of-applicant-weighted average number of offers per Brooklyn zip code is lower in 2020 than in the preceding five years.</p>
+<div id="descriptive-statistics" class="section level4">
+<h4>Descriptive statistics</h4>
+<p>The mean and the median cumulative Covid-19 positive rate across all ZCTAs were 23.85% and 24.90%, respectively. The maximum was 88.50%, and the minimum was 9.3%. The mean and the median cumulative death rate by 100,000 inhabitants were 56.31 and 53.60, respectively, the minimum was 0%, and the maximum was 160.43.</p>
+</div>
+<div id="secondary-analysis" class="section level4">
+<h4>Secondary analysis</h4>
+<p>A significant difference between the number of applicants in 2020 compared to the previous 5 years was identified (p value &lt;0.0001). However, the difference in the number of offers received during the 2020=2021 school year as compared to the previous 5 years was not significant.</p>
+<p>In our regression models, we identified that every 10% increase in the Covid-19 cumulative incidence rate during 2020 was associated with a 0.005 decrease in the number of specialized high school admissions offers, on average, across all boroughs in New York City. This association was statistically significant with a p value &lt;0.05. When the model was adjusted for the number of applicants during the yearm a significant reduction of 0.004 offers by a 10% increase in the cumulative incidence of Covid-19 during 2020 was observed. The model testing the change in offers associated with an increase in the mortality rate was not significant and yield estimates with a magnitude &lt;0.0001, thus it is not shown in the table.</p>
+</div>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
-<p>In this project, we identified a significant difference in the number of testers between 2020 and the previous five years. We represented the distribution of the SH SAT offers across NYC in a visually friendly manner, identifying the areas with higher proportion of offers in the borough of Manhattan. In contrast, the Covid-19 positive rate and cumulative mortality rate by 100,000 inhabitants was higher in the boroughs of Queens, The Bronx and Staten Island. We identified a significant association between an increase of Covid-19 incidence and a decrease in the number of offers by MOZCTA on average. Several mechanisms could explain this identified association. The pandemic has impacted human lives at several levels, including accessibility to education. We believe, these findings remark those areas where most efforts to enhance students accessibility to education and exam preparation is needed. These preexisting disparities across neighborhoods are likely to be exacerbated by the pandemic, which not only impacts the students directly (i.e., by remote education, reduced hours of class), but also can impact their education through a negative impact on their families (i.e., loss of family members, decrease of median household income due to unemployment, or increased healthcare expenses for Covid-19 hopsitalizations, among other hypothetical mechanisms).</p>
+<p>In this project, we identified a significant difference in the number of testers between 2020 and the previous five years. We represented the distribution of the specialized high school admissions offers across NYC in a visually friendly manner, identifying the areas with higher proportion of offers in the borough of Manhattan. By contrast, the Covid-19 positive rate and cumulative mortality rate by 100,000 inhabitants was higher in the boroughs of Queens, The Bronx and Staten Island. We identified a significant association between an increase of Covid-19 incidence and a decrease in the number of offers by MOZCTA on average. Several mechanisms could explain this identified association. The pandemic has impacted human lives at several levels, including accessibility to education. We believe these findings remark those areas where most efforts to enhance students accessibility to education and exam preparation is needed. These preexisting disparities across neighborhoods are likely to be exacerbated by the pandemic, which not only impacts the students directly (i.e., by remote education, reduced hours of class), but also can impact their education through a negative impact on their families (i.e., loss of family members, decrease of median household income due to unemployment, or increased healthcare expenses for Covid-19 hospitalizations, among other hypothetical mechanisms).</p>
 <p>Nevertheless, this study has a serial of limitations. First of all, given the cross sectional nature of the analysis, it is impossible to understand the direction of the association. Longitudinal studies are needed, particularly documenting the same parameters over the next years as Covid-19 infections remain an issue for the community. Additional, we excluded several schools which did not have information about their zip code or MOZCTA, moreover, we excluded all the schools with less than 5 participants to avoid non positivity violations. This could be a source of selection bias, particularly tending to exclude schools with a smaller number of students. Additionally, our regression models were not adjusted for potential confounders, which represents a major limitation for the interpret ability of this association as a potential causal effect. Nevertheless, to our knowledge, this is the first project that looked at the association between Covid-19 positivity rate and SH SAT offers during the first year of the Covid-19 pandemic. The visualization of the distribution of SH SAT offers and Covid-19 incidence an mortality, provides a useful description that allow us to identify areas where the opportunities for students to access specialized high schools are particularly low. Interestingly, these areas are those where the incidence and mortality rates are higher.</p>
-<p>There is a need for longitudinal studies that assess this association over time, additionally, further studies should seek to include potential confounders (i.e., socioeconomic status, mental health) for the association between Covid 19 and SH SAT offers.</p>
+<p>There is a need for longitudinal studies that assess this association over time, additionally, further studies should seek to include potential confounders (i.e., socioeconomic status, mental health) for the association between Covid 19 and specialized high school admissions offers.</p>
 </div>
 <div id="contributors-tanya-butt-catherine-lucey-irene-martinez-morata" class="section level2">
 <h2>Contributors: Tanya Butt | Catherine Lucey | Irene Martinez Morata</h2>
