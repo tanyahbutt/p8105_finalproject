@@ -19,13 +19,10 @@ notoriously complex enrollment system. At all stages of education - elementary,
 middle, and high school - students can apply outside of their district school,
 often into specialized or highly selective schools. New York is unique in that a
 comprehensive application for admission to a competitive, well known school can 
-begin as early as pre-kindergarten.
+begin as early as in pre-kindergarten.
 
 The largest admissions process occurs for high school, where all eighth grade 
-students are eligible to apply to any public high school in the city. The
-official DOE [guide](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat) to high school
-admissions for 2021 splits the high school admissions process into applications 
-for non-specialized and  specialized public high schools. Eighth graders who do 
+students are eligible to apply to any public high school in the city. The high school admissions process, outlined fully in the official DOE [guide](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat) is split into applications for non-specialized and specialized public high schools. Eighth graders who do 
 not enter the high school admissions process at all receive an offer from the
 closest high school that has an available seat. 
 
@@ -40,7 +37,7 @@ Due to the major challenges posed to educational systems during the pandemic, we
 were curious to see if rates of COVID-19 exacerbated existing inequalities in New
 York's specialized high school system. With this project, we aimed to determine 
 whether incidence and death rates of COVID-19 at the zip-code tabulation area 
-(ZCTA)-level were associated the number of offers made to specialized high 
+(ZCTA)-level were associated the number of admissions offers to specialized high 
 schools in 2020. 
 
 ## Related Background
@@ -61,7 +58,7 @@ Though the New York's specialized high school system has been touted as a mechan
 for economic mobility and a means of offering an outstanding education to any 
 student, the specialized high school system still reflects the segregation and
 inequality rooted in the public schools. In 2014, UCLA's Civil Rights Project 
-described New York State, and New York City, in particular, has having [the most segregated schools in the nation](https://www.civilrightsproject.ucla.edu/news/press-releases/2014-press-releases/new-york-schools-most-segregated-in-the-nation). A new [report](https://www.civilrightsproject.ucla.edu/research/k-12-education/integration-and-diversity/nyc-school-segregation-report-card-still-last-action-needed-now/NYC_6-09-final-for-post.pdf) 
+described New York State, and New York City, in particular, as having [the most segregated schools in the nation](https://www.civilrightsproject.ucla.edu/news/press-releases/2014-press-releases/new-york-schools-most-segregated-in-the-nation). A new [report](https://www.civilrightsproject.ucla.edu/research/k-12-education/integration-and-diversity/nyc-school-segregation-report-card-still-last-action-needed-now/NYC_6-09-final-for-post.pdf) 
 by the same authors released in June 2021 describes the persistence of segregation
 by race and poverty in the educational system from 2010-2018.
 
