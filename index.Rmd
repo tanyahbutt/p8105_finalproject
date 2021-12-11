@@ -41,7 +41,7 @@ covid_death_sdf = st_read("shapefiles/deathrate_map1.shp")
 ```
 
 
-<img src = "public_schools_zcta.png">
+<img src = "public_schools_zcta.png" style = "width:80%">
 
 ## Project Motivation
 New York City has the largest public school system in the United States, with
