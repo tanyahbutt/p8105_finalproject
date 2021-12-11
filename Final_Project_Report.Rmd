@@ -527,7 +527,6 @@ patchwork + plot_annotation(
 )
 ```
 
-
 *Figure 4* 
 
 ```{r COVID_admit_rate_gg, message=FALSE, warning=FALSE, fig.width=10, fig.height=9}
