@@ -174,12 +174,12 @@ is not reported due to patient confidentiality and to prevent unreliable estimat
 fig <- ggplotly(
   ggplot(covid_death_sdf) +
     geom_sf(aes(fill = incidence)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 5), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Covid-19 cumulative Incidence \n March - September 2020 by ZCTA",
+    title = "Covid-19 Cumulative Incidence Rate\n from March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Covid-19 cumulative Incidence \n (cases/100,000)")) 
+    y = "Longitude", fill = "Covid-19 Cumulative Incidence\n (Cases/100,000)")) 
   
 fig
 ```
@@ -189,12 +189,12 @@ fig
 fig <- ggplotly(
   ggplot(covid_death_sdf) +
     geom_sf(aes(fill = cum_death)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 5), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Average Death Rate per 100,000 people \n from March - September 2020 by ZCTA",
+    title = "Average Mortality Rate per 100,000 people \n from March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Average Death Rate\n (deaths/100,000)")) 
+    y = "Longitude", fill = "Average Mortality Rate\n (Deaths/100,000)")) 
   
 fig
 ```
@@ -204,12 +204,12 @@ fig
 fig <- ggplotly(
   ggplot(covid_death_sdf) +
     geom_sf(aes(fill = pro_offers)) +
-    theme(legend.text = element_text(size = 6), 
+    theme(legend.text = element_text(size = 5), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Proportion of SHSAT offers \n in 2020 by ZCTA",
+    title = "Proportion of SHSAT Offers in 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "proportion of SHSAT offers")) 
+    y = "Longitude", fill = "Proportion of SHSAT Offers")) 
   
 fig
 ```
