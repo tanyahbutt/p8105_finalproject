@@ -66,14 +66,9 @@ came with the sudden, unprecedented shift to fully virtual learning.
 
 Due to the major challenges posed to educational systems during the pandemic, we 
 were curious to see if rates of COVID-19 exacerbated existing inequalities in New
-York's specialized high school system. With this project, we aimed to determine 
-<<<<<<< HEAD
+York's specialized high school system. With this project, we aimed to determine
 whether incidence and death rates of COVID-19 at the zip-code tabulation area 
-(ZCTA)-level were associated the number of admissions offers to specialized high 
-=======
-whether incidence and mortality rates of COVID-19 at the zip-code tabulation area 
-(ZCTA)-level were associated the number of offers made to specialized high 
->>>>>>> e3b0c59bd72b59e9073bf7952b8602c214974eb7
+(ZCTA)-level were associated the number of admissions offers to specialized high
 schools in 2020. 
 
 ## Related Background
