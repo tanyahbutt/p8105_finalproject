@@ -15,8 +15,8 @@
 
 <title>P8105 Final Project Report</title>
 
-<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -374,28 +374,30 @@ div.tocify {
 
 
 <div id="covid-19-and-specialized-high-school-admissons-in-new-york-city" class="section level1">
-<h1>Covid-19 And Specialized High School Admissons in New York City</h1>
+<h1>COVID-19 And Specialized High School Admissons in New York City</h1>
 <p>Exploring the Potential Associations between Specialized High School Admissions Offers and COVID-19 Rates in NYC</p>
 <div id="motivation-and-related-work" class="section level2">
 <h2>Motivation and Related Work</h2>
+<p>Due to the major challenges posed to educational systems during the pandemic, we were curious to see if rates of COVID-19 exacerbated existing inequalities in New York’s specialized high school system. With this project, we aimed to determine whether incidence and mortality rates of COVID-19 at the zip-code tabulation area (ZCTA)-level were associated the number of applicants and offers made to specialized high schools in 2020.</p>
 </div>
 <div id="project-aims" class="section level2">
 <h2>Project Aims</h2>
 <ol style="list-style-type: decimal">
-<li>Identify and evaluate the Covid-19 positive rate incidence, death rate, high school applications and SH SAT testers and offers in New York City during 2020 and the previous 4 years.</li>
-<li>Compare the time-trends of SH SAT test takers and from 2015 to 2020</li>
-<li>Visualize the geographical distribution of Covid-19 incidence, death rate and proportion of SG SAT offers during 2020 across MOZCTA</li>
-<li>Assess the association between Covid-19 positive rate cumulative incidence and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.</li>
-<li>Assess the association between Covid-19 death rate by 100,000 inhabitants and the number of students that got an SH SAT offer in 2020 by MOZCTA in New York City.</li>
+<li>Identify and evaluate the COVID-19 positive rate incidence, mortality rate, and SHSAT applicants and offers in New York City during 2020 compared to previous years.</li>
+<li>Identify and evaluate the time-trends of SHSAT applicants and from 2015 to 2020</li>
+<li>Visualize the geographical distribution of COVID-19 incidence, mortality rate, and proportion of SHSAT offers during 2020 across MOZCTA</li>
+<li>Assess the association between COVID-19 positive rate cumulative incidence and SHSAT offers in 2020 by MOZCTA</li>
+<li>Assess the association between COVID-19 mortality rate by 100,000 inhabitants and the number of students that got an SHSAT offer in 2020 by MOZCTA in New York City.</li>
 </ol>
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
+<p>Data sets were extracted from the data sources above and variables of interest were cleaned for consistency and clarity. Cleaned data sets were then joined to create a single master file, which was used for subsequent visualizations and data analysis.</p>
 <div id="shsat-testing-and-offers-dataset" class="section level3">
 <h3>SHSAT Testing and Offers Dataset</h3>
-<div id="loading-and-cleaning-yearly-shsat-data" class="section level5">
-<h5>Loading and Cleaning Yearly SHSAT Data</h5>
-<p>Due to small differences in variable naming between 2015-2017 and 2018-2020, data importing and cleaning was done in two parts using the functions <code>clean_shsatv1</code> and <code>clean_shsatv2</code>. In the original data sets, the number of offers for schools where five or fewer students received an offer to a specialized high school was recorded as “0-5,” thus we could not distinguish between schools that had no students receiving a specialized high school offer and schools that had up to five students receiving an offer. 0-5 values for <code>n_offers</code> were converted to “5,” and all values in the column were converted to numerics for easy manipulation. School years, of the format 2015-2016, were re-coded as the year of the fall semester: <code>year = 2015</code> represents school year that began in Fall 2015 and ended in Spring 2016, in which eighth graders took the SHSAT in the fall of 2015 and received high school offers in the spring of 2016. Lastly, duplicates were removed from the combined SHSAT dataset with the <code>unique()</code> function, removing 565 values. We suspect that all duplicates are from the 2019 dataset, which seems to mysteriously duplicate in the <code>rbind()</code> process.</p>
+<div id="loading-and-cleaning-yearly-shsatsat-data" class="section level5">
+<h5>Loading and Cleaning Yearly SHSATSAT Data</h5>
+<p>Due to small differences in variable naming between 2015-2017 and 2018-2020, data importing and cleaning was done in two parts using the functions <code>clean_SHSATsatv1</code> and <code>clean_SHSATsatv2</code>. In the original data sets, the number of offers for schools where five or fewer students received an offer to a specialized high school was recorded as “0-5,” thus we could not distinguish between schools that had no students receiving a specialized high school offer and schools that had up to five students receiving an offer. 0-5 values for <code>n_offers</code> were converted to “5,” and all values in the column were converted to numerics for easy manipulation. School years, of the format 2015-2016, were re-coded as the year of the fall semester: <code>year = 2015</code> represents school year that began in Fall 2015 and ended in Spring 2016, in which eighth graders took the SHSAT in the fall of 2015 and received high school offers in the spring of 2016. Lastly, duplicates were removed from the combined SHSAT dataset with the <code>unique()</code> function, removing 565 values. We suspect that all duplicates are from the 2019 dataset, which seems to mysteriously duplicate in the <code>rbind()</code> process.</p>
 <pre class="r"><code># define functions to load and clean each .csv
 
 clean_shsatv1 = function(df){
@@ -516,7 +518,7 @@ shsat_zip_df =
   drop_na()
 
 # write.csv(shsat_zip_df, &quot;shsat_data.csv&quot;)</code></pre>
-<p>Because the DOE middle school directory only includes data for public middle schools, addresses were not available for charter schools and thus charter schools were excluded from this analysis (max of n = 191 in 2020), leaving data for 464 schools for 2015-2017, 465 schools for 2018 and 2019, and 467 schools in 2020 (See TABLE WHAT NUMBER???).</p>
+<p>Because the DOE middle school directory only includes data for public middle schools, addresses were not available for charter schools and thus charter schools were excluded from this analysis (max of n = 191 in 2020), leaving data for 464 schools for 2015-2017, 465 schools for 2018 and 2019, and 467 schools in 2020 (See table below).</p>
 <pre class="r"><code># keep a version of the shsat_zip_df that retains NA values just to count NAs
 
 full_shsat_zip_df =
@@ -555,6 +557,23 @@ n_removed_table =
 ## |2018 |                         120|                    465|
 ## |2019 |                         130|                    465|
 ## |2020 |                         191|                    467|</code></pre>
+<p>Filtering out schools with fewer than 5 offers in any given year (<code>n_offers &lt; 5</code>) left approximately 110 schools per year. This subset was used in all subsequent analysis.</p>
+<pre class="r"><code>  shsat_zip_df %&gt;%
+  filter(n_offers &gt; 5) %&gt;%
+  group_by(year) %&gt;% 
+  summarise(n_schools = n()) %&gt;% 
+  knitr::kable() %&gt;% 
+  print()</code></pre>
+<pre><code>## 
+## 
+## |year | n_schools|
+## |:----|---------:|
+## |2015 |       118|
+## |2016 |       114|
+## |2017 |       116|
+## |2018 |       117|
+## |2019 |       107|
+## |2020 |       103|</code></pre>
 <p>Lastly, we calculated the weighted average of offers for all years, 2015-2019, and 2020 by using the <code>weighted.mean()</code> function, weighting the number of offers at a school by the number of students applying to specialized high schools, and averaging across all schools within a ZCTA. All weighted averages were calculated after filtering to select only schools with &gt; 5 offers total. Furthermore, <code>n_offers</code> and <code>n_testers</code> were similarly averaged within a ZCTA and for all years, 2015-2019, and 2020 alone.</p>
 <pre class="r"><code>filtered_wt_avgs_df =
   read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
@@ -591,6 +610,17 @@ n_removed_table =
 
 # write.csv(wt_avgs_df, &quot;filtered_weighted_avgs.csv&quot;)</code></pre>
 </div>
+<div id="covid-19-2020-cumulative-indicence-and-mortality-data" class="section level4">
+<h4>COVID-19 2020 Cumulative Indicence and Mortality Data</h4>
+<p>The COVID-19 cumulative incidence and mortality rates for 2020 were imported directly from the github repository of the <a href="https://github.com/nychealth/coronavirus-data">NYC Department of Health and Mental Hygiene</a></p>
+<p>The cumulative incidence rate data set contains the cumulative COVID-19 positive incidence rates from March 2020 until December 2020 by ZCTA. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set includes people who live in NYC. Any person with a residence outside of NYC is not included. A potential benefit of using this data set is that it excludes the “noise” from non-NYC residents who test positive for COVID-19, but do not reside in NYC.</p>
+<p>The death rate data set contained the rate of deaths per 100,000 people, stratified by month, borough, and ZCTA. When the count of deaths is between 1 and 4, the rate is not reported due to patient confidentiality and to prevent unreliable estimates.</p>
+<pre class="r"><code>test2 &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="modzcta-level-shapefile" class="section level3">
+<h3>MODZCTA level shapefile</h3>
+<p>To obtain consistent area units across the datasets, we used a <a href="https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv">crosswalk file</a> to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people’s MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.</p>
 </div>
 <div id="variable-dictionary" class="section level3">
 <h3>Variable Dictionary</h3>
@@ -599,26 +629,17 @@ n_removed_table =
 <p><code>n_hs_applicants</code> = total number of eighth grade students participating in the high school applications process (applicants to specialized + non-specialized high schools) at a given middle school</p>
 <p><code>dbn</code> = district borough number, a unique school identification number assigned by the NYC DOE</p>
 <p><code>feeder_school</code> = full name of the “sending” middle school (middle school at which applicants are currently enrolled)</p>
+<p><code>modzcta_cum_perc_pos</code> = cumulative incidence of confirmed COVID-19 positive cases from March 2020 until December 2020 in NYC.</p>
+<p><code>positive</code> = number of positive confirmed COVID-19 cases</p>
+<p><code>total</code> = total number of COVID-19 tests</p>
+<p><code>03_2020 to 09_2020</code> = mortality rate of confirmed COVID-19 positive cases from March 2020 to September 2020 in NYC</p>
 </div>
-<div id="covid-19-cumulative-incidence-rate-in-2020" class="section level3">
-<h3>Covid-19 cumulative incidence rate in 2020</h3>
-<p>The Covid-19 cumulative incidence rate in 2020 was imported directly from the github repository of the <a href="https://github.com/nychealth/coronavirus-data">NYC Department of Health and Mental Hygiene</a> This data set contains the cumulative Covid-19 positive incidence rate from March 2020 until December 2020. In this data set, a person is classified as a confirmed COVID-19 case if they test positive with a molecular test.This data set include people who live in NYC. Any person with a residence outside of NYC is not included. Children attending school and their families should be residents in NYC to do so, thus, this is a potential benefit of using this data set, which is excluding the “noise” from external individuals testing positive for Covid-19 in a neighborhood but not residing there.</p>
-</div>
-<div id="variable-dictionary-1" class="section level3">
-<h3>Variable Dictionary</h3>
-<p><code>modzcta_cum_perc_pos</code> = cumulative incidence of confirmed Covid-19 positive cases from March 2020 until December 2020 in NYC.</p>
-<pre class="r"><code>test2 &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)</code></pre>
-</div>
-</div>
-<div id="modzcta-level-shapefile" class="section level2">
-<h2>MODZCTA level shapefile</h2>
-<p>To obtain consistent area units across the datasets, we used a <a href="https://github.com/nychealth/coronavirus-data/blob/master/Geography-resources/ZCTA-to-MODZCTA.csv">crosswalk file</a> to convert zip-codes to MODZCTAs. MODZCTAs, based on the 2010 U.S. Census, arecurrently used by the NYC DOHMH for the mapping of COVID-19. The use of MODZCTA as out spatial level allow us to overcome several limitations of the zip code level data (i.e., A ZIP Code doesn’t actually refer to an area, but rather a collection of points that make up a mail delivery route). The modified ZCTA (MODZCTA) geography combines census blocks with smaller populations to allow more stable estimates of population size for rate calculation. Information by geography reflect people’s MODZCTA of residence at the time of reporting, and not the location of testing, diagnosing, or hospitalization. The ZCTA geography was developed by the U.S. Census Bureau.</p>
 </div>
 <div id="data-join" class="section level2">
 <h2>Data Join</h2>
 <p>In order to join all the separate data sets, some of which were at the zip code level, we used an additional zip code-modzcta conversion file to convert them to such levels. Once all datasets had a modzcta variable, we joined them together.</p>
-<pre class="r"><code>covid_test &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)
-covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
+<pre class="r"><code>COVID_test &lt;- read_csv(&quot;raw_data/tests-by-zcta.csv&quot;)
+COVID_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
 school_data_clean &lt;- read_csv(&quot;raw_data/filtered_weighted_avgs.csv&quot;)
 
 zip_mod &lt;- read_csv(&quot;raw_data/ZCTA-to-MODZCTA.csv&quot;) %&gt;% 
@@ -626,7 +647,7 @@ zip_mod &lt;- read_csv(&quot;raw_data/ZCTA-to-MODZCTA.csv&quot;) %&gt;%
 
 school &lt;- read_csv(&quot;raw_data/shsat_data.csv&quot;) 
 
-covid_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
+COVID_deathrate &lt;- read_csv(&quot;raw_data/deathrate_byzcta_clean.csv&quot;)
 
 zcta_skool &lt;- full_join(zip_mod, school, by = &quot;zip&quot;) %&gt;% 
   rename(
@@ -634,31 +655,34 @@ zcta_skool &lt;- full_join(zip_mod, school, by = &quot;zip&quot;) %&gt;%
   ) %&gt;% 
   select(-`...1`)
 
-zcta_skool_covidtest = full_join(zcta_skool, covid_test, by = &quot;modzcta&quot;) %&gt;% 
+zcta_skool_COVIDtest = full_join(zcta_skool, COVID_test, by = &quot;modzcta&quot;) %&gt;% 
   janitor::clean_names()
 
 project_df_deathrate = 
-  full_join(zcta_skool_covidtest, covid_deathrate, by = &quot;modzcta&quot;) %&gt;% 
+  full_join(zcta_skool_COVIDtest, COVID_deathrate, by = &quot;modzcta&quot;) %&gt;% 
   janitor::clean_names()
 
 
-# write_csv(zcta_skool_covidtest, &quot;project_df.csv&quot;)</code></pre>
-<pre class="r"><code>school_covidtest &lt;- full_join(school_data_clean, covid_test, by = &quot;modzcta&quot;) %&gt;% 
+# write_csv(zcta_skool_COVIDtest, &quot;project_df.csv&quot;)</code></pre>
+<pre class="r"><code>school_COVIDtest &lt;- full_join(school_data_clean, COVID_test, by = &quot;modzcta&quot;) %&gt;% 
   janitor::clean_names()
 
-final_mod_zcta &lt;- full_join(school_covidtest, covid_deathrate, by = &quot;modzcta&quot;) %&gt;% 
+final_mod_zcta &lt;- full_join(school_COVIDtest, COVID_deathrate, by = &quot;modzcta&quot;) %&gt;% 
   janitor::clean_names() %&gt;% 
   rename_with(~ gsub(&#39;x&#39;, &#39;&#39;, .x)) 
 
 
 # write_csv(final_mod_zcta, &quot;final_mod_zcta.csv&quot;)</code></pre>
 </div>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
 <div id="exploratory-data-analysis-eda" class="section level2">
 <h2>Exploratory Data Analysis (EDA)</h2>
 <div id="the-distribution-of-specialized-high-school-offers-in-new-york-city" class="section level4">
 <h4>The Distribution of Specialized High School Offers in New York City</h4>
 <p><em>Figure 1: Proportion of Offers by Number of Testers Across NYC Boroughs, 2015-2020</em></p>
-<pre class="r"><code>shsat_covid_df = 
+<pre class="r"><code>shsat_COVID_df = 
   read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
   mutate(
     year = factor(year, levels = c(&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;))
@@ -668,7 +692,7 @@ final_mod_zcta &lt;- full_join(school_covidtest, covid_deathrate, by = &quot;mod
          modzcta_cum_perc_pos, cum_ave_death_rate
          )
 
-shsat_covid_df %&gt;%
+shsat_COVID_df %&gt;%
   filter(n_offers &gt; 5) %&gt;% 
   filter(year != 2015) %&gt;% 
   mutate(
@@ -688,8 +712,10 @@ shsat_covid_df %&gt;%
     y = &quot;Offers Per Applicants&quot;
   )</code></pre>
 <p><img src="Final_Project_Report_files/figure-html/hs_admits_overview-1.png" width="90%" /></p>
+<p>First, it is important to have a sense of how specialized high school applications process differ in in schools across the city. Here, the proportion of admissions offers to the number of students applying to specialized schools represents the “success rate” of each middle school. These data answer the question: “of the students applying to specialized schools, how many get in?”</p>
+<p>Overall, there is a large spread in the data: in some schools, a majority of the students applying to specialized high schools receive an offer, and in other schools, almost none of the students applying receive an offer from a specialized school. Brooklyn and Queens have the greatest range in proportion of offers to applicants, and the Bronx and Staten island consistently have a much lower “success rate” of offers per students applying. Manhattan consistently has the greatest number of offers per number of applicants. The observed trends are relatively stable across the years 2015-2020.</p>
 <p><em>Figure 2: Number of Offers by Proportion of Students Additionally Applying to Specialized Schools</em></p>
-<pre class="r"><code>shsat_covid_df %&gt;%
+<pre class="r"><code>shsat_COVID_df %&gt;%
   filter(n_offers &gt; 5,
          year != 2015) %&gt;% 
   mutate(
@@ -708,14 +734,13 @@ shsat_covid_df %&gt;%
   ) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
 <p><img src="Final_Project_Report_files/figure-html/teters_vs_allapps-1.png" width="90%" /></p>
-<p>Note that data from 2015 are excluded from this figure as the number of students applying specifically to specialized high school applicants was the same as the number of students in general high school admissions, suggesting that the number of students in general admissions was not recorded for 2015.</p>
 <p>Since applying to most high schools and to specialized high schools are two separate processes, we were interested in whether there is a relationship between how common it is to apply to specialized high schools at a given middle school, and how many specialized high school admissions offers that school receives. The X axis of Figure 2 describes: out of the students applying to high school, how many are also applying to specialized high schools? The Y axis then adds: how many students receive offers to specialized high schools for different prevalence of specialized high school applications?</p>
-<p>In the Bronx and on Staten Island, there are few schools where a majority of the students applying to high school are additionally applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer.</p>
-<p>In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in. Overall, these data suggest that the middle school a student attends is strongly correlated with how likely that student is to be offered admission to a specialized high school.</p>
+<p>Note that data from 2015 are excluded from this figure as the number of students applying specifically to specialized high school applicants was the same as the number of students in general high school admissions, suggesting that the number of students in general admissions was not recorded for 2015.</p>
+<p>In the Bronx and on Staten Island, there are few schools where a majority of the students applying to high school are additionally applying to specialized high schools, and of the students who do apply to specialized high schools, few receive an offer. In Brooklyn, Manhattan, and Queens, the greatest proportion of admissions offers per specialized high school applicant are received at schools where most students apply to specialized high schools. In Brooklyn and Queens, there are some schools where most students apply to specialized high schools, but few get in. Overall, these data suggest that the middle school a student attends is strongly correlated with how likely that student is to be offered admission to a specialized high school.</p>
 </div>
 <div id="specialized-high-school-offers-and-covid-19" class="section level4">
-<h4>Specialized High School Offers and Covid-19</h4>
-<p><em>Figure 3: Number of Offers Before and During the Covid-19 Pandemic</em></p>
+<h4>Specialized High School Offers and COVID-19</h4>
+<p><em>Figure 3: Number of Offers Before and During the COVID-19 Pandemic</em></p>
 <pre class="r"><code># Re-define a df with weighed averages to include borough (which is excluded in the final_mod_zcta file)
 
 zcta_wt_avgs_df =
@@ -737,9 +762,9 @@ zcta_wt_avgs_df =
     avg_spec_per_applicants = mean(spec_per_applicants)
   )
 
-# Plot the zipcode level weighted average number of offers by borough before and during the Covid-19 pandemic
+# Plot the zipcode level weighted average number of offers by borough before and during the COVID-19 pandemic
 
-precovid_boro_wt_avg =
+preCOVID_boro_wt_avg =
   zcta_wt_avgs_df %&gt;% 
   select(modzcta, year, wt_avg_offers, borough) %&gt;%
   drop_na() %&gt;% 
@@ -750,21 +775,21 @@ precovid_boro_wt_avg =
   pivot_wider(names_from = year, values_from = avg_wt_avg) %&gt;%
   drop_na() %&gt;% 
   mutate(
-    precovid_wt_avg = mean(`2015`:`2019`)
+    preCOVID_wt_avg = mean(`2015`:`2019`)
     ) %&gt;%
-  ggplot(aes(x = borough, y = precovid_wt_avg)) +
+  ggplot(aes(x = borough, y = preCOVID_wt_avg)) +
   geom_boxplot() +
   geom_jitter(alpha = 0.2, color = &quot;red&quot;) +
   ylim(-10, 225) +
   labs(
     y = &quot;Weighted Avg. # Offers&quot;, 
     x = &quot;Borough&quot;,
-    title = &quot;Pre-Covid (2015-2019)&quot;
+    title = &quot;Pre-COVID (2015-2019)&quot;
     ) +
    theme(plot.title = element_text(hjust = 0.5))
 
 
-covid_boro_wt_avg =
+COVID_boro_wt_avg =
   zcta_wt_avgs_df %&gt;% 
   filter(year == 2020) %&gt;% 
   group_by(borough) %&gt;% 
@@ -775,22 +800,24 @@ covid_boro_wt_avg =
   labs(
     y = &quot;Weighted Avg. # Offers&quot;, 
     x = &quot;Borough&quot;, 
-    title = &quot;Covid (2020)&quot;
+    title = &quot;COVID (2020)&quot;
     ) +
   theme(plot.title = element_text(hjust = 0.5))
 
-patchwork = precovid_boro_wt_avg + covid_boro_wt_avg
+patchwork = preCOVID_boro_wt_avg + COVID_boro_wt_avg
 
 patchwork + plot_annotation(
-  title = &quot;Difference in Admissions Offers Before and During the Covid-19 Pandemic&quot;,
+  title = &quot;Difference in Admissions Offers Before and During the COVID-19 Pandemic&quot;,
   subtitle = &quot;Number of offers received at a school is weighted by the number of SHSAT test takers at that school, then averaged across ZCTA&quot;,
   theme(text = element_text(hjust = 0.5))
 )</code></pre>
 <p><img src="Final_Project_Report_files/figure-html/wt_avg_covid_precovid-1.png" width="90%" /></p>
-<p><em>Figure 4</em></p>
+<p>First, we wanted to see if there was a year-to-year difference in numbers of offers in each borough before 2020 and during 2020, to broadly capture the potential effects of the Covid-19 pandemic. To do so, we plotted the weighted average number of offers in 2020 and averaged from 2015-2019. The weighted average number of offers is the number of offers per school, weighted by the number of applicants at that school, averaged within a ZCTA. Pre-covid data (2015-2019) is the weighted average number of offers per ZCTA, averaged again across the years 2015-2019.</p>
+<p>The weighted average number of offers seems to have stayed largely the same pre- and during the Covid-19 pandemic in the Bronx and on Staten Island, though Staten Island does seem to have a ZCTA where middle schools performed better in 2020 than in previous years. Interestingly, the median weighted average number of offers for zip codes Manhattan decreased in the pandemic, though there were still a few zip codes performing as well as in previous years. In Brooklyn, there are a few ZCTAs in which students had an unusually high number of offers in 2020, though, like Manhattan, the median number-of-applicant-weighted average number of offers per Brooklyn zip code is lower in 2020 than in the preceding five years.</p>
+<p><em>Figure 4: Covid Data and Offers of Admission</em></p>
 <pre class="r"><code># join in borough data that was excluded from the final analysis df
 modzcta_to_borough = 
-  shsat_covid_df %&gt;% 
+  shsat_COVID_df %&gt;% 
   select(modzcta, borough) %&gt;% 
   unique()
 
@@ -811,15 +838,15 @@ final_shsat_modzcta =
   drop_na() %&gt;% 
   full_join(modzcta_to_borough, .x, by = &quot;modzcta&quot;)
   
-# plot weighted average n offers before and during Covid
+# plot weighted average n offers before and during COVID
 
-wt_avg_vs_covidtest =
+wt_avg_vs_COVIDtest =
   final_shsat_modzcta %&gt;% 
   ggplot(aes(x = modzcta_cum_perc_pos, y = wt_avg_2020)) +
   geom_point() +
   geom_smooth(method = lm, se = FALSE) +
   labs(
-   x = &quot;Cumulative Covid-19 % Positivity 
+   x = &quot;Cumulative COVID-19 % Positivity 
    Rate 3/20 - 12/20&quot;,
    y = &quot;Weighted Average # Offers Per ZCTA&quot;,
    title = &quot;Positivity Rate&quot;
@@ -831,24 +858,35 @@ wt_avg_vs_death =
   geom_point() +
   geom_smooth(method = lm, se = FALSE) +
   labs(
-    x = &quot;Cumulative Avg Covid-19 Death Rate 
+    x = &quot;Cumulative Avg COVID-19 death Rate 
     Per 100,000 3/20 - 12/20&quot;,
     y = &quot;Weighted Average # Offers Per ZCTA&quot;,
-    title = &quot;Death Rate&quot;
+    title = &quot;death Rate&quot;
   )
 
-patchwork = wt_avg_vs_covidtest + wt_avg_vs_death
+patchwork = wt_avg_vs_COVIDtest + wt_avg_vs_death
 
 patchwork + plot_annotation(
-  title = &quot;Relationship Bewteen Covid Positvity Rate, Death Rate and Number of Offers per ZCTA&quot;
+  title = &quot;Relationship Bewteen COVID Positvity Rate, death Rate and Number of Offers per ZCTA&quot;
 )</code></pre>
 <p><img src="Final_Project_Report_files/figure-html/covid_admit_rate_gg-1.png" width="90%" /></p>
+<p>We next wanted to understand whether the COVID-19 pandemic affected success in specialized high school admissions for 2020, and plotted the weighted average number of offers in a ZCTA against two measures of Covid rates, the cumulative percent positivity rate and the cumulative average Covid-19 death rate per 100,000 from March, 2020, to December, 2020.</p>
+<p>There appears to be a weak negative linear association between the average COVID-19 percent positivity rate testing and the average number of offers for middle schools within a particular ZCTA. This suggests that zip codes that had high COVID-19 case rates also tend to have middle schools where few students receive admissions offers to specialized high schools. There appears to be no relationship between the average number of offers and the cumulative average COVID-19 death rate per 100,000. Thus our prediction for our linear models is that there will be an association with the COVID test positive rate, but no association with the average death rate.</p>
 </div>
 </div>
 <div id="primary-analysis" class="section level2">
 <h2>Primary Analysis</h2>
-<p>We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.</p>
-<p>We rann chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
+<p>We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative COVID-19 positive incidence rate and the cumulative mortality rate from March until December 2020.</p>
+<pre class="r"><code>data = read_csv(&quot;raw_data/final_mod_zcta.csv&quot;)
+data = data %&gt;% 
+  filter(!is.na(modzcta_cum_perc_pos))
+summary(data$modzcta_cum_perc_pos)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    9.30   19.62   24.90   23.85   28.88   88.50</code></pre>
+<pre class="r"><code>summary(data$cum_ave_death_rate)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    0.00   34.70   53.60   56.31   70.28  160.43       3</code></pre>
+<p>We ran chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.</p>
 <pre class="r"><code>chisq_df =
   read_csv(&quot;raw_data/project_df.csv&quot;) %&gt;%
   filter(n_offers &gt; 5) %&gt;% 
@@ -868,42 +906,52 @@ patchwork + plot_annotation(
     `2020_prop` = `2020_offers` / `2020_testers`
   )
 
-chi1 &lt;- chisq_df %&gt;% 
+chi1 = chisq_df %&gt;% 
   select(`2015-19_avg_testers`, `2020_testers`) %&gt;% 
   chisq.test() 
 
-chi1 %&gt;% 
+chi1_df =
+  chi1 %&gt;% 
   broom::tidy() %&gt;% 
-  dplyr::select(p.value) %&gt;% 
-  knitr::kable(digits = 5)</code></pre>
+  dplyr::select(statistic, p.value) %&gt;% 
+  mutate(statistic = &quot;Number of Testers&quot;)
+
+knitr::kable(chi1_df, digits = 5)</code></pre>
 <table>
 <thead>
 <tr class="header">
+<th align="left">statistic</th>
 <th align="right">p.value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">Number of Testers</td>
 <td align="right">9e-05</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>chi2 &lt;- chisq_df %&gt;% 
+<pre class="r"><code>chi2 = chisq_df %&gt;% 
   select(`2015-19_avg_offers`, `2020_offers`) %&gt;% 
   chisq.test() 
 
-chi2 %&gt;% 
+chi2_df =
+  chi2 %&gt;% 
   broom::tidy() %&gt;% 
-  dplyr::select(p.value) %&gt;% 
-  knitr::kable(digits = 5)</code></pre>
+  dplyr::select(statistic, p.value) %&gt;% 
+  mutate(statistic = &quot;Number of Offers&quot;)
+
+knitr::kable(chi2_df, digits = 5)</code></pre>
 <table>
 <thead>
 <tr class="header">
+<th align="left">statistic</th>
 <th align="right">p.value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">Number of Offers</td>
 <td align="right">0.1244</td>
 </tr>
 </tbody>
@@ -911,64 +959,150 @@ chi2 %&gt;%
 </div>
 <div id="additional-analysis-modeling" class="section level2">
 <h2>Additional Analysis: Modeling</h2>
-<p>For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative Covid-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
+<p>For our secondary analysis, we excluded all schools with less than 5 students receiving offers to specialized high schools to avoid positivity violations. Because our dependent variable is a count (number of offers), we used a poisson linear regression. However, because the distribution of the data was overspread, the variance did not equal the mean. To avoid the violation of this assumption, we used a Quasi-Poisson model, which assumes that the variance is a linear function of the mean. In our primary model, we calculated the change in the number of SHSAT offers by a 10% increase in the cumulative COVID-19 incidence. We progressively adjusted the model, including the total number of testers by MOZCTA. Additionally, we run a secondary model with 10% increase in the cumulative mortality rate as the main predictor.</p>
 <pre class="r"><code>#this is the main model (10% change in cumulative incidence as predictor)
 
-final_mod_zcta</code></pre>
-<pre><code>## # A tibble: 178 × 25
-##      `1` modzcta all_years_avg_testers all_years_avg_offers all_years_wt_avg
-##    &lt;dbl&gt;   &lt;dbl&gt;                 &lt;dbl&gt;                &lt;dbl&gt;            &lt;dbl&gt;
-##  1     1   10001                   5                    5               5   
-##  2     2   10002                  36.9                 28.4            43.2 
-##  3     3   10003                  42.8                 32.2            44.2 
-##  4     4   10004                  62.5                 36              10   
-##  5     5   10009                  19.5                 11.3             6.12
-##  6     6   10010                  80.5                 50.5            40.5 
-##  7     7   10011                  97.5                 75              99.2 
-##  8     8   10021                 255                  152.             75.5 
-##  9     9   10023                  11.3                 10               7   
-## 10    10   10024                  53.8                 40              28.7 
-## # … with 168 more rows, and 20 more variables: 2015_19_avg_testers &lt;dbl&gt;,
-## #   2015_19_avg_offers &lt;dbl&gt;, 2015_19_wt_avg &lt;dbl&gt;, avg_testers_2020 &lt;dbl&gt;,
-## #   avg_offers_2020 &lt;dbl&gt;, wt_avg_2020 &lt;dbl&gt;, positive &lt;dbl&gt;, total &lt;dbl&gt;,
-## #   modzcta_cum_perc_pos &lt;dbl&gt;, 3_2020 &lt;dbl&gt;, 4_2020 &lt;dbl&gt;, 5_2020 &lt;dbl&gt;,
-## #   6_2020 &lt;dbl&gt;, 7_2020 &lt;dbl&gt;, 8_2020 &lt;dbl&gt;, 9_2020 &lt;dbl&gt;, 10_2020 &lt;dbl&gt;,
-## #   11_2020 &lt;dbl&gt;, 12_2020 &lt;dbl&gt;, cum_ave_death_rate &lt;dbl&gt;</code></pre>
-<pre class="r"><code>model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)</code></pre>
-<pre><code>## Error in model.frame.default(formula = avg_offers_2020 ~ cum_perc, data = data, : &#39;data&#39; must be a data.frame, environment, or list</code></pre>
-<pre class="r"><code>model1 %&gt;% 
+data &lt;- read_csv(&quot;raw_data/final_mod_zcta.csv&quot;) %&gt;% 
+  mutate(all_years_avg_offers = round(all_years_avg_offers, digits = 0), 
+         all_years_wt_avg_offers = round(all_years_avg_offers, digits = 0),
+         wt_avg_2020 = round(wt_avg_2020, digits = 0)) %&gt;% 
+  mutate(cum_perc = 10*(modzcta_cum_perc_pos),
+         cum_death = 10*(cum_ave_death_rate))
+
+
+model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
+
+model1 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
-<pre><code>## Error in broom::tidy(.): object &#39;model1&#39; not found</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.945</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Cumulative Covid Incidence</td>
+<td align="right">-0.005</td>
+<td align="right">0.012</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>#model adjusted by number of testers
-model3 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)</code></pre>
-<pre><code>## Error in model.frame.default(formula = avg_offers_2020 ~ cum_perc + avg_testers_2020, : &#39;data&#39; must be a data.frame, environment, or list</code></pre>
-<pre class="r"><code>model3 %&gt;% 
+model3 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisson, data = data)
+
+model3 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence &quot;),
+         term = str_replace(term, &quot;avg_testers_2020&quot;, &quot;Avg. Applicants 2020&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
-<pre><code>## Error in broom::tidy(.): object &#39;model3&#39; not found</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.714</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Cumulative Covid Incidence</td>
+<td align="right">-0.004</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Avg. Applicants 2020</td>
+<td align="right">0.011</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>#model adjusted by number of testers and death rate
-model4 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)</code></pre>
-<pre><code>## Error in model.frame.default(formula = avg_offers_2020 ~ cum_perc + avg_testers_2020 + : &#39;data&#39; must be a data.frame, environment, or list</code></pre>
-<pre class="r"><code>model4 %&gt;% 
+model4 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family = quasipoisson, data = data)
+
+model4 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence &quot;),
+         term = str_replace(term, &quot;avg_testers_2020&quot;, &quot;Avg. Applicants 2020&quot;),
+         term = str_replace(term, &quot;cum_death&quot;, &quot;Death Rate per 100,000&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
-<pre><code>## Error in broom::tidy(.): object &#39;model4&#39; not found</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.739</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Cumulative Covid Incidence</td>
+<td align="right">-0.005</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Avg. Applicants 2020</td>
+<td align="right">0.011</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Death Rate per 100,000</td>
+<td align="right">0.000</td>
+<td align="right">0.029</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>#model with a 10% change in death rate as the main predictor
-model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)</code></pre>
-<pre><code>## Error in model.frame.default(formula = wt_avg_2020 ~ cum_death, data = data, : &#39;data&#39; must be a data.frame, environment, or list</code></pre>
-<pre class="r"><code>model2 %&gt;% 
+model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+
+model2 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_death&quot;, &quot;Cumulative death rate&quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_death&quot;, &quot;Death Rate per 100,000&quot;)) %&gt;% 
   knitr::kable(digits = 5)</code></pre>
-<pre><code>## Error in broom::tidy(.): object &#39;model2&#39; not found</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.91136</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">Death Rate per 100,000</td>
+<td align="right">0.00005</td>
+<td align="right">0.90279</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>

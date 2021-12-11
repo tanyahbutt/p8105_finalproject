@@ -49,7 +49,7 @@ ggplotly(
 
 Column {data-width=500}
 -----------------------------------------------------------------------
-### COVID-19 Cumulative Death Rate from March - September 2020 by ZCTA
+### COVID-19 Cumulative Mortality Rate from March - September 2020 by ZCTA
 
 ```{r, echo = FALSE}
 ggplotly(
@@ -58,7 +58,7 @@ ggplotly(
     theme(legend.text = element_text(size = 4), 
           legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-      title = "Cumulative Moraltiy Rate\nfrom March - September 2020 by ZCTA",
+      title = "Cumulative Mortality Rate\nfrom March - September 2020 by ZCTA",
       x = "Latitude",
       y = "Longitude", fill = "Mortality Rate\n (Deaths/100,000)"))  %>%
   layout(xaxis = list(autorange = TRUE),

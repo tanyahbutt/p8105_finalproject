@@ -390,9 +390,14 @@ will have to separate into quartiles and look at variation within quartiles
 
 ```{r}
 
-shsat_zip_df %>%
+filtered =
+  shsat_zip_df %>%
   filter(n_offers > 5) %>%
   group_by(year) %>% 
+  summarise(n_schools = n()) %>% 
+  knitr::kable() %>% 
+  print()
+  
   summarise(mean_offers = mean(n_offers),
             std_dev_offers = sd(n_offers))
 
