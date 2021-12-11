@@ -585,10 +585,9 @@ summary(data$cum_ave_death_rate)
 
 We ran chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
 
-```{r chisq, message=FALSE}
-
-chisq_df =
-  read_csv("raw_data/project_df.csv") %>%
+```{r chisq, echo=FALSE, message=FALSE}
+data <- read_csv("raw_data/final_mod_zcta.csv")
+data %>%
   filter(n_offers > 5) %>% 
   select(modzcta, dbn, n_testers, n_offers, year) %>%
   drop_na() %>% 
