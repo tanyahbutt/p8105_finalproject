@@ -49,7 +49,7 @@ ggplotly(
 
 Column {data-width=500}
 -----------------------------------------------------------------------
-### COVID-19 Cumulative Death Rate from March - September 2020 by ZCTA
+### COVID-19 Cumulative Mortality Rate from March - September 2020 by ZCTA
 
 ```{r, echo = FALSE}
 ggplotly(
