@@ -53,7 +53,7 @@ comprehensive application for admission to a competitive, well known school can
 begin as early as in pre-kindergarten.
 
 The largest admissions process occurs for high school, where all eighth grade 
-students are eligible to apply to any public high school in the city. The high school admissions process, outlined fully in the official DOE [guide](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat) is split into applications for non-specialized and specialized public high schools. Eighth graders who do 
+students are eligible to apply to any public high school in the city. The high school admissions process, outlined fully in the official DOE [guide](https://www.schools.nyc.gov/docs/default-source/default-document-library/2021-high-school-and-specialized-high-schools-admissions-guide----guide-to-the-shsat), is split into applications for non-specialized and specialized public high schools, and students can apply through both channels. Eighth graders who do 
 not enter the high school admissions process at all receive an offer from the
 closest high school that has an available seat. 
 
@@ -72,6 +72,7 @@ whether incidence and death rates of COVID-19 at the zip-code tabulation area
 schools in 2020. 
 
 ## Related Background
+
 Specialized high schools are a set of nine schools across New York City 
 known for their academic rigor that accept students through a separate 
 admissions process from general high school admissions. Though the DOE does not 
@@ -88,7 +89,7 @@ ranks a particular school in their application can also influence admission.
 Though the New York's specialized high school system has been touted as a mechanism 
 for economic mobility and a means of offering an outstanding education to any 
 student, the specialized high school system still reflects the segregation and
-inequality rooted in the public schools. In 2014, UCLA's Civil Rights Project 
+inequality rooted in the city's public school system. In 2014, UCLA's Civil Rights Project 
 described New York State, and New York City, in particular, as having [the most segregated schools in the nation](https://www.civilrightsproject.ucla.edu/news/press-releases/2014-press-releases/new-york-schools-most-segregated-in-the-nation). A new [report](https://www.civilrightsproject.ucla.edu/research/k-12-education/integration-and-diversity/nyc-school-segregation-report-card-still-last-action-needed-now/NYC_6-09-final-for-post.pdf) 
 by the same authors released in June 2021 describes the persistence of segregation
 by race and poverty in the educational system from 2010-2018.
@@ -111,7 +112,7 @@ proportion of SHSAT offers to applicants?
 
 ## Data Sources and Preparation
 * **SHSAT Admissions Test Offers by Sending School (2015-2021)** Specialized 
-high school admission offers by middle school (denoted by district borough number) was obtained
+high school admission offers and applicant data by middle school (denoted by district borough number) was obtained
 from [NYC Open Data](https://data.cityofnewyork.us/browse?q=SHSAT&sortBy=relevance).
 
 * **2020 DOE Middle School Directory** Addresses and key characteristics of each sending middle school were obtained from [NYC Open Data](https://data.cityofnewyork.us/Education/2020-DOE-Middle-School-Directory/fdpt-nzk4)
@@ -147,9 +148,8 @@ joined to create a single master file, which was used for subsequent
 visualizations and data analysis.
 
 #### SHSAT Data
-Though charter middle schools are included in the yearly specialized high school 
-admissions by sending school data set, they are not included in the DOE middle
-school directory. 
+
+SHSAT application data from the 2015-16 school year through the 2020-2021 school year were combined to list offers and applications per year per middle school, and zip codes and borough were extracted from the DOE Middle School Directory from 2019. Though charter middle schools are included in the SHSAT admissions data set, they are not included in the DOE middle school directory (since charter schools are not run by the DOE), and are thus excluded from our analysis. 
 
 #### COVID-19 2020 Cumulative Indicence and Mortality Data
 The COVID-19 cumulative incidence and mortality rates for 2020 were imported 
