@@ -557,7 +557,7 @@ n_removed_table =
 ## |2018 |                         120|                    465|
 ## |2019 |                         130|                    465|
 ## |2020 |                         191|                    467|</code></pre>
-<p>Filtering out schools with fewer than 5 offers in any given year (<code>n_offers &lt; 5</code>) left approximately 120 schools per year. This subset was used in all subsequent analysis.</p>
+<p>Filtering out schools with fewer than 5 offers in any given year (<code>n_offers &lt; 5</code>) left approximately 110 schools per year. This subset was used in all subsequent analysis.</p>
 <pre class="r"><code>  shsat_zip_df %&gt;%
   filter(n_offers &gt; 5) %&gt;%
   group_by(year) %&gt;% 
@@ -712,6 +712,8 @@ shsat_COVID_df %&gt;%
     y = &quot;Offers Per Applicants&quot;
   )</code></pre>
 <p><img src="Final_Project_Report_files/figure-html/hs_admits_overview-1.png" width="90%" /></p>
+<p>First, it is important to have a sense of how specialized high school applications process differ in in schools across the city. Here, the proportion of admissions offers to the number of students applying to specialized schools represents the “success rate” of each middle school. These data answer the question: “of the students applying to specialized schools, how many get in?”</p>
+<p>Overall, there is a large spread in the data: in some schools, a majority of the students applying to specialized high schools receive an offer, and in other schools, almost none of the students applying receive an offer from a specialized school. Brooklyn and Queens have the greatest range in proportion of offers to applicants, and the Bronx and Staten island consistently have a much lower “success rate” of offers per students applying. Manhattan consistently has the greatest number of offers per number of applicants. The observed trends are relatively stable across the years 2015-2020.</p>
 <p><em>Figure 2: Number of Offers by Proportion of Students Additionally Applying to Specialized Schools</em></p>
 <pre class="r"><code>shsat_COVID_df %&gt;%
   filter(n_offers &gt; 5,
@@ -973,7 +975,7 @@ model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
 model1 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -990,7 +992,7 @@ model1 %&gt;%
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
-<td align="left">Cumulative incidence</td>
+<td align="left">Cumulative Covid Incidence</td>
 <td align="right">-0.005</td>
 <td align="right">0.012</td>
 </tr>
@@ -1002,7 +1004,8 @@ model3 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisso
 model3 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence &quot;),
+         term = str_replace(term, &quot;avg_testers_2020&quot;, &quot;Avg. Applicants 2020&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -1019,12 +1022,12 @@ model3 %&gt;%
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">Cumulative incidence</td>
+<td align="left">Cumulative Covid Incidence</td>
 <td align="right">-0.004</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">avg_testers_2020</td>
+<td align="left">Avg. Applicants 2020</td>
 <td align="right">0.011</td>
 <td align="right">0</td>
 </tr>
@@ -1036,7 +1039,9 @@ model4 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family =
 model4 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative incidence &quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_perc&quot;, &quot;Cumulative Covid Incidence &quot;),
+         term = str_replace(term, &quot;avg_testers_2020&quot;, &quot;Avg. Applicants 2020&quot;),
+         term = str_replace(term, &quot;cum_death&quot;, &quot;Death Rate per 100,000&quot;)) %&gt;% 
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
@@ -1053,17 +1058,17 @@ model4 %&gt;%
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
-<td align="left">Cumulative incidence</td>
+<td align="left">Cumulative Covid Incidence</td>
 <td align="right">-0.005</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
-<td align="left">avg_testers_2020</td>
+<td align="left">Avg. Applicants 2020</td>
 <td align="right">0.011</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
-<td align="left">cum_death</td>
+<td align="left">Death Rate per 100,000</td>
 <td align="right">0.000</td>
 <td align="right">0.029</td>
 </tr>
@@ -1075,7 +1080,7 @@ model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
 model2 %&gt;% 
   broom::tidy() %&gt;% 
   dplyr::select(term, estimate, p.value) %&gt;% 
-  mutate(term = str_replace(term, &quot;cum_death&quot;, &quot;Cumulative death rate&quot;)) %&gt;% 
+  mutate(term = str_replace(term, &quot;cum_death&quot;, &quot;Death Rate per 100,000&quot;)) %&gt;% 
   knitr::kable(digits = 5)</code></pre>
 <table>
 <thead>
@@ -1092,7 +1097,7 @@ model2 %&gt;%
 <td align="right">0.00000</td>
 </tr>
 <tr class="even">
-<td align="left">Cumulative death rate</td>
+<td align="left">Death Rate per 100,000</td>
 <td align="right">0.00005</td>
 <td align="right">0.90279</td>
 </tr>

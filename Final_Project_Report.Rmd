@@ -241,7 +241,7 @@ n_removed_table =
 
 ```
 
-Filtering out schools with fewer than 5 offers in any given year (`n_offers < 5`) left approximately 120 schools per year. This subset was used in all subsequent analysis.
+Filtering out schools with fewer than 5 offers in any given year (`n_offers < 5`) left approximately 110 schools per year. This subset was used in all subsequent analysis.
 
 ```{r message=FALSE}
 
@@ -430,6 +430,10 @@ shsat_COVID_df %>%
     y = "Offers Per Applicants"
   )
 ```
+
+First, it is important to have a sense of how specialized high school applications process differ in in schools across the city. Here, the proportion of admissions offers to the number of students applying to specialized schools represents the "success rate" of each middle school. These data answer the question: "of the students applying to specialized schools, how many get in?"
+
+Overall, there is a large spread in the data: in some schools, a majority of the students applying to specialized high schools receive an offer, and in other schools, almost none of the students applying receive an offer from a specialized school. Brooklyn and Queens have the greatest range in proportion of offers to applicants, and the Bronx and Staten island consistently have a much lower "success rate" of offers per students applying. Manhattan consistently has the greatest number of offers per number of applicants. The observed trends are relatively stable across the years 2015-2020.
 
 *Figure 2: Number of Offers by Proportion of Students Additionally Applying to Specialized Schools* 
 
@@ -696,7 +700,7 @@ model1 = glm(avg_offers_2020 ~ cum_perc , family = quasipoisson, data = data)
 model1 %>% 
   broom::tidy() %>% 
   dplyr::select(term, estimate, p.value) %>% 
-  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative Covid Incidence")) %>% 
   knitr::kable(digits = 3)
 
 #model adjusted by number of testers
@@ -705,7 +709,8 @@ model3 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020, family = quasipoisso
 model3 %>% 
   broom::tidy() %>% 
   dplyr::select(term, estimate, p.value) %>% 
-  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative Covid Incidence "),
+         term = str_replace(term, "avg_testers_2020", "Avg. Applicants 2020")) %>% 
   knitr::kable(digits = 3)
 
 #model adjusted by number of testers and death rate
@@ -714,7 +719,9 @@ model4 = glm(avg_offers_2020 ~ cum_perc + avg_testers_2020 + cum_death, family =
 model4 %>% 
   broom::tidy() %>% 
   dplyr::select(term, estimate, p.value) %>% 
-  mutate(term = str_replace(term, "cum_perc", "Cumulative incidence ")) %>% 
+  mutate(term = str_replace(term, "cum_perc", "Cumulative Covid Incidence "),
+         term = str_replace(term, "avg_testers_2020", "Avg. Applicants 2020"),
+         term = str_replace(term, "cum_death", "Death Rate per 100,000")) %>% 
   knitr::kable(digits = 3)
 
 #model with a 10% change in death rate as the main predictor
@@ -723,7 +730,7 @@ model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
 model2 %>% 
   broom::tidy() %>% 
   dplyr::select(term, estimate, p.value) %>% 
-  mutate(term = str_replace(term, "cum_death", "Cumulative death rate")) %>% 
+  mutate(term = str_replace(term, "cum_death", "Death Rate per 100,000")) %>% 
   knitr::kable(digits = 5)
 
 ```
