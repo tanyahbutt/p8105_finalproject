@@ -633,8 +633,11 @@ summary(data$cum_ave_death_rate)
 We ran chi square tests to test if there was a significant difference between the number of offers in 2020 and the number of offers from 2015 until 2019. Additionally we tested if there was a significant difference between the number of testers in 2020 and the weighted average for the number of offers from 2015 until 2019.
 
 ```{r chisq, echo=FALSE, message=FALSE}
-data <- read_csv("raw_data/final_mod_zcta.csv")
-data %>%
+ 
+chisq_df = read_csv("raw_data/project_df.csv")
+
+chisq_df =  
+  chisq_df %>%
   filter(n_offers > 5) %>% 
   select(modzcta, dbn, n_testers, n_offers, year) %>%
   drop_na() %>% 
@@ -724,9 +727,9 @@ model4 %>%
   knitr::kable(digits = 3)
 
 #model with a 10% change in death rate as the main predictor
-model2 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
+model12 = glm(wt_avg_2020 ~ cum_death, family = quasipoisson, data = data)
 
-model21 <- model21 %>% 
+model12 <- model12 %>% 
   broom::tidy() %>% 
   dplyr::select(term, estimate, p.value) %>% 
   mutate(term = str_replace(term, "cum_death", "Death Rate per 100,000")) %>% 
