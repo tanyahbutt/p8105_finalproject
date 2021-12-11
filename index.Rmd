@@ -7,7 +7,38 @@ output:
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
 ---
+```{r, include = FALSE}
+library(tidyverse)
+library(plotly)
+library(rgdal)
+library(raster)
+library(sf)
+library(spatialEco)
+library(viridis)
+library(rgdal)
+library(spatialreg)
+library(spgwr)
+library(raster)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+covid_death_sdf = st_read("shapefiles/deathrate_map1.shp") 
+```
 
 
 <img src = "public_schools_zcta.png">
@@ -113,7 +144,7 @@ location of their COVID-19 testing, diagnosing, or hospitalization.
 
 ## Methods
 ### Data Cleaning
-Data sets were extracted from the data sources mentioned above and variables of 
+Data sets were extracted from the data sources above and variables of 
 interest were cleaned for consistency and clarity. Cleaned data sets were then 
 joined to create a single master file, which was used for subsequent 
 visualizations and data analysis.
@@ -140,7 +171,52 @@ by month, borough, and ZCTA. When the count of deaths is between 1 and 4, the ra
 is not reported due to patient confidentiality and to prevent unreliable estimates. 
 
 ### Visualizations
-Our interactive maps can be found [here](nyc_maps.html).
+
+##### Map of Cumulative COVID-19 Incidence by ZCTA from March-September 2020
+```{r}
+fig <- ggplotly(
+  ggplot(covid_death_sdf) +
+    geom_sf(aes(fill = incidence)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Covid-19 cumulative Incidence \n March - September 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Covid-19 cumulative Incidence \n (cases/100,000)")) 
+  
+fig
+```
+
+##### Map of Cumulative COVID-19 Mortality Rates by ZCTA from March-September 2020
+```{r, collapse = TRUE}
+fig <- ggplotly(
+  ggplot(covid_death_sdf) +
+    geom_sf(aes(fill = cum_death)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Average Death Rate per 100,000 people \n from March - September 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "Average Death Rate\n (deaths/100,000)")) 
+  
+fig
+```
+
+##### Map of Proportion of SHSAT Offers in 2020 by ZCTA
+```{r}
+fig <- ggplotly(
+  ggplot(covid_death_sdf) +
+    geom_sf(aes(fill = pro_offers)) +
+    theme(legend.text = element_text(size = 6), 
+        legend.position = 'right', axis.text.x = element_text(angle = 45)) +
+    labs(
+    title = "Proportion of SHSAT offers \n in 2020 by ZCTA",
+    x = "Latitude",
+    y = "Longitude", fill = "proportion of SHSAT offers")) 
+  
+fig
+```
+
 
 ### Analysis
 We used descriptive statistics to summarize the distribution of our dependent variable: the average number of SHSAT offers in 2020 by MOZCTA, and relevant predictors: the cumulative Covid-19 positive incidence rate and the cumulative death rate from March until December 2020.
