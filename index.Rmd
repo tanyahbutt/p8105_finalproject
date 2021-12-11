@@ -25,7 +25,7 @@ library(spgwr)
 library(raster)
 
 knitr::opts_chunk$set(
-  fig.width = 6,
+  fig.width = 7,
   fig.asp = .6,
   out.width = "90%"
 )
@@ -179,12 +179,12 @@ fig <- ggplotly(
     labs(
     title = "Covid-19 Cumulative Incidence Rate\n from March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Covid-19 Cumulative Incidence\n (Cases/100,000)")) 
+    y = "Longitude", fill = "Covid-19\nCumulative Incidence\n(Cases/100,000)")) 
   
 fig
 ```
 
-##### Map of Cumulative COVID-19 Mortality Rates by ZCTA from March-September 2020
+##### Map of Cumulative COVID-19 Mortality Rates per 100,000 people by ZCTA from March-September 2020
 ```{r, collapse = TRUE}
 fig <- ggplotly(
   ggplot(covid_death_sdf) +
@@ -192,9 +192,9 @@ fig <- ggplotly(
     theme(legend.text = element_text(size = 5), 
         legend.position = 'right', axis.text.x = element_text(angle = 45)) +
     labs(
-    title = "Average Mortality Rate per 100,000 people \n from March - September 2020 by ZCTA",
+    title = "COVID-19 Average Mortality Rate \n from March - September 2020 by ZCTA",
     x = "Latitude",
-    y = "Longitude", fill = "Average Mortality Rate\n (Deaths/100,000)")) 
+    y = "Longitude", fill = "Average Mortality Rate\n(Deaths/100,000)")) 
   
 fig
 ```
