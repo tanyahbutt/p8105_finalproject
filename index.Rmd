@@ -259,16 +259,14 @@ Despite the relevant limitations, to our knowledge, this is the first project th
 
 There is a need for longitudinal studies that assess this association over time, additionally, further studies should seek to include potential confounders (i.e., socioeconomic status, mental health) for the association between Covid 19 and specialized high school admissions offers.
 
-
-
-
+## Screen Cast
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fc94shUt7jg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Contributors: Tanya Butt | Catherine Lucey | Irene Martinez Morata  
 
 ### thb2114, cml2270, im2557
 
-## Screen Cast
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fc94shUt7jg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 
 
